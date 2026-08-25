@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase/client";
+import { createClient } from "@/lib/supabase/client";
 
 export default function LoginForm() {
     const router = useRouter();
+    const supabase = createClient();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,37 +15,38 @@ export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
 
   async function handleSubmit(
-    event: React.FormEvent<HTMLFormElement>
-    ) {
-    event.preventDefault();
+  event: React.FormEvent<HTMLFormElement>
+) {
+  event.preventDefault();
 
-    setError("");
+  setError("");
 
-    if (!email.trim()) {
-        setError("Please enter your email.");
-        return;
-    }
+  if (!email.trim()) {
+    setError("Please enter your email.");
+    return;
+  }
 
-    if (!password) {
-        setError("Please enter your password.");
-        return;
-    }
+  if (!password) {
+    setError("Please enter your password.");
+    return;
+  }
 
-    setIsLoading(true);
+  setIsLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-    });
+  const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
 
-    if (error) {
-        setError(error.message);
-        setIsLoading(false);
-        return;
-        }
+  if (error) {
+    setError(error.message);
+    setIsLoading(false);
+    return;
+  }
 
-        router.push("/dashboard");
-    }
+  router.push("/dashboard");
+  router.refresh();
+}
 
   return (
     <form onSubmit={handleSubmit} className="mt-8 space-y-5">
