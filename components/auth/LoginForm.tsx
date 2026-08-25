@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { supabase } from "@/lib/supabase/client";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -9,30 +10,40 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(
+    event: React.FormEvent<HTMLFormElement>
+    ) {
     event.preventDefault();
 
     setError("");
 
     if (!email.trim()) {
-      setError("Please enter your email.");
-      return;
+        setError("Please enter your email.");
+        return;
     }
 
     if (!password) {
-      setError("Please enter your password.");
-      return;
+        setError("Please enter your password.");
+        return;
     }
 
     setIsLoading(true);
 
-    console.log("Email:", email);
-    console.log("Password:", password);
+    const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+    });
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
-  }
+    if (error) {
+        setError(error.message);
+        setIsLoading(false);
+        return;
+    }
+
+    setIsLoading(false);
+
+    console.log("Login successful");
+    }
 
   return (
     <form onSubmit={handleSubmit} className="mt-8 space-y-5">
