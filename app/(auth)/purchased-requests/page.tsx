@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import Link from "next/link";
 
 export default async function PurchasedRequestsPage() {
   const supabase = await createClient();
@@ -130,8 +131,13 @@ export default async function PurchasedRequestsPage() {
                     className="hover:bg-gray-50"
                   >
 
-                    <td className="px-6 py-4 font-medium text-gray-900">
-                      {request.pr_number}
+                    <td className="px-6 py-4">
+                      <Link
+                        href={`/purchased-requests/${request.id}`}
+                        className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
+                      >
+                        {request.pr_number}
+                      </Link>
                     </td>
 
                     <td className="px-6 py-4 text-gray-600">
