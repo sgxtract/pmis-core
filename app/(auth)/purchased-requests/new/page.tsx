@@ -59,8 +59,8 @@ export default async function NewProcurementRequestPage() {
               name="pr_number"
               type="text"
               required
-              placeholder="PR-2026-002"
-              className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              placeholder="2026012345"
+              className="text-gray-600 mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
           </div>
 
@@ -78,7 +78,7 @@ export default async function NewProcurementRequestPage() {
               name="pr_date"
               type="date"
               required
-              className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="text-gray-400 mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
           </div>
 
@@ -97,7 +97,7 @@ export default async function NewProcurementRequestPage() {
               type="text"
               required
               placeholder="Goods"
-              className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="text-gray-600 mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
           </div>
 
@@ -116,7 +116,7 @@ export default async function NewProcurementRequestPage() {
               type="text"
               required
               placeholder="Information Technology Office"
-              className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="text-gray-600 mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
           </div>
 
@@ -135,7 +135,7 @@ export default async function NewProcurementRequestPage() {
               required
               rows={4}
               placeholder="Enter description of the procurement..."
-              className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="text-gray-600 mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
           </div>
 
@@ -156,7 +156,7 @@ export default async function NewProcurementRequestPage() {
               step="0.01"
               required
               placeholder="500000.00"
-              className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="text-gray-600 mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
 
             <p className="mt-1 text-xs text-gray-500">
@@ -177,7 +177,7 @@ export default async function NewProcurementRequestPage() {
               id="mode_of_procurement_id"
               name="mode_of_procurement_id"
               defaultValue=""
-              className="mt-2 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              className="text-gray-600 mt-2 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             >
               <option value="">
                 Not yet assigned

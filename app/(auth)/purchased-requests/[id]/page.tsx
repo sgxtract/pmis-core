@@ -121,7 +121,9 @@ export default async function ProcurementRequestPage({
       </Link>
 
       {/* Page heading */}
-      <div className="mt-6">
+      <div className="mt-6 flex items-start justify-between">
+
+      <div>
         <h1 className="text-3xl font-bold text-gray-900">
           {procurementRequest.pr_number}
         </h1>
@@ -130,6 +132,15 @@ export default async function ProcurementRequestPage({
           Procurement Request
         </p>
       </div>
+
+      <Link
+        href={`/purchased-requests/${procurementRequest.id}/edit`}
+        className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+      >
+        Edit PR
+      </Link>
+
+    </div>
 
       {/* PR Information */}
       <div className="mt-8 rounded-xl border bg-white shadow-sm">

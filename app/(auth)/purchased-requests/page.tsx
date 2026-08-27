@@ -27,9 +27,9 @@ export default async function PurchasedRequestsPage() {
       .from("procurement_stages")
       .select("id, name");
 
-      const { data: procurementModes } = await supabase
-      .from("modes_of_procurement")
-      .select("id, name");
+      // const { data: procurementModes } = await supabase
+      // .from("modes_of_procurement")
+      // .select("id, name");
 
       const stageMap = new Map(
       stages?.map((stage) => [stage.id, stage.name])
