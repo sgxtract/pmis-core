@@ -25,7 +25,7 @@ export default async function ProcurementRequestPage({
       id,
       pr_number,
       pr_date,
-      office,
+      type_of_pr,
       end_user,
       particulars,
       abc,
@@ -170,14 +170,14 @@ export default async function ProcurementRequestPage({
             </p>
           </div>
 
-          {/* Office */}
+          {/* Type of PR */}
           <div>
             <p className="text-sm text-gray-500">
-              Office
+              Type of PR
             </p>
 
             <p className="mt-1 font-medium text-gray-900">
-              {procurementRequest.office || "—"}
+              {procurementRequest.type_of_pr || "—"}
             </p>
           </div>
 

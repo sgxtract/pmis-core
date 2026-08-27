@@ -13,7 +13,7 @@ export default async function PurchasedRequestsPage() {
       id,
       pr_number,
       pr_date,
-      office,
+      type_of_pr,
       end_user,
       particulars,
       abc,
@@ -33,10 +33,6 @@ export default async function PurchasedRequestsPage() {
 
       const stageMap = new Map(
       stages?.map((stage) => [stage.id, stage.name])
-    );
-
-    const modeMap = new Map(
-      procurementModes?.map((mode) => [mode.id, mode.name])
     );
 
   if (error) {
@@ -68,12 +64,19 @@ export default async function PurchasedRequestsPage() {
           </p>
         </div>
 
-        <button
+        <Link
+          href="/purchased-requests/new"
+          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+        >
+          + New PR
+        </Link>
+
+        {/* <button
           disabled
           className="cursor-not-allowed rounded-lg bg-gray-300 px-4 py-2 text-sm font-medium text-gray-600"
         >
           + New PR
-        </button>
+        </button> */}
       </div>
 
       <div className="mt-8 rounded-xl border bg-white shadow-sm">
@@ -104,7 +107,7 @@ export default async function PurchasedRequestsPage() {
                   </th>
 
                   <th className="px-6 py-4">
-                    Office
+                    Type of PR
                   </th>
 
                   <th className="px-6 py-4">
@@ -149,7 +152,7 @@ export default async function PurchasedRequestsPage() {
                     </td>
 
                     <td className="px-6 py-4 text-gray-600">
-                      {request.office || "—"}
+                      {request.type_of_pr || "—"}
                     </td>
 
                     <td className="px-6 py-4 text-gray-600">

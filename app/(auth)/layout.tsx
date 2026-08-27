@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import LogoutButton from "@/components/auth/LogoutButton";
 import Link from "next/link";
+import SessionGuard from "@/components/auth/SessionGuard";
 
 export default async function AuthLayout({
   children,
@@ -20,6 +21,8 @@ export default async function AuthLayout({
 
   return (
     <div className="min-h-screen bg-gray-100">
+
+      <SessionGuard />
 
       <header className="flex h-16 items-center justify-between border-b bg-white px-6">
         <div>
