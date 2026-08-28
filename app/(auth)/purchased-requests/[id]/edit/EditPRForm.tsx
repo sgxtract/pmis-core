@@ -99,7 +99,7 @@ export default function EditPRForm({
             type="text"
             required
             defaultValue={request.pr_number}
-            className={`mt-2 w-full rounded-lg border px-4 py-2.5 text-sm outline-none focus:ring-2 ${
+            className={`text-gray-500 mt-2 w-full rounded-lg border px-4 py-2.5 text-sm outline-none focus:ring-2 ${
               state?.error?.includes(
                 "PR Number"
               )
@@ -125,7 +125,7 @@ export default function EditPRForm({
             type="date"
             required
             defaultValue={request.pr_date}
-            className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="text-gray-500 mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
         </div>
 
@@ -145,7 +145,7 @@ export default function EditPRForm({
             type="text"
             required
             defaultValue={request.type_of_pr}
-            className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="text-gray-500 mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
         </div>
 
@@ -165,7 +165,7 @@ export default function EditPRForm({
             type="text"
             required
             defaultValue={request.end_user}
-            className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="text-gray-500 mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
         </div>
 
@@ -185,7 +185,7 @@ export default function EditPRForm({
             required
             rows={5}
             defaultValue={request.particulars}
-            className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="text-gray-500 mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
         </div>
 
@@ -207,7 +207,7 @@ export default function EditPRForm({
             step="0.01"
             required
             defaultValue={request.abc ?? ""}
-            className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="text-gray-500 mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
         </div>
 
@@ -227,7 +227,7 @@ export default function EditPRForm({
             defaultValue={
               request.mode_of_procurement_id ?? ""
             }
-            className="mt-2 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            className="text-gray-500 mt-2 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           >
             <option value="">
               Not yet assigned

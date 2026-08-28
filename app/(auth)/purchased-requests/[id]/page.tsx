@@ -1,6 +1,8 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import AdvanceStageForm from "./advance-stage/AdvanceStageForm";
+import StageHistory from "./StageHistory";
 
 type PageProps = {
   params: Promise<{
@@ -66,6 +68,20 @@ export default async function ProcurementRequestPage({
     .select("id, name, sequence_number")
     .eq("id", procurementRequest.current_stage_id)
     .single();
+  
+  const { data: nextStage } =
+  await supabase
+    .from("procurement_stages")
+    .select("id, name, sequence_number")
+    .gt(
+      "sequence_number",
+      currentStage?.sequence_number ?? 0
+    )
+    .order("sequence_number", {
+      ascending: true,
+    })
+    .limit(1)
+    .maybeSingle();
 
   // --------------------------------------------------
   // 5. Get All Procurement Stages
@@ -83,18 +99,74 @@ export default async function ProcurementRequestPage({
   // --------------------------------------------------
 
   const { data: history } = await supabase
-    .from("procurement_stage_history")
-    .select(`
-      id,
-      stage_id,
-      started_at,
-      completed_at,
-      remarks,
-      changed_by
-    `)
-    .eq("request_id", procurementRequest.id)
-    .order("started_at", {
-      ascending: true,
+  .from("procurement_stage_history")
+  .select(`
+    id,
+    stage_id,
+    started_at,
+    completed_at,
+    remarks,
+    changed_by,
+    procurement_stages (
+      name,
+      sequence_number
+    )
+  `)
+  .eq("request_id", id)
+  .order("started_at", {
+    ascending: true,
+  });
+
+  const changedByIds = Array.from(
+    new Set(
+      (history ?? [])
+        .map((item) => item.changed_by)
+        .filter(Boolean)
+    )
+  );
+
+  const { data: profiles } =
+    changedByIds.length > 0
+      ? await supabase
+          .from("profiles")
+          .select("id, full_name")
+          .in("id", changedByIds)
+      : { data: [] };
+  
+  const profileMap = new Map(
+    (profiles ?? []).map(
+      (profile) => [
+        profile.id,
+        profile.full_name,
+      ]
+    )
+  );
+
+  const formattedHistory =
+    (history ?? []).map((item) => {
+      const stage =
+        Array.isArray(item.procurement_stages)
+          ? item.procurement_stages[0]
+          : item.procurement_stages;
+
+      return {
+        id: item.id,
+        stage_id: item.stage_id,
+        stage_name:
+          stage?.name ?? "Unknown Stage",
+        sequence_number:
+          stage?.sequence_number ?? 0,
+        started_at: item.started_at,
+        completed_at:
+          item.completed_at,
+        remarks: item.remarks,
+        changed_by_name:
+          item.changed_by
+            ? profileMap.get(
+                item.changed_by
+              ) ?? "Unknown User"
+            : null,
+      };
     });
 
   // --------------------------------------------------
@@ -251,6 +323,7 @@ export default async function ProcurementRequestPage({
               {currentStage?.name || "—"}
             </p>
           </div>
+          
 
           {/* Status */}
           <div>
@@ -268,8 +341,62 @@ export default async function ProcurementRequestPage({
         </div>
       </div>
 
-      {/* Procurement Progress */}
       <div className="mt-8 rounded-xl border bg-white shadow-sm">
+
+  <div className="border-b px-6 py-4">
+    <h2 className="font-semibold text-gray-900">
+      Procurement Workflow
+    </h2>
+  </div>
+
+  <div className="p-6">
+
+    <div>
+      <p className="text-sm text-gray-500">
+        Current Stage
+      </p>
+
+      <p className="mt-1 text-lg font-semibold text-gray-900">
+        {currentStage?.name ?? "Unknown"}
+      </p>
+    </div>
+
+    {nextStage ? (
+        <div className="mt-6 border-t pt-6">
+
+          <p className="text-sm text-gray-500">
+            Next Stage
+          </p>
+
+          <p className="mt-1 text-lg font-semibold text-blue-600">
+            {nextStage.name}
+          </p>
+
+          <AdvanceStageForm
+            requestId={Number(
+              procurementRequest.id
+            )}
+            nextStageName={nextStage.name}
+          />
+
+        </div>
+      ) : (
+        <div className="mt-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+          This procurement request has
+          reached the final stage.
+        </div>
+      )}
+
+    </div>
+
+  </div>
+  
+  <div>
+    
+  </div>
+
+      {/* Procurement Progress */}
+      <div className="mt-6 rounded-xl border bg-white shadow-sm">
 
         <div className="border-b px-6 py-4">
           <h2 className="font-semibold text-gray-900">
@@ -352,8 +479,18 @@ export default async function ProcurementRequestPage({
           })}
 
         </div>
+        
       </div>
 
+      {/* Stage History */}
+      <StageHistory
+        history={formattedHistory}
+        currentStageId={
+          procurementRequest.current_stage_id
+        }
+      />
+
     </div>
+    
   );
 }
