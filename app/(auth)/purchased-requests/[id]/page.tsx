@@ -367,15 +367,14 @@ export default async function ProcurementRequestPage({
           <p className="text-sm text-gray-500">
             Next Stage
           </p>
-
+ 
           <p className="mt-1 text-lg font-semibold text-blue-600">
             {nextStage.name}
           </p>
 
           <AdvanceStageForm
-            requestId={Number(
-              procurementRequest.id
-            )}
+            requestId={request.id}
+            currentStageName={currentStage?.name ?? ""}
             nextStageName={nextStage.name}
           />
 
