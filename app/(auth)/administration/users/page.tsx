@@ -15,6 +15,7 @@ export default async function UsersPage() {
       full_name,
       office,
       role_id,
+      is_active,
       roles (
         name
       )
@@ -102,18 +103,24 @@ export default async function UsersPage() {
                       </td>
 
                       <td className="px-6 py-4">
-                        <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
-                          Active
-                        </span>
+                        {user.is_active ? (
+                          <span className="rounded-full bg-green-50 px-3 py-1 text-xs font-semibold text-green-700">
+                            Active
+                          </span>
+                        ) : (
+                          <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
+                            Disabled
+                          </span>
+                        )}
                       </td>
 
                       <td className="px-6 py-4 text-right">
-                        <button
-                          type="button"
+                        <Link
+                          href={`/administration/users/${user.id}`}
                           className="text-sm font-medium text-blue-600 hover:text-blue-800"
                         >
                           Manage
-                        </button>
+                        </Link>
                       </td>
                     </tr>
                   );
