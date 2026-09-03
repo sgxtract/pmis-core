@@ -21,14 +21,11 @@ export default async function AuthLayout({
 
   return (
     <div className="min-h-screen bg-gray-100">
-
       <SessionGuard />
 
       <header className="flex h-16 items-center justify-between border-b bg-white px-6">
         <div>
-          <h1 className="font-bold text-gray-900">
-            PMIS
-          </h1>
+          <h1 className="font-bold text-gray-900">PMIS</h1>
 
           <p className="text-xs text-gray-500">
             Procurement Management Information System
@@ -36,16 +33,13 @@ export default async function AuthLayout({
         </div>
 
         <div className="flex items-center gap-4">
-          <span className="text-sm text-gray-600">
-            {user.email}
-          </span>
+          <span className="text-sm text-gray-600">{user.email}</span>
 
           <LogoutButton />
         </div>
       </header>
 
       <div className="flex">
-
         <aside className="min-h-[calc(100vh-4rem)] w-64 border-r bg-white p-4">
           <nav className="space-y-2">
             <p className="px-3 pb-2 text-xs font-semibold uppercase text-gray-400">
@@ -95,10 +89,7 @@ export default async function AuthLayout({
           </nav>
         </aside>
 
-        <main className="flex-1 p-6">
-          {children}
-        </main>
-
+        <main className="flex-1 p-6">{children}</main>
       </div>
     </div>
   );

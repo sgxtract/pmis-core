@@ -13,7 +13,6 @@ export default async function NewProcurementRequestPage() {
 
   return (
     <div>
-
       <Link
         href="/purchased-requests"
         className="text-sm text-gray-600 hover:text-gray-900"
@@ -26,16 +25,13 @@ export default async function NewProcurementRequestPage() {
           New Procurement Request
         </h1>
 
-        <p className="mt-2 text-gray-600">
-          Create a new procurement request.
-        </p>
+        <p className="mt-2 text-gray-600">Create a new procurement request.</p>
       </div>
 
       <form
         action={createProcurementRequest}
         className="mt-8 rounded-xl border bg-white shadow-sm"
       >
-
         {/* Header */}
         <div className="border-b px-6 py-4">
           <h2 className="font-semibold text-gray-900">
@@ -44,7 +40,6 @@ export default async function NewProcurementRequestPage() {
         </div>
 
         <div className="grid gap-6 p-6 md:grid-cols-2">
-
           {/* PR Number */}
           <div>
             <label
@@ -179,26 +174,19 @@ export default async function NewProcurementRequestPage() {
               defaultValue=""
               className="text-gray-600 mt-2 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             >
-              <option value="">
-                Not yet assigned
-              </option>
+              <option value="">Not yet assigned</option>
 
               {procurementModes?.map((mode) => (
-                <option
-                  key={mode.id}
-                  value={mode.id}
-                >
+                <option key={mode.id} value={mode.id}>
                   {mode.name}
                 </option>
               ))}
             </select>
           </div>
-
         </div>
 
         {/* Buttons */}
         <div className="flex justify-end gap-3 border-t bg-gray-50 px-6 py-4">
-
           <Link
             href="/purchased-requests"
             className="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
@@ -212,11 +200,8 @@ export default async function NewProcurementRequestPage() {
           >
             Create PR
           </button>
-
         </div>
-
       </form>
-
     </div>
   );
 }

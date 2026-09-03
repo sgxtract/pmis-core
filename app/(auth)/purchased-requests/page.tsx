@@ -4,12 +4,10 @@ import Link from "next/link";
 export default async function PurchasedRequestsPage() {
   const supabase = await createClient();
 
-  const {
-    data: requests,
-    error,
-  } = await supabase
+  const { data: requests, error } = await supabase
     .from("procurement_requests")
-    .select(`
+    .select(
+      `
       id,
       pr_number,
       pr_date,
@@ -20,29 +18,26 @@ export default async function PurchasedRequestsPage() {
       mode_of_procurement_id,
       current_stage_id,
       status
-    `)
+    `,
+    )
     .order("pr_date", { ascending: false });
 
-    const { data: stages } = await supabase
-      .from("procurement_stages")
-      .select("id, name");
+  const { data: stages } = await supabase
+    .from("procurement_stages")
+    .select("id, name");
 
-      // const { data: procurementModes } = await supabase
-      // .from("modes_of_procurement")
-      // .select("id, name");
+  // const { data: procurementModes } = await supabase
+  // .from("modes_of_procurement")
+  // .select("id, name");
 
-      const stageMap = new Map(
-      stages?.map((stage) => [stage.id, stage.name])
-    );
+  const stageMap = new Map(stages?.map((stage) => [stage.id, stage.name]));
 
   if (error) {
     console.error("PROCUREMENT REQUEST ERROR:", error);
 
     return (
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">
-          Purchased Requests
-        </h1>
+        <h1 className="text-3xl font-bold text-gray-900">Purchased Requests</h1>
 
         <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
           Unable to load procurement requests.
@@ -80,7 +75,6 @@ export default async function PurchasedRequestsPage() {
       </div>
 
       <div className="mt-8 rounded-xl border bg-white shadow-sm">
-
         <div className="border-b p-4">
           <input
             type="text"
@@ -92,48 +86,26 @@ export default async function PurchasedRequestsPage() {
 
         {requests && requests.length > 0 ? (
           <div className="overflow-x-auto">
-
             <table className="w-full text-left text-sm">
-
               <thead className="border-b bg-gray-50 text-xs uppercase text-gray-500">
-
                 <tr>
-                  <th className="px-6 py-4">
-                    PR Number
-                  </th>
+                  <th className="px-6 py-4">PR Number</th>
 
-                  <th className="px-6 py-4">
-                    PR Date
-                  </th>
+                  <th className="px-6 py-4">PR Date</th>
 
-                  <th className="px-6 py-4">
-                    Type of PR
-                  </th>
+                  <th className="px-6 py-4">Type of PR</th>
 
-                  <th className="px-6 py-4">
-                    ABC
-                  </th>
+                  <th className="px-6 py-4">ABC</th>
 
-                  <th className="px-6 py-4">
-                    Stage
-                  </th>
+                  <th className="px-6 py-4">Stage</th>
 
-                  <th className="px-6 py-4">
-                    Status
-                  </th>
+                  <th className="px-6 py-4">Status</th>
                 </tr>
-
               </thead>
 
               <tbody className="divide-y">
-
                 {requests.map((request) => (
-
-                  <tr
-                    key={request.id}
-                    className="hover:bg-gray-50"
-                  >
-
+                  <tr key={request.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <Link
                         href={`/purchased-requests/${request.id}`}
@@ -169,34 +141,20 @@ export default async function PurchasedRequestsPage() {
                     </td>
 
                     <td className="px-6 py-4">
-
                       <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
                         {request.status}
                       </span>
-
                     </td>
-
                   </tr>
-
                 ))}
-
               </tbody>
-
             </table>
-
           </div>
         ) : (
-
           <div className="p-12 text-center">
-
-            <p className="text-gray-500">
-              No procurement requests found.
-            </p>
-
+            <p className="text-gray-500">No procurement requests found.</p>
           </div>
-
         )}
-
       </div>
     </div>
   );

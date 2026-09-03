@@ -15,26 +15,18 @@ type Props = {
 };
 
 function formatDateTime(value: string) {
-  return new Date(value).toLocaleString(
-    "en-PH",
-    {
-      dateStyle: "medium",
-      timeStyle: "short",
-    }
-  );
+  return new Date(value).toLocaleString("en-PH", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
 }
 
-export default function StageHistory({
-  history,
-  currentStageId,
-}: Props) {
+export default function StageHistory({ history, currentStageId }: Props) {
   if (history.length === 0) {
     return (
       <div className="rounded-xl border bg-white shadow-sm">
         <div className="border-b px-6 py-4">
-          <h2 className="font-semibold text-gray-900">
-            Stage History
-          </h2>
+          <h2 className="font-semibold text-gray-900">Stage History</h2>
         </div>
 
         <div className="p-6">
@@ -48,13 +40,10 @@ export default function StageHistory({
 
   return (
     <div className="mt-6 rounded-xl border bg-white shadow-sm">
-
       {/* Header */}
 
       <div className="border-b px-6 py-4">
-        <h2 className="font-semibold text-gray-900">
-          Stage History
-        </h2>
+        <h2 className="font-semibold text-gray-900">Stage History</h2>
 
         <p className="mt-1 text-sm text-gray-500">
           Record of procurement stage movements.
@@ -64,27 +53,16 @@ export default function StageHistory({
       {/* Timeline */}
 
       <div className="p-6">
-
         <div className="space-y-0">
-
           {history.map((item, index) => {
+            const isCurrent = item.stage_id === currentStageId;
 
-            const isCurrent =
-              item.stage_id === currentStageId;
+            const isCompleted = !isCurrent && item.completed_at !== null;
 
-            const isCompleted =
-              !isCurrent &&
-              item.completed_at !== null;
-
-            const isLast =
-              index === history.length - 1;
+            const isLast = index === history.length - 1;
 
             return (
-              <div
-                key={item.id}
-                className="relative flex gap-4"
-              >
-
+              <div key={item.id} className="relative flex gap-4">
                 {/* Connector */}
 
                 {!isLast && (
@@ -102,21 +80,15 @@ export default function StageHistory({
                         : "bg-gray-200 text-gray-500"
                   }`}
                 >
-                  {isCurrent
-                    ? "●"
-                    : isCompleted
-                      ? "✓"
-                      : "•"}
+                  {isCurrent ? "●" : isCompleted ? "✓" : "•"}
                 </div>
 
                 {/* Content */}
 
                 <div className="min-w-0 flex-1 pb-8">
-
                   {/* Stage name */}
 
                   <div className="flex flex-wrap items-center gap-2">
-
                     <h3
                       className={`font-semibold ${
                         isCurrent
@@ -134,26 +106,19 @@ export default function StageHistory({
                         Current Stage
                       </span>
                     )}
-
                   </div>
 
                   {/* Started */}
 
                   <p className="mt-1 text-sm text-gray-500">
-                    Started:{" "}
-                    {formatDateTime(
-                      item.started_at
-                    )}
+                    Started: {formatDateTime(item.started_at)}
                   </p>
 
                   {/* Completed */}
 
                   {item.completed_at && (
                     <p className="text-sm text-gray-500">
-                      Completed:{" "}
-                      {formatDateTime(
-                        item.completed_at
-                      )}
+                      Completed: {formatDateTime(item.completed_at)}
                     </p>
                   )}
 
@@ -178,17 +143,12 @@ export default function StageHistory({
                       {item.remarks}
                     </div>
                   )}
-
                 </div>
-
               </div>
             );
           })}
-
         </div>
-
       </div>
-
     </div>
   );
 }

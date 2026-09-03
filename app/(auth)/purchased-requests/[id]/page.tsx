@@ -10,9 +10,7 @@ type PageProps = {
   }>;
 };
 
-export default async function ProcurementRequestPage({
-  params,
-}: PageProps) {
+export default async function ProcurementRequestPage({ params }: PageProps) {
   const { id } = await params;
 
   const supabase = await createClient();
@@ -23,7 +21,8 @@ export default async function ProcurementRequestPage({
 
   const { data: request, error: requestError } = await supabase
     .from("procurement_requests")
-    .select(`
+    .select(
+      `
       id,
       pr_number,
       pr_date,
@@ -34,7 +33,8 @@ export default async function ProcurementRequestPage({
       mode_of_procurement_id,
       current_stage_id,
       status
-    `)
+    `,
+    )
     .eq("id", id)
     .single();
 
@@ -68,15 +68,11 @@ export default async function ProcurementRequestPage({
     .select("id, name, sequence_number")
     .eq("id", procurementRequest.current_stage_id)
     .single();
-  
-  const { data: nextStage } =
-  await supabase
+
+  const { data: nextStage } = await supabase
     .from("procurement_stages")
     .select("id, name, sequence_number")
-    .gt(
-      "sequence_number",
-      currentStage?.sequence_number ?? 0
-    )
+    .gt("sequence_number", currentStage?.sequence_number ?? 0)
     .order("sequence_number", {
       ascending: true,
     })
@@ -99,8 +95,9 @@ export default async function ProcurementRequestPage({
   // --------------------------------------------------
 
   const { data: history } = await supabase
-  .from("procurement_stage_history")
-  .select(`
+    .from("procurement_stage_history")
+    .select(
+      `
     id,
     stage_id,
     started_at,
@@ -111,18 +108,15 @@ export default async function ProcurementRequestPage({
       name,
       sequence_number
     )
-  `)
-  .eq("request_id", id)
-  .order("started_at", {
-    ascending: true,
-  });
+  `,
+    )
+    .eq("request_id", id)
+    .order("started_at", {
+      ascending: true,
+    });
 
   const changedByIds = Array.from(
-    new Set(
-      (history ?? [])
-        .map((item) => item.changed_by)
-        .filter(Boolean)
-    )
+    new Set((history ?? []).map((item) => item.changed_by).filter(Boolean)),
   );
 
   const { data: profiles } =
@@ -132,49 +126,36 @@ export default async function ProcurementRequestPage({
           .select("id, full_name")
           .in("id", changedByIds)
       : { data: [] };
-  
+
   const profileMap = new Map(
-    (profiles ?? []).map(
-      (profile) => [
-        profile.id,
-        profile.full_name,
-      ]
-    )
+    (profiles ?? []).map((profile) => [profile.id, profile.full_name]),
   );
 
-  const formattedHistory =
-    (history ?? []).map((item) => {
-      const stage =
-        Array.isArray(item.procurement_stages)
-          ? item.procurement_stages[0]
-          : item.procurement_stages;
+  const formattedHistory = (history ?? []).map((item) => {
+    const stage = Array.isArray(item.procurement_stages)
+      ? item.procurement_stages[0]
+      : item.procurement_stages;
 
-      return {
-        id: item.id,
-        stage_id: item.stage_id,
-        stage_name:
-          stage?.name ?? "Unknown Stage",
-        sequence_number:
-          stage?.sequence_number ?? 0,
-        started_at: item.started_at,
-        completed_at:
-          item.completed_at,
-        remarks: item.remarks,
-        changed_by_name:
-          item.changed_by
-            ? profileMap.get(
-                item.changed_by
-              ) ?? "Unknown User"
-            : null,
-      };
-    });
+    return {
+      id: item.id,
+      stage_id: item.stage_id,
+      stage_name: stage?.name ?? "Unknown Stage",
+      sequence_number: stage?.sequence_number ?? 0,
+      started_at: item.started_at,
+      completed_at: item.completed_at,
+      remarks: item.remarks,
+      changed_by_name: item.changed_by
+        ? (profileMap.get(item.changed_by) ?? "Unknown User")
+        : null,
+    };
+  });
 
   // --------------------------------------------------
   // 7. Determine which stages have been reached
   // --------------------------------------------------
 
   const completedStageIds = new Set(
-    history?.map((item) => item.stage_id) ?? []
+    history?.map((item) => item.stage_id) ?? [],
   );
 
   // --------------------------------------------------
@@ -183,7 +164,6 @@ export default async function ProcurementRequestPage({
 
   return (
     <div>
-
       {/* Back button */}
       <Link
         href="/purchased-requests"
@@ -194,42 +174,32 @@ export default async function ProcurementRequestPage({
 
       {/* Page heading */}
       <div className="mt-6 flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">
+            {procurementRequest.pr_number}
+          </h1>
 
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">
-          {procurementRequest.pr_number}
-        </h1>
+          <p className="mt-2 text-gray-600">Procurement Request</p>
+        </div>
 
-        <p className="mt-2 text-gray-600">
-          Procurement Request
-        </p>
+        <Link
+          href={`/purchased-requests/${procurementRequest.id}/edit`}
+          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+        >
+          Edit PR
+        </Link>
       </div>
-
-      <Link
-        href={`/purchased-requests/${procurementRequest.id}/edit`}
-        className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-      >
-        Edit PR
-      </Link>
-
-    </div>
 
       {/* PR Information */}
       <div className="mt-8 rounded-xl border bg-white shadow-sm">
-
         <div className="border-b px-6 py-4">
-          <h2 className="font-semibold text-gray-900">
-            PR Information
-          </h2>
+          <h2 className="font-semibold text-gray-900">PR Information</h2>
         </div>
 
         <div className="grid gap-6 p-6 md:grid-cols-2">
-
           {/* PR Number */}
           <div>
-            <p className="text-sm text-gray-500">
-              PR Number
-            </p>
+            <p className="text-sm text-gray-500">PR Number</p>
 
             <p className="mt-1 font-medium text-gray-900">
               {procurementRequest.pr_number}
@@ -238,26 +208,20 @@ export default async function ProcurementRequestPage({
 
           {/* PR Date */}
           <div>
-            <p className="text-sm text-gray-500">
-              PR Date
-            </p>
+            <p className="text-sm text-gray-500">PR Date</p>
 
             <p className="mt-1 font-medium text-gray-900">
               {new Intl.DateTimeFormat("en-PH", {
                 year: "numeric",
                 month: "short",
                 day: "2-digit",
-              }).format(
-                new Date(procurementRequest.pr_date)
-              )}
+              }).format(new Date(procurementRequest.pr_date))}
             </p>
           </div>
 
           {/* Type of PR */}
           <div>
-            <p className="text-sm text-gray-500">
-              Type of PR
-            </p>
+            <p className="text-sm text-gray-500">Type of PR</p>
 
             <p className="mt-1 font-medium text-gray-900">
               {procurementRequest.type_of_pr || "—"}
@@ -266,9 +230,7 @@ export default async function ProcurementRequestPage({
 
           {/* End User */}
           <div>
-            <p className="text-sm text-gray-500">
-              End User
-            </p>
+            <p className="text-sm text-gray-500">End User</p>
 
             <p className="mt-1 font-medium text-gray-900">
               {procurementRequest.end_user || "—"}
@@ -277,9 +239,7 @@ export default async function ProcurementRequestPage({
 
           {/* Particulars */}
           <div className="md:col-span-2">
-            <p className="text-sm text-gray-500">
-              Particulars
-            </p>
+            <p className="text-sm text-gray-500">Particulars</p>
 
             <p className="mt-1 font-medium text-gray-900">
               {procurementRequest.particulars || "—"}
@@ -288,9 +248,7 @@ export default async function ProcurementRequestPage({
 
           {/* ABC */}
           <div>
-            <p className="text-sm text-gray-500">
-              ABC
-            </p>
+            <p className="text-sm text-gray-500">ABC</p>
 
             <p className="mt-1 font-medium text-gray-900">
               {procurementRequest.abc !== null
@@ -304,9 +262,7 @@ export default async function ProcurementRequestPage({
 
           {/* Mode */}
           <div>
-            <p className="text-sm text-gray-500">
-              Mode of Procurement
-            </p>
+            <p className="text-sm text-gray-500">Mode of Procurement</p>
 
             <p className="mt-1 font-medium text-gray-900">
               {procurementMode?.name || "—"}
@@ -315,21 +271,16 @@ export default async function ProcurementRequestPage({
 
           {/* Current Stage */}
           <div>
-            <p className="text-sm text-gray-500">
-              Current Stage
-            </p>
+            <p className="text-sm text-gray-500">Current Stage</p>
 
             <p className="mt-1 font-medium text-gray-900">
               {currentStage?.name || "—"}
             </p>
           </div>
-          
 
           {/* Status */}
           <div>
-            <p className="text-sm text-gray-500">
-              Status
-            </p>
+            <p className="text-sm text-gray-500">Status</p>
 
             <p className="mt-1">
               <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
@@ -337,95 +288,65 @@ export default async function ProcurementRequestPage({
               </span>
             </p>
           </div>
-
         </div>
       </div>
 
       <div className="mt-8 rounded-xl border bg-white shadow-sm">
-
-  <div className="border-b px-6 py-4">
-    <h2 className="font-semibold text-gray-900">
-      Procurement Workflow
-    </h2>
-  </div>
-
-  <div className="p-6">
-
-    <div>
-      <p className="text-sm text-gray-500">
-        Current Stage
-      </p>
-
-      <p className="mt-1 text-lg font-semibold text-gray-900">
-        {currentStage?.name ?? "Unknown"}
-      </p>
-    </div>
-
-    {nextStage ? (
-        <div className="mt-6 border-t pt-6">
-
-          <p className="text-sm text-gray-500">
-            Next Stage
-          </p>
- 
-          <p className="mt-1 text-lg font-semibold text-blue-600">
-            {nextStage.name}
-          </p>
-
-          <AdvanceStageForm
-            requestId={request.id}
-            currentStageName={currentStage?.name ?? ""}
-            nextStageName={nextStage.name}
-          />
-
-        </div>
-      ) : (
-        <div className="mt-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
-          This procurement request has
-          reached the final stage.
-        </div>
-      )}
-
-    </div>
-
-  </div>
-  
-  <div>
-    
-  </div>
-
-      {/* Procurement Progress */}
-      <div className="mt-6 rounded-xl border bg-white shadow-sm">
-
         <div className="border-b px-6 py-4">
-          <h2 className="font-semibold text-gray-900">
-            Procurement Progress
-          </h2>
+          <h2 className="font-semibold text-gray-900">Procurement Workflow</h2>
         </div>
 
         <div className="p-6">
+          <div>
+            <p className="text-sm text-gray-500">Current Stage</p>
 
+            <p className="mt-1 text-lg font-semibold text-gray-900">
+              {currentStage?.name ?? "Unknown"}
+            </p>
+          </div>
+
+          {nextStage ? (
+            <div className="mt-6 border-t pt-6">
+              <p className="text-sm text-gray-500">Next Stage</p>
+
+              <p className="mt-1 text-lg font-semibold text-blue-600">
+                {nextStage.name}
+              </p>
+
+              <AdvanceStageForm
+                requestId={request.id}
+                currentStageName={currentStage?.name ?? ""}
+                nextStageName={nextStage.name}
+              />
+            </div>
+          ) : (
+            <div className="mt-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+              This procurement request has reached the final stage.
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div></div>
+
+      {/* Procurement Progress */}
+      <div className="mt-6 rounded-xl border bg-white shadow-sm">
+        <div className="border-b px-6 py-4">
+          <h2 className="font-semibold text-gray-900">Procurement Progress</h2>
+        </div>
+
+        <div className="p-6">
           {stages?.map((stage, index) => {
+            const isCompleted = completedStageIds.has(stage.id);
 
-            const isCompleted =
-              completedStageIds.has(stage.id);
+            const isCurrent = stage.id === procurementRequest.current_stage_id;
 
-            const isCurrent =
-              stage.id ===
-              procurementRequest.current_stage_id;
-
-            const isLast =
-              index === stages.length - 1;
+            const isLast = index === stages.length - 1;
 
             return (
-              <div
-                key={stage.id}
-                className="flex"
-              >
-
+              <div key={stage.id} className="flex">
                 {/* Timeline indicator */}
                 <div className="flex flex-col items-center">
-
                   <div
                     className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold ${
                       isCompleted
@@ -433,26 +354,20 @@ export default async function ProcurementRequestPage({
                         : "bg-gray-200 text-gray-500"
                     }`}
                   >
-                    {isCompleted
-                      ? "✓"
-                      : stage.sequence_number}
+                    {isCompleted ? "✓" : stage.sequence_number}
                   </div>
 
                   {!isLast && (
                     <div
                       className={`h-12 w-0.5 ${
-                        isCompleted
-                          ? "bg-green-600"
-                          : "bg-gray-200"
+                        isCompleted ? "bg-green-600" : "bg-gray-200"
                       }`}
                     />
                   )}
-
                 </div>
 
                 {/* Stage information */}
                 <div className="ml-4 pb-8">
-
                   <p
                     className={`font-medium ${
                       isCurrent
@@ -466,30 +381,20 @@ export default async function ProcurementRequestPage({
                   </p>
 
                   {isCurrent && (
-                    <p className="mt-1 text-xs text-blue-600">
-                      Current Stage
-                    </p>
+                    <p className="mt-1 text-xs text-blue-600">Current Stage</p>
                   )}
-
                 </div>
-
               </div>
             );
           })}
-
         </div>
-        
       </div>
 
       {/* Stage History */}
       <StageHistory
         history={formattedHistory}
-        currentStageId={
-          procurementRequest.current_stage_id
-        }
+        currentStageId={procurementRequest.current_stage_id}
       />
-
     </div>
-    
   );
 }

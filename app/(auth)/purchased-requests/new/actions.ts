@@ -3,9 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
-export async function createProcurementRequest(
-  formData: FormData
-) {
+export async function createProcurementRequest(formData: FormData) {
   const supabase = await createClient();
 
   // -----------------------------------------
@@ -24,37 +22,21 @@ export async function createProcurementRequest(
   // 2. Get form values
   // -----------------------------------------
 
-  const prNumber = String(
-    formData.get("pr_number") ?? ""
-  ).trim();
+  const prNumber = String(formData.get("pr_number") ?? "").trim();
 
-  const prDate = String(
-    formData.get("pr_date") ?? ""
-  ).trim();
+  const prDate = String(formData.get("pr_date") ?? "").trim();
 
-  const typeOfPr = String(
-    formData.get("type_of_pr") ?? ""
-  ).trim();
+  const typeOfPr = String(formData.get("type_of_pr") ?? "").trim();
 
-  const endUser = String(
-    formData.get("end_user") ?? ""
-  ).trim();
+  const endUser = String(formData.get("end_user") ?? "").trim();
 
-  const particulars = String(
-    formData.get("particulars") ?? ""
-  ).trim();
+  const particulars = String(formData.get("particulars") ?? "").trim();
 
-  const abcValue = String(
-    formData.get("abc") ?? ""
-  ).trim();
+  const abcValue = String(formData.get("abc") ?? "").trim();
 
-  const modeValue = String(
-    formData.get("mode_of_procurement_id") ?? ""
-  ).trim();
+  const modeValue = String(formData.get("mode_of_procurement_id") ?? "").trim();
 
-  const modeId = modeValue
-    ? Number(modeValue)
-    : null;
+  const modeId = modeValue ? Number(modeValue) : null;
 
   // -----------------------------------------
   // 3. Validate required fields
@@ -68,44 +50,34 @@ export async function createProcurementRequest(
     !particulars ||
     !abcValue
   ) {
-    throw new Error(
-      "Please complete all required fields."
-    );
+    throw new Error("Please complete all required fields.");
   }
 
   const abc = Number(abcValue);
 
   if (!Number.isFinite(abc) || abc < 0) {
-    throw new Error(
-      "ABC must be a valid amount."
-    );
+    throw new Error("ABC must be a valid amount.");
   }
 
   // -----------------------------------------
   // 4. Get the "Received" stage
   // -----------------------------------------
 
-  const { data: receivedStage, error: stageError } =
-    await supabase
-      .from("procurement_stages")
-      .select("id")
-      .eq("name", "Received")
-      .single();
+  const { data: receivedStage, error: stageError } = await supabase
+    .from("procurement_stages")
+    .select("id")
+    .eq("name", "Received")
+    .single();
 
   if (stageError || !receivedStage) {
-    throw new Error(
-      "The Received procurement stage was not found."
-    );
+    throw new Error("The Received procurement stage was not found.");
   }
 
   // -----------------------------------------
   // 5. Create the Procurement Request
   // -----------------------------------------
 
-  const {
-    data: request,
-    error: requestError,
-  } = await supabase
+  const { data: request, error: requestError } = await supabase
     .from("procurement_requests")
     .insert({
       pr_number: prNumber,
@@ -124,14 +96,10 @@ export async function createProcurementRequest(
     .single();
 
   if (requestError || !request) {
-    console.error(
-      "CREATE PR ERROR:",
-      requestError
-    );
+    console.error("CREATE PR ERROR:", requestError);
 
     throw new Error(
-      requestError?.message ||
-        "Unable to create procurement request."
+      requestError?.message || "Unable to create procurement request.",
     );
   }
 
@@ -149,13 +117,10 @@ export async function createProcurementRequest(
     });
 
   if (historyError) {
-    console.error(
-      "CREATE STAGE HISTORY ERROR:",
-      historyError
-    );
+    console.error("CREATE STAGE HISTORY ERROR:", historyError);
 
     throw new Error(
-      "The PR was created, but its stage history could not be created."
+      "The PR was created, but its stage history could not be created.",
     );
   }
 
@@ -163,7 +128,5 @@ export async function createProcurementRequest(
   // 7. Redirect to the new PR
   // -----------------------------------------
 
-  redirect(
-    `/purchased-requests/${request.id}`
-  );
+  redirect(`/purchased-requests/${request.id}`);
 }

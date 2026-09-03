@@ -3,9 +3,7 @@ import Link from "next/link";
 export default function NotFound() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 px-6">
-
       <div className="w-full max-w-md rounded-2xl bg-white p-8 text-center shadow-lg">
-
         {/* Error Code */}
         <p className="text-7xl font-extrabold tracking-tight text-blue-800">
           404
@@ -18,8 +16,8 @@ export default function NotFound() {
 
         {/* Description */}
         <p className="mt-3 text-sm leading-6 text-gray-600">
-          The page or procurement request you are looking for
-          does not exist or may have been moved.
+          The page or procurement request you are looking for does not exist or
+          may have been moved.
         </p>
 
         {/* Back Button */}
@@ -31,9 +29,7 @@ export default function NotFound() {
             Back to Dashboard
           </Link>
         </div>
-
       </div>
-
     </div>
   );
 }
