@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 export default function LoginForm() {
-    const router = useRouter();
-    const supabase = createClient();
+  const router = useRouter();
+  const supabase = createClient();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,43 +14,40 @@ export default function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  async function handleSubmit(
-  event: React.FormEvent<HTMLFormElement>
-) {
-  event.preventDefault();
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
 
-  setError("");
+    setError("");
 
-  if (!email.trim()) {
-    setError("Please enter your email.");
-    return;
+    if (!email.trim()) {
+      setError("Please enter your email.");
+      return;
+    }
+
+    if (!password) {
+      setError("Please enter your password.");
+      return;
+    }
+
+    setIsLoading(true);
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      setError(error.message);
+      setIsLoading(false);
+      return;
+    }
+
+    router.push("/dashboard");
+    router.refresh();
   }
-
-  if (!password) {
-    setError("Please enter your password.");
-    return;
-  }
-
-  setIsLoading(true);
-
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-
-  if (error) {
-    setError(error.message);
-    setIsLoading(false);
-    return;
-  }
-
-  router.push("/dashboard");
-  router.refresh();
-}
 
   return (
     <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-
       {/* Email */}
       <div>
         <label
@@ -117,14 +114,10 @@ export default function LoginForm() {
 
       {/* Forgot Password */}
       <div className="text-center">
-        <button
-          type="button"
-          className="text-sm text-blue-600 hover:underline"
-        >
+        <button type="button" className="text-sm text-blue-600 hover:underline">
           Forgot your password?
         </button>
       </div>
-
     </form>
   );
 }

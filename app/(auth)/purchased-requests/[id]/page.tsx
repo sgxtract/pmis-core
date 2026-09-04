@@ -91,72 +91,55 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
     });
 
   // --------------------------------------------------
+  // Stage History RPC Result Type
+  // --------------------------------------------------
+
+  type StageHistoryRow = {
+    id: number;
+    request_id: number;
+    stage_id: number;
+    stage_name: string | null;
+    sequence_number: number | null;
+    changed_by: string | null;
+    changed_by_name: string | null;
+    started_at: string;
+    completed_at: string | null;
+    remarks: string | null;
+  };
+
+  // --------------------------------------------------
   // 6. Get Stage History
   // --------------------------------------------------
 
-  const { data: history } = await supabase
-    .from("procurement_stage_history")
-    .select(
-      `
-    id,
-    stage_id,
-    started_at,
-    completed_at,
-    remarks,
-    changed_by,
-    procurement_stages (
-      name,
-      sequence_number
-    )
-  `,
-    )
-    .eq("request_id", id)
-    .order("started_at", {
-      ascending: true,
-    });
-
-  const changedByIds = Array.from(
-    new Set((history ?? []).map((item) => item.changed_by).filter(Boolean)),
+  const { data: history, error: historyError } = await supabase.rpc(
+    "get_procurement_stage_history",
+    {
+      p_request_id: Number(id),
+    },
   );
 
-  const { data: profiles } =
-    changedByIds.length > 0
-      ? await supabase
-          .from("profiles")
-          .select("id, full_name")
-          .in("id", changedByIds)
-      : { data: [] };
+  if (historyError) {
+    console.error("Stage history error:", historyError);
+  }
 
-  const profileMap = new Map(
-    (profiles ?? []).map((profile) => [profile.id, profile.full_name]),
-  );
+  const historyRows = (history ?? []) as StageHistoryRow[];
 
-  const formattedHistory = (history ?? []).map((item) => {
-    const stage = Array.isArray(item.procurement_stages)
-      ? item.procurement_stages[0]
-      : item.procurement_stages;
-
-    return {
-      id: item.id,
-      stage_id: item.stage_id,
-      stage_name: stage?.name ?? "Unknown Stage",
-      sequence_number: stage?.sequence_number ?? 0,
-      started_at: item.started_at,
-      completed_at: item.completed_at,
-      remarks: item.remarks,
-      changed_by_name: item.changed_by
-        ? (profileMap.get(item.changed_by) ?? "Unknown User")
-        : null,
-    };
-  });
+  const formattedHistory = historyRows.map((item) => ({
+    id: item.id,
+    stage_id: item.stage_id,
+    stage_name: item.stage_name ?? "Unknown Stage",
+    sequence_number: item.sequence_number ?? 0,
+    started_at: item.started_at,
+    completed_at: item.completed_at,
+    remarks: item.remarks,
+    changed_by_name: item.changed_by_name ?? null,
+  }));
 
   // --------------------------------------------------
   // 7. Determine which stages have been reached
   // --------------------------------------------------
 
-  const completedStageIds = new Set(
-    history?.map((item) => item.stage_id) ?? [],
-  );
+  const completedStageIds = new Set(historyRows.map((item) => item.stage_id));
 
   // --------------------------------------------------
   // 8. Display the page

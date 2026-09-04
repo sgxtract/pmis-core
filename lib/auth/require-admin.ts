@@ -1,41 +1,29 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { requireActiveUser } from "./require-active-user";
 
 export async function requireAdmin() {
+  const { user, profile } = await requireActiveUser();
+
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/login");
-  }
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select(
-      `
-      role_id,
-      roles (
-        name
-      )
-    `,
-    )
-    .eq("id", user.id)
+  const { data: roleData, error } = await supabase
+    .from("roles")
+    .select("id, name")
+    .eq("id", profile.role_id)
     .single();
 
-  const role = Array.isArray(profile?.roles)
-    ? profile.roles[0]
-    : profile?.roles;
+  if (error || !roleData) {
+    redirect("/forbidden");
+  }
 
-  if (role?.name !== "Admin") {
+  if (roleData.name !== "Admin") {
     redirect("/forbidden");
   }
 
   return {
     user,
     profile,
-    role,
+    role: roleData,
   };
 }

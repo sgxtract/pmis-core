@@ -3,12 +3,14 @@ import { redirect } from "next/navigation";
 import LogoutButton from "@/components/auth/LogoutButton";
 import Link from "next/link";
 import SessionGuard from "@/components/auth/SessionGuard";
+import { requireActiveUser } from "@/lib/auth/require-active-user";
 
 export default async function AuthLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  await requireActiveUser();
   const supabase = await createClient();
 
   const {
