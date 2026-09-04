@@ -11,7 +11,7 @@ export default async function PurchasedRequestsPage() {
       id,
       pr_number,
       pr_date,
-      type_of_pr,
+      particulars,
       end_user,
       particulars,
       abc,
@@ -65,13 +65,6 @@ export default async function PurchasedRequestsPage() {
         >
           + New PR
         </Link>
-
-        {/* <button
-          disabled
-          className="cursor-not-allowed rounded-lg bg-gray-300 px-4 py-2 text-sm font-medium text-gray-600"
-        >
-          + New PR
-        </button> */}
       </div>
 
       <div className="mt-8 rounded-xl border bg-white shadow-sm">
@@ -89,24 +82,26 @@ export default async function PurchasedRequestsPage() {
             <table className="w-full text-left text-sm">
               <thead className="border-b bg-gray-50 text-xs uppercase text-gray-500">
                 <tr>
-                  <th className="px-6 py-4">PR Number</th>
+                  <th className="px-4 py-4">PR Number</th>
 
-                  <th className="px-6 py-4">PR Date</th>
+                  <th className="px-4 py-4">PR Date</th>
 
-                  <th className="px-6 py-4">Type of PR</th>
+                  <th className="px-4 py-4">Particulars</th>
 
-                  <th className="px-6 py-4">ABC</th>
+                  {/* <th className="px-4 py-4">Procurement Mode</th> */}
 
-                  <th className="px-6 py-4">Stage</th>
+                  <th className="px-4 py-4">ABC</th>
 
-                  <th className="px-6 py-4">Status</th>
+                  <th className="px-4 py-4">Stage</th>
+
+                  <th className="px-4 py-4">Status</th>
                 </tr>
               </thead>
 
               <tbody className="divide-y">
                 {requests.map((request) => (
                   <tr key={request.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-4">
                       <Link
                         href={`/purchased-requests/${request.id}`}
                         className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
@@ -115,7 +110,7 @@ export default async function PurchasedRequestsPage() {
                       </Link>
                     </td>
 
-                    <td className="px-6 py-4 text-gray-600">
+                    <td className="px-4 py-4 text-gray-600">
                       {new Intl.DateTimeFormat("en-PH", {
                         year: "numeric",
                         month: "short",
@@ -123,11 +118,11 @@ export default async function PurchasedRequestsPage() {
                       }).format(new Date(request.pr_date))}
                     </td>
 
-                    <td className="px-6 py-4 text-gray-600">
-                      {request.type_of_pr || "—"}
+                    <td className="px-4 py-4 text-gray-600">
+                      {request.particulars || "—"}
                     </td>
 
-                    <td className="px-6 py-4 text-gray-600">
+                    <td className="px-4 py-4 text-gray-600">
                       {request.abc !== null
                         ? new Intl.NumberFormat("en-PH", {
                             style: "currency",
@@ -136,11 +131,15 @@ export default async function PurchasedRequestsPage() {
                         : "—"}
                     </td>
 
-                    <td className="px-6 py-4 text-gray-600">
+                    {/* <td className="px-4 py-4 text-sm text-gray-600">
+                      {request.mode_of_procurement ?? "—"}
+                    </td> */}
+
+                    <td className="px-4 py-4 text-gray-600">
                       {stageMap.get(request.current_stage_id) || "Unknown"}
                     </td>
 
-                    <td className="px-6 py-4">
+                    <td className="px-4 py-4">
                       <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
                         {request.status}
                       </span>
