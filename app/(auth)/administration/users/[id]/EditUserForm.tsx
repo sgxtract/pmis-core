@@ -38,7 +38,7 @@ export default function EditUserForm({ user, roles }: Props) {
       action={formAction}
       className="space-y-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
     >
-      <input type="hidden" name="id" value={user.id} />
+      <input type="hidden" name="user_id" value={user.id} />
 
       {state.error && (
         <div className="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
@@ -114,19 +114,14 @@ export default function EditUserForm({ user, roles }: Props) {
       </div>
 
       <div>
-        <label
-          htmlFor="is_active"
-          className="block text-sm font-medium text-gray-800"
-        >
+        <label className="block text-sm font-medium text-gray-700">
           Account Status
         </label>
 
         <select
-          id="is_active"
           name="is_active"
           defaultValue={user.is_active ? "true" : "false"}
-          required
-          className="text-gray-500 mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          className="mt-1 block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
         >
           <option value="true">Active</option>
           <option value="false">Disabled</option>

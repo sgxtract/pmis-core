@@ -3,72 +3,66 @@
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/auth/require-admin";
 
-type State = {
+export type EditUserState = {
   error?: string;
   success?: string;
 };
 
 export async function updateUser(
-  previousState: State,
+  _previousState: EditUserState,
   formData: FormData,
-): Promise<State> {
-  try {
-    await requireAdmin();
+): Promise<EditUserState> {
+  await requireAdmin();
 
-    const id = String(formData.get("id") || "").trim();
-    const fullName = String(formData.get("full_name") || "").trim();
-    const office = String(formData.get("office") || "").trim();
-    const roleId = Number(formData.get("role_id"));
-    const isActive = formData.get("is_active") === "true";
+  const supabase = await createClient();
 
-    if (!id) {
-      return {
-        error: "User ID is missing.",
-      };
-    }
+  const userId = String(formData.get("user_id") ?? "");
+  const fullName = String(formData.get("full_name") ?? "").trim();
+  const office = String(formData.get("office") ?? "").trim();
+  const roleId = Number(formData.get("role_id"));
+  const isActive = formData.get("is_active") === "true";
 
-    if (!fullName) {
-      return {
-        error: "Full name is required.",
-      };
-    }
-
-    if (!office) {
-      return {
-        error: "Office is required.",
-      };
-    }
-
-    if (!Number.isInteger(roleId)) {
-      return {
-        error: "Please select a valid role.",
-      };
-    }
-
-    const supabase = await createClient();
-
-    const { error } = await supabase.rpc("admin_update_user", {
-      target_user_id: id,
-      new_full_name: fullName,
-      new_office: office,
-      new_role_id: roleId,
-      new_is_active: isActive,
-    });
-
-    if (error) {
-      return {
-        error: error.message,
-      };
-    }
-
+  if (!userId) {
     return {
-      success: "User information updated successfully.",
-    };
-  } catch (error) {
-    console.error(error);
-
-    return {
-      error: "An unexpected error occurred.",
+      error: "User ID is required.",
     };
   }
+
+  if (!fullName) {
+    return {
+      error: "Full name is required.",
+    };
+  }
+
+  if (!office) {
+    return {
+      error: "Office is required.",
+    };
+  }
+
+  if (!Number.isInteger(roleId) || roleId <= 0) {
+    return {
+      error: "Please select a valid role.",
+    };
+  }
+
+  const { error } = await supabase.rpc("update_user_profile", {
+    p_user_id: userId,
+    p_full_name: fullName,
+    p_office: office,
+    p_role_id: roleId,
+    p_is_active: isActive,
+  });
+
+  if (error) {
+    console.error("Update user error:", error);
+
+    return {
+      error: error.message,
+    };
+  }
+
+  return {
+    success: "User account updated successfully.",
+  };
 }
