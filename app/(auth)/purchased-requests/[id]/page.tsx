@@ -266,7 +266,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
             <p className="text-sm text-gray-500">Status</p>
 
             <p className="mt-1">
-              <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
+              <span className="inline-flex items-center rounded-md bg-green-400/10 px-2 py-1 text-sm font-medium text-green-500 inset-ring inset-ring-green-500/20">
                 {procurementRequest.status}
               </span>
             </p>

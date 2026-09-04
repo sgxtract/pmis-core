@@ -447,7 +447,7 @@ export default async function PublicProcurementsPage({
                         <td className="whitespace-nowrap px-6 py-4 text-sm">
                           {pr.status ? (
                             <span
-                              className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${getStatusClass(
+                              className={`inline-flex items-center rounded-md bg-green-400/10 px-2 py-1 text-xs font-medium text-green-400 inset-ring inset-ring-green-500/20 ${getStatusClass(
                                 pr.status,
                               )}`}
                             >
