@@ -10,7 +10,8 @@ export default async function AuthLayout({
 }: {
   children: React.ReactNode;
 }) {
-  await requireActiveUser();
+  const { profile } = await requireActiveUser();
+
   const supabase = await createClient();
 
   const {
@@ -20,6 +21,15 @@ export default async function AuthLayout({
   if (!user) {
     redirect("/login");
   }
+
+  // Get the user's role
+  const { data: roleData } = await supabase
+    .from("roles")
+    .select("id, name")
+    .eq("id", profile.role_id)
+    .single();
+
+  const isAdmin = roleData?.name === "Admin";
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -57,7 +67,7 @@ export default async function AuthLayout({
 
             <Link
               href="/purchased-requests"
-              className="block rLinkunded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              className="block rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
             >
               Purchased Requests
             </Link>
@@ -69,25 +79,31 @@ export default async function AuthLayout({
               Reports
             </Link>
 
-            <Link
-              href="/audit-logs"
-              className="block rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            >
-              Audit Logs
-            </Link>
-
-            <div className="pt-4">
-              <p className="px-3 pb-2 text-xs font-semibold uppercase text-gray-400">
-                Administration
-              </p>
-
+            {/* Admin-only menu */}
+            {isAdmin && (
               <Link
-                href="/administration"
+                href="/audit-logs"
                 className="block rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
-                Settings
+                Audit Logs
               </Link>
-            </div>
+            )}
+
+            {/* Admin-only menu */}
+            {isAdmin && (
+              <div className="pt-4">
+                <p className="px-3 pb-2 text-xs font-semibold uppercase text-gray-400">
+                  Administration
+                </p>
+
+                <Link
+                  href="/administration"
+                  className="block rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Settings
+                </Link>
+              </div>
+            )}
           </nav>
         </aside>
 
