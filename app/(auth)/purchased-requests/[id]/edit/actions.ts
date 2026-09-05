@@ -11,7 +11,7 @@ export type UpdatePRState = {
 export async function updateProcurementRequest(
   id: string,
   _previousState: UpdatePRState,
-  formData: FormData
+  formData: FormData,
 ): Promise<UpdatePRState> {
   const supabase = await createClient();
 
@@ -31,37 +31,29 @@ export async function updateProcurementRequest(
   // 2. Get form values
   // -----------------------------------------
 
-  const prNumber = String(
-    formData.get("pr_number") ?? ""
-  ).trim();
+  const prNumber = String(formData.get("pr_number") ?? "").trim();
 
-  const prDate = String(
-    formData.get("pr_date") ?? ""
-  ).trim();
+  const prDate = String(formData.get("pr_date") ?? "").trim();
 
-  const typeOfPr = String(
-    formData.get("type_of_pr") ?? ""
-  ).trim();
+  const typeOfPr = String(formData.get("type_of_pr") ?? "").trim();
 
-  const endUser = String(
-    formData.get("end_user") ?? ""
-  ).trim();
+  const endUser = String(formData.get("end_user") ?? "").trim();
 
-  const particulars = String(
-    formData.get("particulars") ?? ""
-  ).trim();
+  const particulars = String(formData.get("particulars") ?? "").trim();
 
-  const abcValue = String(
-    formData.get("abc") ?? ""
-  ).trim();
+  const abcValue = String(formData.get("abc") ?? "").trim();
 
-  const modeValue = String(
-    formData.get("mode_of_procurement_id") ?? ""
-  ).trim();
+  const modeValue = String(formData.get("mode_of_procurement_id") ?? "").trim();
 
-  const modeId = modeValue
-    ? Number(modeValue)
-    : null;
+  const modeId = modeValue ? Number(modeValue) : null;
+
+  const accountCode = String(formData.get("account_code") ?? "").trim();
+
+  const calendarDaysValue = String(formData.get("calendar_days") ?? "").trim();
+
+  const solNo = String(formData.get("sol_no") ?? "").trim();
+
+  const calendarDays = calendarDaysValue ? Number(calendarDaysValue) : null;
 
   // -----------------------------------------
   // 3. Validate required fields
@@ -76,8 +68,7 @@ export async function updateProcurementRequest(
     !abcValue
   ) {
     return {
-      error:
-        "Please complete all required fields.",
+      error: "Please complete all required fields.",
     };
   }
 
@@ -89,8 +80,16 @@ export async function updateProcurementRequest(
 
   if (!Number.isFinite(abc) || abc < 0) {
     return {
-      error:
-        "ABC must be a valid amount.",
+      error: "ABC must be a valid amount.",
+    };
+  }
+
+  if (
+    calendarDays !== null &&
+    (!Number.isInteger(calendarDays) || calendarDays < 0)
+  ) {
+    return {
+      error: "CD / Calendar Days must be a valid whole number.",
     };
   }
 
@@ -98,22 +97,15 @@ export async function updateProcurementRequest(
   // 5. Check that the PR exists
   // -----------------------------------------
 
-  const {
-    data: existingRequest,
-    error: existingRequestError,
-  } = await supabase
+  const { data: existingRequest, error: existingRequestError } = await supabase
     .from("procurement_requests")
     .select("id")
     .eq("id", id)
     .single();
 
-  if (
-    existingRequestError ||
-    !existingRequest
-  ) {
+  if (existingRequestError || !existingRequest) {
     return {
-      error:
-        "The procurement request could not be found.",
+      error: "The procurement request could not be found.",
     };
   }
 
@@ -121,10 +113,7 @@ export async function updateProcurementRequest(
   // 6. Update PR
   // -----------------------------------------
 
-  const {
-    data: updatedRequest,
-    error,
-  } = await supabase
+  const { data: updatedRequest, error } = await supabase
     .from("procurement_requests")
     .update({
       pr_number: prNumber,
@@ -134,6 +123,11 @@ export async function updateProcurementRequest(
       particulars: particulars,
       abc: abc,
       mode_of_procurement_id: modeId,
+
+      account_code: accountCode || null,
+      calendar_days: calendarDays,
+      sol_no: solNo || null,
+
       updated_by: user.id,
       updated_at: new Date().toISOString(),
     })
@@ -146,13 +140,13 @@ export async function updateProcurementRequest(
   // -----------------------------------------
 
   if (error || !updatedRequest) {
-    console.error(
-      "UPDATE PR ERROR:",
-      error
-    );
+    console.error("UPDATE PR ERROR:", error);
 
     // Duplicate PR number
-    if (error?.code === "23505") {
+    if (
+      error?.code === "23505" &&
+      error.message.includes("procurement_requests_pr_number_key")
+    ) {
       return {
         error:
           "This PR Number already exists. Please enter a different PR Number.",

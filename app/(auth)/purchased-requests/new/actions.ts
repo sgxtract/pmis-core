@@ -38,6 +38,14 @@ export async function createProcurementRequest(formData: FormData) {
 
   const modeId = modeValue ? Number(modeValue) : null;
 
+  const accountCode = String(formData.get("account_code") ?? "").trim();
+
+  const calendarDaysValue = String(formData.get("calendar_days") ?? "").trim();
+
+  const solNo = String(formData.get("sol_no") ?? "").trim();
+
+  const calendarDays = calendarDaysValue ? Number(calendarDaysValue) : null;
+
   // -----------------------------------------
   // 3. Validate required fields
   // -----------------------------------------
@@ -57,6 +65,13 @@ export async function createProcurementRequest(formData: FormData) {
 
   if (!Number.isFinite(abc) || abc < 0) {
     throw new Error("ABC must be a valid amount.");
+  }
+
+  if (
+    calendarDays !== null &&
+    (!Number.isInteger(calendarDays) || calendarDays < 0)
+  ) {
+    throw new Error("CD / Calendar Days must be a valid whole number.");
   }
 
   // -----------------------------------------
@@ -87,6 +102,11 @@ export async function createProcurementRequest(formData: FormData) {
       particulars: particulars,
       abc: abc,
       mode_of_procurement_id: modeId,
+
+      account_code: accountCode || null,
+      calendar_days: calendarDays,
+      sol_no: solNo || null,
+
       current_stage_id: receivedStage.id,
       status: "Active",
       created_by: user.id,

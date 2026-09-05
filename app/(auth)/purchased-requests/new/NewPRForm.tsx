@@ -218,18 +218,16 @@ export default function NewPRForm({ procurementModes }: NewPRFormProps) {
       {/* Account Code */}
       <div>
         <label
-          htmlFor="accountCode"
+          htmlFor="account_code"
           className="mb-1 block text-sm font-medium text-gray-700"
         >
           Account Code
         </label>
 
         <input
-          id="accountCode"
+          id="account_code"
           name="account_code"
           type="text"
-          value={accountCode}
-          onChange={(event) => setAccountCode(event.target.value)}
           placeholder="Optional"
           className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
         />
@@ -238,19 +236,18 @@ export default function NewPRForm({ procurementModes }: NewPRFormProps) {
       {/* Calendar Days */}
       <div>
         <label
-          htmlFor="calendarDays"
+          htmlFor="calendar_days"
           className="mb-1 block text-sm font-medium text-gray-700"
         >
           CD / Calendar Days
         </label>
 
         <input
-          id="calendarDays"
+          id="calendar_days"
           name="calendar_days"
           type="number"
           min="0"
-          value={calendarDays}
-          onChange={(event) => setCalendarDays(event.target.value)}
+          step="1"
           placeholder="Optional"
           className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
         />
@@ -259,18 +256,16 @@ export default function NewPRForm({ procurementModes }: NewPRFormProps) {
       {/* SOL Number */}
       <div>
         <label
-          htmlFor="solNo"
+          htmlFor="sol_no"
           className="mb-1 block text-sm font-medium text-gray-700"
         >
           SOL No.
         </label>
 
         <input
-          id="solNo"
+          id="sol_no"
           name="sol_no"
           type="text"
-          value={solNo}
-          onChange={(event) => setSolNo(event.target.value)}
           placeholder="Optional"
           className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
         />

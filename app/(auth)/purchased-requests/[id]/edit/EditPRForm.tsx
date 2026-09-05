@@ -3,10 +3,7 @@
 import { useActionState } from "react";
 import Link from "next/link";
 
-import {
-  updateProcurementRequest,
-  type UpdatePRState,
-} from "./actions";
+import { updateProcurementRequest, type UpdatePRState } from "./actions";
 
 type ProcurementRequest = {
   id: number;
@@ -17,6 +14,9 @@ type ProcurementRequest = {
   particulars: string;
   abc: number | null;
   mode_of_procurement_id: number | null;
+  account_code: string | null;
+  calendar_days: number | null;
+  sol_no: string | null;
 };
 
 type ProcurementMode = {
@@ -31,25 +31,17 @@ type Props = {
 
 const initialState: UpdatePRState = {};
 
-export default function EditPRForm({
-  request,
-  procurementModes,
-}: Props) {
-  const [state, formAction, isPending] =
-    useActionState(
-      updateProcurementRequest.bind(
-        null,
-        String(request.id)
-      ),
-      initialState
-    );
+export default function EditPRForm({ request, procurementModes }: Props) {
+  const [state, formAction, isPending] = useActionState(
+    updateProcurementRequest.bind(null, String(request.id)),
+    initialState,
+  );
 
   return (
     <form
       action={formAction}
       className="mt-8 rounded-xl border bg-white shadow-sm"
     >
-
       {/* Header */}
 
       <div className="border-b px-6 py-4">
@@ -66,15 +58,9 @@ export default function EditPRForm({
           className="mx-6 mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
         >
           <div className="flex items-start gap-3">
+            <span className="font-semibold">Error:</span>
 
-            <span className="font-semibold">
-              Error:
-            </span>
-
-            <span>
-              {state.error}
-            </span>
-
+            <span>{state.error}</span>
           </div>
         </div>
       )}
@@ -82,7 +68,6 @@ export default function EditPRForm({
       {/* Fields */}
 
       <div className="grid gap-6 p-6 md:grid-cols-2">
-
         {/* PR Number */}
 
         <div>
@@ -100,9 +85,7 @@ export default function EditPRForm({
             required
             defaultValue={request.pr_number}
             className={`text-gray-500 mt-2 w-full rounded-lg border px-4 py-2.5 text-sm outline-none focus:ring-2 ${
-              state?.error?.includes(
-                "PR Number"
-              )
+              state?.error?.includes("PR Number")
                 ? "border-red-400 focus:border-red-500 focus:ring-red-100"
                 : "border-gray-300 focus:border-blue-500 focus:ring-blue-100"
             }`}
@@ -224,34 +207,82 @@ export default function EditPRForm({
           <select
             id="mode_of_procurement_id"
             name="mode_of_procurement_id"
-            defaultValue={
-              request.mode_of_procurement_id ?? ""
-            }
+            defaultValue={request.mode_of_procurement_id ?? ""}
             className="text-gray-500 mt-2 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           >
-            <option value="">
-              Not yet assigned
-            </option>
+            <option value="">Not yet assigned</option>
 
-            {procurementModes.map(
-              (mode) => (
-                <option
-                  key={mode.id}
-                  value={mode.id}
-                >
-                  {mode.name}
-                </option>
-              )
-            )}
+            {procurementModes.map((mode) => (
+              <option key={mode.id} value={mode.id}>
+                {mode.name}
+              </option>
+            ))}
           </select>
         </div>
 
+        {/* Account Code */}
+        <div>
+          <label
+            htmlFor="account_code"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Account Code
+          </label>
+
+          <input
+            id="account_code"
+            name="account_code"
+            type="text"
+            defaultValue={request.account_code ?? ""}
+            placeholder="Optional"
+            className="text-gray-500 mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          />
+        </div>
+
+        {/* Calendar Days */}
+        <div>
+          <label
+            htmlFor="calendar_days"
+            className="block text-sm font-medium text-gray-700"
+          >
+            CD / Calendar Days
+          </label>
+
+          <input
+            id="calendar_days"
+            name="calendar_days"
+            type="number"
+            min="0"
+            step="1"
+            defaultValue={request.calendar_days ?? ""}
+            placeholder="Optional"
+            className="text-gray-500 mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          />
+        </div>
+
+        {/* SOL Number */}
+        <div>
+          <label
+            htmlFor="sol_no"
+            className="block text-sm font-medium text-gray-700"
+          >
+            SOL No.
+          </label>
+
+          <input
+            id="sol_no"
+            name="sol_no"
+            type="text"
+            defaultValue={request.sol_no ?? ""}
+            placeholder="Optional"
+            className="text-gray-500 mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          />
+        </div>
       </div>
 
       {/* Buttons */}
 
       <div className="flex justify-end gap-3 border-t bg-gray-50 px-6 py-4">
-
         <Link
           href={`/purchased-requests/${request.id}`}
           className="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
@@ -264,13 +295,9 @@ export default function EditPRForm({
           disabled={isPending}
           className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isPending
-            ? "Saving..."
-            : "Save Changes"}
+          {isPending ? "Saving..." : "Save Changes"}
         </button>
-
       </div>
-
     </form>
   );
 }
