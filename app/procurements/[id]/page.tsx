@@ -10,6 +10,7 @@ type PublicProcurement = {
   particulars: string | null;
   abc: number | string | null;
   mode_of_procurement: string | null;
+  calendar_days: number | null;
   current_stage: string | null;
   status: string | null;
 };
@@ -203,6 +204,17 @@ export default async function PublicProcurementDetailPage({
               </p>
             </div>
 
+            {/* Particulars */}
+            <div className="md:col-span-2">
+              <p className="text-sm font-medium text-gray-500">
+                Particulars / Project Name
+              </p>
+
+              <p className="mt-1 whitespace-pre-wrap text-base leading-7 text-gray-900">
+                {procurement.particulars ?? "—"}
+              </p>
+            </div>
+
             {/* ABC */}
             <div>
               <p className="text-sm font-medium text-gray-500">
@@ -222,6 +234,15 @@ export default async function PublicProcurementDetailPage({
 
               <p className="mt-1 text-base text-gray-900">
                 {procurement.mode_of_procurement ?? "—"}
+              </p>
+            </div>
+
+            {/* Calendar Days */}
+            <div>
+              <p className="text-sm font-medium text-gray-500">CD / Calendar Days</p>
+
+              <p className="mt-1 text-base font-semibold text-gray-900">
+                {procurement.calendar_days ?? "—"}
               </p>
             </div>
 
@@ -246,16 +267,7 @@ export default async function PublicProcurementDetailPage({
               </p>
             </div>
 
-            {/* Particulars */}
-            <div className="md:col-span-2">
-              <p className="text-sm font-medium text-gray-500">
-                Particulars / Project Name
-              </p>
-
-              <p className="mt-1 whitespace-pre-wrap text-base leading-7 text-gray-900">
-                {procurement.particulars ?? "—"}
-              </p>
-            </div>
+            
           </div>
         </section>
 

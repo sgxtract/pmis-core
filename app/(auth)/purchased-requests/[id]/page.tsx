@@ -31,6 +31,9 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
       particulars,
       abc,
       mode_of_procurement_id,
+      account_code,
+      calendar_days,
+      sol_no,
       current_stage_id,
       status
     `,
@@ -249,6 +252,33 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
 
             <p className="mt-1 font-medium text-gray-900">
               {procurementMode?.name || "—"}
+            </p>
+          </div>
+
+          {/* Account Code */}
+          <div>
+            <p className="text-sm text-gray-500">Account Code</p>
+
+            <p className="mt-1 font-medium text-gray-900">
+              {procurementRequest.account_code || "—"}
+            </p>
+          </div>
+
+          {/* CD / Calendar Days */}
+          <div>
+            <p className="text-sm text-gray-500">CD / Calendar Days</p>
+
+            <p className="mt-1 font-medium text-gray-900">
+              {procurementRequest.calendar_days || "—"}
+            </p>
+          </div>
+
+          {/* SOL No. */}
+          <div>
+            <p className="text-sm text-gray-500">SOL No.</p>
+
+            <p className="mt-1 font-medium text-gray-900">
+              {procurementRequest.sol_no || "—"}
             </p>
           </div>
 

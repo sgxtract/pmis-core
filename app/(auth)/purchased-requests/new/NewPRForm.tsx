@@ -18,9 +18,6 @@ export default function NewPRForm({ procurementModes }: NewPRFormProps) {
   const [procurementMode, setProcurementMode] = useState("");
   const [typeOfPr, setTypeOfPr] = useState("");
   const [endUser, setEndUser] = useState("");
-  const [accountCode, setAccountCode] = useState("");
-  const [calendarDays, setCalendarDays] = useState("");
-  const [solNo, setSolNo] = useState("");
 
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -219,7 +216,7 @@ export default function NewPRForm({ procurementModes }: NewPRFormProps) {
       <div>
         <label
           htmlFor="account_code"
-          className="mb-1 block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-gray-700"
         >
           Account Code
         </label>
@@ -229,15 +226,15 @@ export default function NewPRForm({ procurementModes }: NewPRFormProps) {
           name="account_code"
           type="text"
           placeholder="Optional"
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+          className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-500 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
         />
       </div>
 
-      {/* Calendar Days */}
+      {/* CD / Calendar Days */}
       <div>
         <label
           htmlFor="calendar_days"
-          className="mb-1 block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-gray-700"
         >
           CD / Calendar Days
         </label>
@@ -249,15 +246,15 @@ export default function NewPRForm({ procurementModes }: NewPRFormProps) {
           min="0"
           step="1"
           placeholder="Optional"
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+          className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-500 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
         />
       </div>
 
-      {/* SOL Number */}
+      {/* SOL No. */}
       <div>
         <label
           htmlFor="sol_no"
-          className="mb-1 block text-sm font-medium text-gray-700"
+          className="block text-sm font-medium text-gray-700"
         >
           SOL No.
         </label>
@@ -267,7 +264,7 @@ export default function NewPRForm({ procurementModes }: NewPRFormProps) {
           name="sol_no"
           type="text"
           placeholder="Optional"
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+          className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-500 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
         />
       </div>
 
