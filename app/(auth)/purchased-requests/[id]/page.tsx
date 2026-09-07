@@ -343,24 +343,49 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
           </div>
 
           {nextStage ? (
-            <div className="mt-6 border-t pt-6">
-              <p className="text-sm text-gray-500">Next Stage</p>
+            <div className="mt-6 rounded-xl border border-blue-100 bg-blue-50 p-5">
+              <p className="text-xs font-semibold uppercase tracking-wide text-blue-600">
+                Next Stage
+              </p>
 
-              <p className="mt-1 text-lg font-semibold text-blue-600">
+              <p className="mt-1 text-xl font-bold text-gray-900">
                 {nextStage.name}
               </p>
 
-              {request.status === "Active" && nextStage && (
-                <AdvanceStageForm
-                  requestId={request.id}
-                  currentStageName={currentStage?.name ?? "Unknown"}
-                  nextStageName={nextStage.name}
-                />
+              {request.status === "Active" ? (
+                <>
+                  <p className="mt-2 text-sm text-gray-600">
+                    This procurement request is ready to move to the next stage.
+                  </p>
+
+                  <div className="mt-4">
+                    <AdvanceStageForm
+                      requestId={request.id}
+                      currentStageName={currentStage?.name ?? "Unknown"}
+                      nextStageName={nextStage.name}
+                    />
+                  </div>
+                </>
+              ) : (
+                <p className="mt-2 text-sm font-medium text-gray-600">
+                  This procurement request is currently {request.status}.
+                </p>
               )}
             </div>
           ) : (
-            <div className="mt-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
-              This procurement request has reached the final stage.
+            <div className="mt-6 rounded-xl border border-green-200 bg-green-50 p-5">
+              <p className="text-xs font-semibold uppercase tracking-wide text-green-600">
+                Procurement Complete
+              </p>
+
+              <p className="mt-1 text-lg font-bold text-green-800">
+                Final Stage Reached
+              </p>
+
+              <p className="mt-2 text-sm text-green-700">
+                This procurement request has reached the final procurement
+                stage.
+              </p>
             </div>
           )}
         </div>
@@ -376,9 +401,9 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
 
         <div className="p-6">
           {stages?.map((stage, index) => {
-            const isCompleted = completedStageIds.has(stage.id);
-
             const isCurrent = stage.id === procurementRequest.current_stage_id;
+
+            const isCompleted = completedStageIds.has(stage.id) && !isCurrent;
 
             const isLast = index === stages.length - 1;
 
@@ -390,7 +415,9 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
                     className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold ${
                       isCompleted
                         ? "bg-green-600 text-white"
-                        : "bg-gray-200 text-gray-500"
+                        : isCurrent
+                          ? "bg-blue-600 text-white"
+                          : "bg-gray-200 text-gray-500"
                     }`}
                   >
                     {isCompleted ? "✓" : stage.sequence_number}
@@ -421,6 +448,10 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
 
                   {isCurrent && (
                     <p className="mt-1 text-xs text-blue-600">Current Stage</p>
+                  )}
+
+                  {isCompleted && (
+                    <p className="mt-1 text-xs text-green-600">Completed</p>
                   )}
                 </div>
               </div>

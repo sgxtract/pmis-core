@@ -63,6 +63,9 @@ function formatCurrency(value: number | string | null) {
 
 function getStatusClass(status: string | null) {
   switch (status?.toLowerCase()) {
+    case "active":
+      return "bg-blue-100 text-blue-700";
+
     case "completed":
       return "bg-green-100 text-green-700";
 
@@ -239,7 +242,9 @@ export default async function PublicProcurementDetailPage({
 
             {/* Calendar Days */}
             <div>
-              <p className="text-sm font-medium text-gray-500">CD / Calendar Days</p>
+              <p className="text-sm font-medium text-gray-500">
+                CD / Calendar Days
+              </p>
 
               <p className="mt-1 text-base font-semibold text-gray-900">
                 {procurement.calendar_days ?? "—"}
@@ -262,12 +267,14 @@ export default async function PublicProcurementDetailPage({
               {/* <p className="mt-1 text-base text-gray-900">
                 {procurement.status ?? "—"}
               </p> */}
-              <p className="inline-flex items-center rounded-md bg-green-400/10 px-2 py-1 text-sm font-medium text-green-400 inset-ring inset-ring-green-500/20">
-                {procurement.status ?? "—"}
-              </p>
+              <span
+                className={`inline-flex items-center rounded-md px-2 py-1 text-sm font-medium ${getStatusClass(
+                  procurement.status,
+                )}`}
+              >
+                {procurement.status || "Unknown"}
+              </span>
             </div>
-
-            
           </div>
         </section>
 
@@ -379,7 +386,8 @@ export default async function PublicProcurementDetailPage({
 
         {/* Footer */}
         <div className="mt-6 text-center text-xs text-gray-500">
-          Public procurement information provided by the Sorsogon Province Public Procurement.
+          Public procurement information provided by the Sorsogon Province
+          Public Procurement.
         </div>
       </div>
     </main>

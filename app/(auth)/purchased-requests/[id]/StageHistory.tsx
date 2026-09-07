@@ -66,7 +66,11 @@ export default function StageHistory({ history, currentStageId }: Props) {
                 {/* Connector */}
 
                 {!isLast && (
-                  <div className="absolute left-4 top-8 h-[calc(100%-8px)] w-px bg-green-200" />
+                  <div
+                    className={`absolute left-4 top-8 h-[calc(100%-8px)] w-px ${
+                      isCompleted ? "bg-green-200" : "bg-gray-200"
+                    }`}
+                  />
                 )}
 
                 {/* Status Circle */}
@@ -114,13 +118,17 @@ export default function StageHistory({ history, currentStageId }: Props) {
                     Started: {formatDateTime(item.started_at)}
                   </p>
 
-                  {/* Completed */}
+                  {/* Completed / In Progress */}
 
-                  {item.completed_at && (
+                  {item.completed_at ? (
                     <p className="text-sm text-gray-500">
                       Completed: {formatDateTime(item.completed_at)}
                     </p>
-                  )}
+                  ) : isCurrent ? (
+                    <p className="text-sm font-medium text-blue-600">
+                      In progress
+                    </p>
+                  ) : null}
 
                   {/* Changed By */}
 
