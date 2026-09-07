@@ -1,7 +1,6 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
 
 export async function createProcurementRequest(formData: FormData) {
   const supabase = await createClient();
@@ -15,7 +14,9 @@ export async function createProcurementRequest(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect("/login");
+    return {
+      error: "Your session has expired. Please log in again.",
+    };
   }
 
   // -----------------------------------------
@@ -38,6 +39,10 @@ export async function createProcurementRequest(formData: FormData) {
 
   const modeId = modeValue ? Number(modeValue) : null;
 
+  if (modeId !== null && (!Number.isInteger(modeId) || modeId <= 0)) {
+    throw new Error("Procurement Mode is invalid.");
+  }
+
   const accountCode = String(formData.get("account_code") ?? "").trim();
 
   const calendarDaysValue = String(formData.get("calendar_days") ?? "").trim();
@@ -45,6 +50,13 @@ export async function createProcurementRequest(formData: FormData) {
   const solNo = String(formData.get("sol_no") ?? "").trim();
 
   const calendarDays = calendarDaysValue ? Number(calendarDaysValue) : null;
+
+  if (
+    calendarDays !== null &&
+    (!Number.isInteger(calendarDays) || calendarDays < 0)
+  ) {
+    throw new Error("CD / Calendar Days must be a valid whole number.");
+  }
 
   // -----------------------------------------
   // 3. Validate required fields
@@ -65,6 +77,12 @@ export async function createProcurementRequest(formData: FormData) {
 
   if (!Number.isFinite(abc) || abc < 0) {
     throw new Error("ABC must be a valid amount.");
+  }
+
+  const parsedDate = new Date(prDate);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    throw new Error("PR Date must be a valid date.");
   }
 
   if (
@@ -159,7 +177,12 @@ export async function createProcurementRequest(formData: FormData) {
   // 7. Redirect to the new PR
   // -----------------------------------------
 
-  redirect(`/purchased-requests/${request.id}`);
+  return {
+    success: true,
+    id: request.id,
+  };
+
+  // redirect(`/purchased-requests/${request.id}`);
 }
 
 // "use server";

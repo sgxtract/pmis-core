@@ -22,6 +22,26 @@ type PurchasedRequest = {
   total_count: number;
 };
 
+function getStatusClass(status: string | null) {
+  switch (status?.toLowerCase()) {
+    case "active":
+      return "bg-blue-100 text-blue-700";
+
+    case "completed":
+      return "bg-green-100 text-green-700";
+
+    case "cancelled":
+    case "canceled":
+      return "bg-red-100 text-red-700";
+
+    case "pending":
+      return "bg-yellow-100 text-yellow-700";
+
+    default:
+      return "bg-gray-100 text-gray-700";
+  }
+}
+
 export default async function PurchasedRequestsPage({
   searchParams,
 }: {
@@ -208,8 +228,12 @@ export default async function PurchasedRequestsPage({
                       </td>
 
                       <td className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
-                        <span className="inline-flex items-center rounded-md bg-green-400/10 px-2 py-1 text-xs font-medium text-green-500 inset-ring inset-ring-green-500/20">
-                          {request.status}
+                        <span
+                          className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ${getStatusClass(
+                            request.status,
+                          )}`}
+                        >
+                          {request.status || "Unknown"}
                         </span>
                       </td>
                     </tr>

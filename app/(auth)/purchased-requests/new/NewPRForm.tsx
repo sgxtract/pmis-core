@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { createProcurementRequest } from "./actions";
+import { useRouter } from "next/navigation";
 
 type NewPRFormProps = {
   procurementModes: {
@@ -22,6 +23,8 @@ export default function NewPRForm({ procurementModes }: NewPRFormProps) {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const router = useRouter();
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -34,10 +37,12 @@ export default function NewPRForm({ procurementModes }: NewPRFormProps) {
       const result = await createProcurementRequest(formData);
 
       if (!result.success) {
-        setError(result.error);
+        setError(result.error ?? "Unable to create the procurement request.");
         setIsSubmitting(false);
         return;
       }
+
+      router.push(`/purchased-requests/${result.id}`);
     } catch (error) {
       console.error("CREATE PR FORM ERROR:", error);
 

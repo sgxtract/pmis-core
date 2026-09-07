@@ -10,6 +10,26 @@ type PageProps = {
   }>;
 };
 
+function getStatusClass(status: string | null) {
+  switch (status?.toLowerCase()) {
+    case "active":
+      return "bg-blue-100 text-blue-700";
+
+    case "completed":
+      return "bg-green-100 text-green-700";
+
+    case "cancelled":
+    case "canceled":
+      return "bg-red-100 text-red-700";
+
+    case "pending":
+      return "bg-yellow-100 text-yellow-700";
+
+    default:
+      return "bg-gray-100 text-gray-700";
+  }
+}
+
 export default async function ProcurementRequestPage({ params }: PageProps) {
   const { id } = await params;
 
@@ -296,8 +316,12 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
             <p className="text-sm text-gray-500">Status</p>
 
             <p className="mt-1">
-              <span className="inline-flex items-center rounded-md bg-green-400/10 px-2 py-1 text-sm font-medium text-green-500 inset-ring inset-ring-green-500/20">
-                {procurementRequest.status}
+              <span
+                className={`inline-flex items-center rounded-md px-2 py-1 text-sm font-medium ${getStatusClass(
+                  procurementRequest.status,
+                )}`}
+              >
+                {procurementRequest.status || "Unknown"}
               </span>
             </p>
           </div>
@@ -326,11 +350,13 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
                 {nextStage.name}
               </p>
 
-              <AdvanceStageForm
-                requestId={request.id}
-                currentStageName={currentStage?.name ?? ""}
-                nextStageName={nextStage.name}
-              />
+              {request.status === "Active" && nextStage && (
+                <AdvanceStageForm
+                  requestId={request.id}
+                  currentStageName={currentStage?.name ?? "Unknown"}
+                  nextStageName={nextStage.name}
+                />
+              )}
             </div>
           ) : (
             <div className="mt-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
