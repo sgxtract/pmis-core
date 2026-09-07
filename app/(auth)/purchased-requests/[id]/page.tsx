@@ -30,6 +30,23 @@ function getStatusClass(status: string | null) {
   }
 }
 
+function getStageClass(stage: string | null) {
+  if (!stage) {
+    return "bg-gray-100 text-gray-700";
+  }
+
+  return "bg-blue-100 text-blue-700";
+}
+
+function formatCurrency(value: number | null) {
+  if (value === null) return "—";
+
+  return new Intl.NumberFormat("en-PH", {
+    style: "currency",
+    currency: "PHP",
+  }).format(value);
+}
+
 export default async function ProcurementRequestPage({ params }: PageProps) {
   const { id } = await params;
 
@@ -179,7 +196,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
       </Link>
 
       {/* Page heading */}
-      <div className="mt-6 flex items-start justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">
             {procurementRequest.pr_number}
@@ -202,7 +219,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
           <h2 className="font-semibold text-gray-900">PR Information</h2>
         </div>
 
-        <div className="grid gap-6 p-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-6 lg:grid-cols-3">
           {/* PR Number */}
           <div>
             <p className="text-sm text-gray-500">PR Number</p>
@@ -234,6 +251,15 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
             </p>
           </div>
 
+          {/* Particulars */}
+          <div className="sm:col-span-2 lg:col-span-3">
+            <p className="text-sm text-gray-500">Particulars</p>
+
+            <p className="mt-1 font-medium text-gray-900">
+              {procurementRequest.particulars || "—"}
+            </p>
+          </div>
+
           {/* End User */}
           <div>
             <p className="text-sm text-gray-500">End User</p>
@@ -243,26 +269,12 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
             </p>
           </div>
 
-          {/* Particulars */}
-          <div className="md:col-span-2">
-            <p className="text-sm text-gray-500">Particulars</p>
-
-            <p className="mt-1 font-medium text-gray-900">
-              {procurementRequest.particulars || "—"}
-            </p>
-          </div>
-
           {/* ABC */}
           <div>
             <p className="text-sm text-gray-500">ABC</p>
 
             <p className="mt-1 font-medium text-gray-900">
-              {procurementRequest.abc !== null
-                ? new Intl.NumberFormat("en-PH", {
-                    style: "currency",
-                    currency: "PHP",
-                  }).format(procurementRequest.abc)
-                : "—"}
+              {formatCurrency(procurementRequest.abc)}
             </p>
           </div>
 
@@ -306,8 +318,14 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
           <div>
             <p className="text-sm text-gray-500">Current Stage</p>
 
-            <p className="mt-1 font-medium text-gray-900">
-              {currentStage?.name || "—"}
+            <p className="mt-1">
+              <span
+                className={`inline-flex items-center rounded-md px-2 py-1 text-sm font-medium ${getStageClass(
+                  currentStage?.name,
+                )}`}
+              >
+                {currentStage?.name || "Unknown"}
+              </span>
             </p>
           </div>
 
@@ -390,8 +408,6 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
           )}
         </div>
       </div>
-
-      <div></div>
 
       {/* Procurement Progress */}
       <div className="mt-6 rounded-xl border bg-white shadow-sm">
