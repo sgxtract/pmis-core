@@ -37,10 +37,9 @@ export default async function AuthLayout({
       <SessionGuard />
 
       <header className="flex min-h-16 items-center justify-between border-b bg-white px-4 sm:px-6">
-
         <div className="flex min-w-0 items-center gap-3">
           <MobileNav isAdmin={isAdmin} />
-          
+
           <div className="min-w-0">
             <h1 className="font-bold text-gray-900">PMIS</h1>
 
@@ -90,20 +89,17 @@ export default async function AuthLayout({
 
             {/* Admin-only menu */}
             {isAdmin && (
-              <Link
-                href="/audit-logs"
-                className="block rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              >
-                Audit Logs
-              </Link>
-            )}
-
-            {/* Admin-only menu */}
-            {isAdmin && (
               <div className="pt-4">
                 <p className="px-3 pb-2 text-xs font-semibold uppercase text-gray-400">
                   Administration
                 </p>
+
+                <Link
+                  href="/administration/audit-logs"
+                  className="block rounded-lg px-3 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Audit Logs
+                </Link>
 
                 <Link
                   href="/administration"

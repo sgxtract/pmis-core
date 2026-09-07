@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { requireActiveUser } from "./require-active-user";
 
+
 export async function requireAdmin() {
   const { user, profile } = await requireActiveUser();
 

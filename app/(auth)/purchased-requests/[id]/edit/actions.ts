@@ -27,6 +27,18 @@ export async function updateProcurementRequest(
     redirect("/login");
   }
 
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq("id", user.id)
+    .single();
+
+  if (profileError || !profile) {
+    return {
+      error: "Your user profile could not be found.",
+    };
+  }
+
   // -----------------------------------------
   // 2. Get form values
   // -----------------------------------------
@@ -99,7 +111,21 @@ export async function updateProcurementRequest(
 
   const { data: existingRequest, error: existingRequestError } = await supabase
     .from("procurement_requests")
-    .select("id")
+    .select(
+      `
+        id,
+        pr_number,
+        pr_date,
+        type_of_pr,
+        end_user,
+        particulars,
+        abc,
+        mode_of_procurement_id,
+        account_code,
+        calendar_days,
+        sol_no
+      `,
+    )
     .eq("id", id)
     .single();
 
@@ -108,6 +134,61 @@ export async function updateProcurementRequest(
       error: "The procurement request could not be found.",
     };
   }
+
+  const auditChanges = [
+    {
+      field: "pr_number",
+      oldValue: existingRequest.pr_number,
+      newValue: prNumber,
+    },
+    {
+      field: "pr_date",
+      oldValue: existingRequest.pr_date,
+      newValue: prDate,
+    },
+    {
+      field: "type_of_pr",
+      oldValue: existingRequest.type_of_pr,
+      newValue: typeOfPr,
+    },
+    {
+      field: "end_user",
+      oldValue: existingRequest.end_user,
+      newValue: endUser,
+    },
+    {
+      field: "particulars",
+      oldValue: existingRequest.particulars,
+      newValue: particulars,
+    },
+    {
+      field: "abc",
+      oldValue: existingRequest.abc,
+      newValue: abc,
+    },
+    {
+      field: "mode_of_procurement_id",
+      oldValue: existingRequest.mode_of_procurement_id,
+      newValue: modeId,
+    },
+    {
+      field: "account_code",
+      oldValue: existingRequest.account_code,
+      newValue: accountCode || null,
+    },
+    {
+      field: "calendar_days",
+      oldValue: existingRequest.calendar_days,
+      newValue: calendarDays,
+    },
+    {
+      field: "sol_no",
+      oldValue: existingRequest.sol_no,
+      newValue: solNo || null,
+    },
+  ].filter(
+    (change) => String(change.oldValue ?? "") !== String(change.newValue ?? ""),
+  );
 
   // -----------------------------------------
   // 6. Update PR
@@ -160,9 +241,35 @@ export async function updateProcurementRequest(
     };
   }
 
+  //-----------------------------------------
+  // 8. Audit log changes
   // -----------------------------------------
-  // 8. Success
+
+  for (const change of auditChanges) {
+    const { error: auditError } = await supabase.rpc("create_audit_log", {
+      p_user_id: user.id,
+      p_username: profile.full_name,
+      p_pr_id: existingRequest.id,
+      p_pr_number: prNumber,
+      p_module: "Procurement Requests",
+      p_field_name: change.field,
+      p_old_value: String(change.oldValue ?? ""),
+      p_new_value: String(change.newValue ?? ""),
+    });
+
+    if (auditError) {
+      console.error("AUDIT LOG ERROR:", auditError);
+
+      return {
+        error: "The PR was updated, but the audit log could not be recorded.",
+      };
+    }
+  }
+
+  // -----------------------------------------
+  // 9. Success
   // -----------------------------------------
 
   redirect(`/purchased-requests/${id}`);
+
 }
