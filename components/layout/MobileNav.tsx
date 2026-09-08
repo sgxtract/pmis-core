@@ -120,7 +120,7 @@ export default function MobileNav({ isAdmin }: MobileNavProps) {
                     </p>
 
                     <Link
-                      href="/audit-logs"
+                      href="/administration/audit-logs"
                       onClick={() => setIsOpen(false)}
                       className="block rounded-lg px-3 py-3 text-sm text-gray-700 hover:bg-gray-100"
                     >
