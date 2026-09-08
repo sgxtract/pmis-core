@@ -57,7 +57,7 @@ export default function StageHistory({ history, currentStageId }: Props) {
           {history.map((item, index) => {
             const isCurrent = item.stage_id === currentStageId;
 
-            const isCompleted = !isCurrent && item.completed_at !== null;
+            const isCompleted = item.completed_at !== null;
 
             const isLast = index === history.length - 1;
 
@@ -77,14 +77,14 @@ export default function StageHistory({ history, currentStageId }: Props) {
 
                 <div
                   className={`relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${
-                    isCurrent
-                      ? "bg-blue-600 text-white"
-                      : isCompleted
-                        ? "bg-green-600 text-white"
+                    isCompleted
+                      ? "bg-green-600 text-white"
+                      : isCurrent
+                        ? "bg-blue-600 text-white"
                         : "bg-gray-200 text-gray-500"
                   }`}
                 >
-                  {isCurrent ? "●" : isCompleted ? "✓" : "•"}
+                  {isCompleted ? "✓" : isCurrent ? "●" : "•"}
                 </div>
 
                 {/* Content */}
@@ -105,11 +105,15 @@ export default function StageHistory({ history, currentStageId }: Props) {
                       {item.stage_name}
                     </h3>
 
-                    {isCurrent && (
+                    {isCompleted ? (
+                      <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-600">
+                        Completed
+                      </span>
+                    ) : isCurrent ? (
                       <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600">
                         Current Stage
                       </span>
-                    )}
+                    ) : null}
                   </div>
 
                   {/* Started */}
@@ -121,12 +125,14 @@ export default function StageHistory({ history, currentStageId }: Props) {
                   {/* Completed / In Progress */}
 
                   {item.completed_at ? (
-                    <p className="text-sm text-gray-500">
+                    <p
+                      className={`text-sm ${
+                        item.stage_name === "Completed"
+                          ? "font-medium text-green-600"
+                          : "text-gray-500"
+                      }`}
+                    >
                       Completed: {formatDateTime(item.completed_at)}
-                    </p>
-                  ) : isCurrent && item.stage_name === "Completed" ? (
-                    <p className="text-sm font-medium text-green-600">
-                      Completed
                     </p>
                   ) : isCurrent ? (
                     <p className="text-sm font-medium text-blue-600">
