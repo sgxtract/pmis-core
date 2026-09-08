@@ -19,6 +19,16 @@ type ModeCount = {
   request_count: number;
 };
 
+function formatReportDate(dateString: string) {
+  const date = new Date(`${dateString}T00:00:00`);
+
+  return date.toLocaleDateString("en-PH", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 export default async function ReportsPage({
   searchParams,
 }: {
@@ -28,6 +38,17 @@ export default async function ReportsPage({
 
   const from = params.from ?? "";
   const to = params.to ?? "";
+
+  let reportingPeriod = "All Time";
+
+  if (from && to) {
+    reportingPeriod = `${formatReportDate(from)} – ${formatReportDate(to)}`;
+  } else if (from) {
+    reportingPeriod = `From ${formatReportDate(from)}`;
+  } else if (to) {
+    reportingPeriod = `Up to ${formatReportDate(to)}`;
+  }
+
   const supabase = await createClient();
 
   let totalQuery = supabase
@@ -120,6 +141,40 @@ export default async function ReportsPage({
       </div>
 
       <ReportFilters />
+
+      {/* Reporting Period and Total PRs */}
+      <div className="rounded-xl border border-blue-200 bg-blue-50 px-5 py-4">
+        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-medium text-blue-700">
+              Reporting Period
+            </p>
+
+            <p className="mt-1 text-lg font-semibold text-blue-900">
+              {reportingPeriod}
+            </p>
+          </div>
+
+          <div className="text-left sm:text-right">
+            <p className="text-sm text-blue-700">Procurement Requests</p>
+
+            <p className="text-2xl font-bold text-blue-900">{totalPRs ?? 0}</p>
+          </div>
+        </div>
+      </div>
+
+      {(totalPRs ?? 0) === 0 && (
+        <div className="rounded-xl border border-yellow-200 bg-yellow-50 px-5 py-4">
+          <p className="font-medium text-yellow-800">
+            No procurement requests found
+          </p>
+
+          <p className="mt-1 text-sm text-yellow-700">
+            There are no procurement requests within the selected reporting
+            period.
+          </p>
+        </div>
+      )}
 
       {/* Procurement Summary */}
       <div className="mt-8">
