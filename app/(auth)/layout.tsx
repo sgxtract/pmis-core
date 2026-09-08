@@ -1,10 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import LogoutButton from "@/components/auth/LogoutButton";
 import Link from "next/link";
 import SessionGuard from "@/components/auth/SessionGuard";
 import { requireActiveUser } from "@/lib/auth/require-active-user";
 import MobileNav from "@/components/layout/MobileNav";
+import UserMenu from "@/components/layout/UserMenu";
 
 export default async function AuthLayout({
   children,
@@ -49,12 +49,8 @@ export default async function AuthLayout({
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2 sm:gap-4">
-          <span className="hidden max-w-55 truncate text-sm text-gray-600 sm:block">
-            {user.email}
-          </span>
-
-          <LogoutButton />
+        <div className="flex shrink-0 items-center">
+          <UserMenu fullName={profile?.full_name} email={user.email} />
         </div>
       </header>
 

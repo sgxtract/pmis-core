@@ -1,6 +1,68 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
+function getStatusClass(status: string | null) {
+  switch (status?.toLowerCase()) {
+    case "active":
+      return "bg-blue-100 text-blue-700";
+
+    case "completed":
+      return "bg-green-100 text-green-700";
+
+    case "cancelled":
+    case "canceled":
+      return "bg-red-100 text-red-700";
+
+    case "pending":
+      return "bg-yellow-100 text-yellow-700";
+
+    default:
+      return "bg-gray-100 text-gray-700";
+  }
+}
+
+function getStatusCardClass(status: string) {
+  switch (status.toLowerCase()) {
+    case "active":
+      return "border-blue-200 bg-blue-50";
+
+    case "completed":
+      return "border-green-200 bg-green-50";
+
+    case "cancelled":
+    case "canceled":
+      return "border-red-200 bg-red-50";
+
+    case "pending":
+      return "border-yellow-200 bg-yellow-50";
+
+    default:
+      return "border-gray-200 bg-gray-50";
+  }
+}
+
+function getStageClass(stage: string | null) {
+  if (!stage) {
+    return "bg-gray-100 text-gray-700";
+  }
+
+  if (stage === "Completed") {
+    return "bg-green-100 text-green-700";
+  }
+
+  return "bg-blue-100 text-blue-700";
+}
+
+function getStageName(
+  stage: { name: string | null } | { name: string | null }[] | null | undefined,
+) {
+  if (Array.isArray(stage)) {
+    return stage[0]?.name ?? null;
+  }
+
+  return stage?.name ?? null;
+}
+
 export default async function DashboardPage() {
   const supabase = await createClient();
 
@@ -24,11 +86,6 @@ export default async function DashboardPage() {
     .select("*", { count: "exact", head: true })
     .eq("status", "Cancelled");
 
-  // Get total users
-  const { count: totalUsers } = await supabase
-    .from("profiles")
-    .select("*", { count: "exact", head: true });
-
   // Get procurement stage counts
   const { data: stageCounts } = await supabase
     .from("procurement_stages")
@@ -47,16 +104,16 @@ export default async function DashboardPage() {
     .from("procurement_requests")
     .select(
       `
-      id,
-      pr_number,
-      pr_date,
-      particulars,
-      abc,
-      status,
-      procurement_stages (
-        name
-      )
-    `,
+    id,
+    pr_number,
+    pr_date,
+    particulars,
+    abc,
+    status,
+    procurement_stages (
+      name
+    )
+  `,
     )
     .order("pr_date", { ascending: false })
     .order("id", { ascending: false })
@@ -78,51 +135,25 @@ export default async function DashboardPage() {
     {},
   );
 
-  const maxStageCount = Math.max(
-    1,
-    ...(stageCounts ?? []).map(
-      (stage) => stage.procurement_requests?.[0]?.count ?? 0,
-    ),
-  );
-
   // Get active procurement requests requiring attention
   const { data: attentionPRs } = await supabase
     .from("procurement_requests")
     .select(
       `
-      id,
-      pr_number,
-      pr_date,
-      particulars,
-      status,
-      procurement_stages (
-        name
-      )
-    `,
+    id,
+    pr_number,
+    pr_date,
+    particulars,
+    status,
+    procurement_stages (
+      name
+    )
+  `,
     )
     .eq("status", "Active")
     .order("pr_date", { ascending: true })
     .order("id", { ascending: true })
     .limit(5);
-
-  // Get currently logged-in user
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  // Get PMIS profile
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("full_name, office, role_id")
-    .eq("id", user?.id)
-    .single();
-
-  // Get user's role
-  const { data: role } = await supabase
-    .from("roles")
-    .select("name")
-    .eq("id", profile?.role_id)
-    .single();
 
   return (
     <div>
@@ -131,24 +162,6 @@ export default async function DashboardPage() {
       <p className="mt-2 text-gray-600">
         Welcome to the Procurement Management Information System.
       </p>
-
-      <div className="mt-6 rounded-xl bg-white p-6 shadow-sm">
-        <p className="text-sm text-gray-500">Logged in as</p>
-
-        <p className="mt-1 text-lg font-semibold text-gray-900">
-          {profile?.full_name || user?.email}
-        </p>
-
-        <p className="mt-2 text-sm text-gray-500">Email: {user?.email}</p>
-
-        <p className="mt-1 text-sm text-gray-500">
-          Office: {profile?.office || "Not assigned"}
-        </p>
-
-        <p className="mt-1 text-sm text-gray-500">
-          Role: {role?.name || "Not assigned"}
-        </p>
-      </div>
 
       <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <Link
@@ -226,7 +239,8 @@ export default async function DashboardPage() {
           {(stageCounts ?? []).map((stage) => {
             const count = stage.procurement_requests?.[0]?.count ?? 0;
 
-            const percentage = (count / maxStageCount) * 100;
+            const percentage =
+              totalPRs && totalPRs > 0 ? (count / totalPRs) * 100 : 0;
 
             return (
               <div key={stage.id} className="px-6 py-4">
@@ -236,7 +250,14 @@ export default async function DashboardPage() {
                   </p>
 
                   <span className="shrink-0 rounded-full bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700">
-                    {count}
+                    {count}{" "}
+                    <span className="font-normal text-gray-500">
+                      (
+                      {percentage % 1 === 0
+                        ? percentage.toFixed(0)
+                        : percentage.toFixed(1)}
+                      %)
+                    </span>
                   </span>
                 </div>
 
@@ -251,6 +272,13 @@ export default async function DashboardPage() {
               </div>
             );
           })}
+        </div>
+
+        <div className="border-t border-gray-200 px-6 py-4 text-right">
+          <p className="text-sm text-gray-500">
+            Total Procurement Requests:{" "}
+            <span className="font-semibold text-gray-900">{totalPRs ?? 0}</span>
+          </p>
         </div>
       </div>
 
@@ -276,8 +304,14 @@ export default async function DashboardPage() {
         </div>
 
         {recentPRs?.length === 0 ? (
-          <div className="px-6 py-12 text-center text-sm text-gray-500">
-            No procurement requests found.
+          <div className="px-6 py-12 text-center">
+            <p className="text-sm font-medium text-gray-700">
+              No procurement requests found.
+            </p>
+
+            <p className="mt-1 text-sm text-gray-500">
+              New procurement requests will appear here once they are recorded.
+            </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -311,51 +345,71 @@ export default async function DashboardPage() {
               </thead>
 
               <tbody className="divide-y divide-gray-200">
-                {(recentPRs ?? []).map((request) => (
-                  <tr key={request.id} className="hover:bg-gray-50">
-                    <td className="whitespace-nowrap px-6 py-4">
-                      <a
-                        href={`/purchased-requests/${request.id}`}
-                        className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
-                      >
-                        {request.pr_number}
-                      </a>
-                    </td>
+                {(recentPRs ?? []).map((request) => {
+                  const stageName = getStageName(request.procurement_stages);
 
-                    <td className="whitespace-nowrap px-6 py-4 text-gray-600">
-                      {new Date(request.pr_date).toLocaleDateString("en-PH", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </td>
+                  return (
+                    <tr
+                      key={request.id}
+                      className="transition hover:bg-gray-50"
+                    >
+                      <td className="whitespace-nowrap px-6 py-4">
+                        <Link
+                          href={`/purchased-requests/${request.id}`}
+                          className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
+                        >
+                          {request.pr_number}
+                        </Link>
+                      </td>
 
-                    <td className="max-w-md px-6 py-4 text-gray-900">
-                      <div className="truncate">
-                        {request.particulars || "—"}
-                      </div>
-                    </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-gray-600">
+                        {new Date(request.pr_date).toLocaleDateString("en-PH", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </td>
 
-                    <td className="whitespace-nowrap px-6 py-4 text-right text-gray-900">
-                      {request.abc !== null
-                        ? `₱${Number(request.abc).toLocaleString("en-PH", {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}`
-                        : "—"}
-                    </td>
+                      <td className="max-w-md px-6 py-4 text-gray-900">
+                        <div
+                          className="truncate"
+                          title={request.particulars || ""}
+                        >
+                          {request.particulars || "—"}
+                        </div>
+                      </td>
 
-                    <td className="whitespace-nowrap px-6 py-4 text-gray-600">
-                      {request.procurement_stages?.[0]?.name ?? "—"}
-                    </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-right text-gray-900">
+                        {request.abc !== null
+                          ? `₱${Number(request.abc).toLocaleString("en-PH", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            })}`
+                          : "—"}
+                      </td>
 
-                    <td className="whitespace-nowrap px-6 py-4">
-                      <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
-                        {request.status || "—"}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+                      <td className="whitespace-nowrap px-6 py-4">
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-medium ${getStageClass(
+                            stageName,
+                          )}`}
+                        >
+                          {stageName || "—"}
+                        </span>
+                      </td>
+
+                      <td className="whitespace-nowrap px-6 py-4">
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-medium ${getStatusClass(
+                            request.status,
+                          )}`}
+                        >
+                          {request.status || "—"}
+                        </span>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -363,38 +417,76 @@ export default async function DashboardPage() {
       </div>
 
       {/* Procurement Status Overview */}
+      {/* Procurement Status Overview */}
       <div className="mt-8 rounded-xl border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-gray-200 px-6 py-4">
-          <h2 className="font-semibold text-gray-900">
-            Procurement Status Overview
-          </h2>
+        <div className="flex flex-col gap-2 border-b border-gray-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="font-semibold text-gray-900">
+              Procurement Status Overview
+            </h2>
 
-          <p className="mt-1 text-sm text-gray-500">
-            Summary of procurement requests by current status.
-          </p>
+            <p className="mt-1 text-sm text-gray-500">
+              Summary of procurement requests by current status.
+            </p>
+          </div>
+
+          <Link
+            href="/purchased-requests"
+            className="shrink-0 text-sm font-medium text-blue-600 hover:text-blue-800"
+          >
+            View All →
+          </Link>
         </div>
 
-        <div className="grid gap-4 p-6 sm:grid-cols-2 lg:grid-cols-4">
-          {Object.entries(statusCounts).map(([status, count]) => (
-            <div
-              key={status}
-              className="rounded-lg border border-gray-200 bg-gray-50 p-5"
-            >
-              <p className="text-sm font-medium text-gray-500">{status}</p>
+        {Object.keys(statusCounts).length === 0 ? (
+          <div className="px-6 py-12 text-center">
+            <p className="text-sm font-medium text-gray-700">
+              No procurement status data available.
+            </p>
 
-              <p className="mt-2 text-3xl font-bold text-gray-900">{count}</p>
+            <p className="mt-1 text-sm text-gray-500">
+              Status information will appear here once procurement requests are
+              recorded.
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-4 p-6 sm:grid-cols-2 lg:grid-cols-4">
+            {Object.entries(statusCounts).map(([status, count]) => (
+              <Link
+                key={status}
+                href={`/purchased-requests?status=${encodeURIComponent(status)}`}
+                className={`rounded-lg border p-5 transition hover:-translate-y-0.5 hover:shadow-sm ${getStatusCardClass(
+                  status,
+                )}`}
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-semibold text-gray-700">
+                    {status}
+                  </p>
 
-              <p className="mt-1 text-xs text-gray-500">
-                Procurement request{count === 1 ? "" : "s"}
-              </p>
-            </div>
-          ))}
-        </div>
+                  <span
+                    className={`rounded-full px-2.5 py-1 text-xs font-medium ${getStatusClass(
+                      status,
+                    )}`}
+                  >
+                    View
+                  </span>
+                </div>
+
+                <p className="mt-4 text-3xl font-bold text-gray-900">{count}</p>
+
+                <p className="mt-1 text-xs text-gray-500">
+                  Procurement request{count === 1 ? "" : "s"}
+                </p>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Active procurement requests requiring attention */}
       <div className="mt-8 rounded-xl border border-gray-200 bg-white shadow-sm">
-        <div className="flex flex-col gap-2 border-b border-gray-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 border-b border-gray-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="font-semibold text-gray-900">
               Requests Requiring Attention
@@ -407,15 +499,21 @@ export default async function DashboardPage() {
 
           <Link
             href="/purchased-requests?status=Active"
-            className="text-sm font-medium text-blue-600 hover:text-blue-800"
+            className="shrink-0 text-sm font-medium text-blue-600 hover:text-blue-800"
           >
             View All Active →
           </Link>
         </div>
 
         {attentionPRs?.length === 0 ? (
-          <div className="px-6 py-12 text-center text-sm text-gray-500">
-            No active procurement requests require attention.
+          <div className="px-6 py-12 text-center">
+            <p className="text-sm font-medium text-gray-700">
+              No active procurement requests require attention.
+            </p>
+
+            <p className="mt-1 text-sm text-gray-500">
+              All active procurement requests are currently accounted for.
+            </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -445,45 +543,61 @@ export default async function DashboardPage() {
               </thead>
 
               <tbody className="divide-y divide-gray-200">
-                {(attentionPRs ?? []).map((request) => (
-                  <tr key={request.id} className="hover:bg-gray-50">
-                    <td className="whitespace-nowrap px-6 py-4">
-                      <a
-                        href={`/purchased-requests/${request.id}`}
-                        className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
-                      >
-                        {request.pr_number}
-                      </a>
-                    </td>
+                {(attentionPRs ?? []).map((request) => {
+                  const stageName = getStageName(request.procurement_stages);
 
-                    <td className="whitespace-nowrap px-6 py-4 text-gray-600">
-                      {new Date(request.pr_date).toLocaleDateString("en-PH", {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </td>
+                  return (
+                    <tr
+                      key={request.id}
+                      className="transition hover:bg-gray-50"
+                    >
+                      <td className="whitespace-nowrap px-6 py-4">
+                        <Link
+                          href={`/purchased-requests/${request.id}`}
+                          className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
+                        >
+                          {request.pr_number}
+                        </Link>
+                      </td>
 
-                    <td className="max-w-md px-6 py-4 text-gray-900">
-                      <div className="truncate">
-                        {request.particulars || "—"}
-                      </div>
-                    </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-gray-600">
+                        {new Date(request.pr_date).toLocaleDateString("en-PH", {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })}
+                      </td>
 
-                    <td className="whitespace-nowrap px-6 py-4 text-gray-600">
-                      {request.procurement_stages?.[0]?.name ?? "—"}
-                    </td>
+                      <td className="max-w-md px-6 py-4 text-gray-900">
+                        <div
+                          className="truncate"
+                          title={request.particulars || ""}
+                        >
+                          {request.particulars || "—"}
+                        </div>
+                      </td>
 
-                    <td className="whitespace-nowrap px-6 py-4">
-                      <a
-                        href={`/purchased-requests/${request.id}`}
-                        className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
-                      >
-                        View PR
-                      </a>
-                    </td>
-                  </tr>
-                ))}
+                      <td className="whitespace-nowrap px-6 py-4">
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-medium ${getStageClass(
+                            stageName,
+                          )}`}
+                        >
+                          {stageName || "—"}
+                        </span>
+                      </td>
+
+                      <td className="whitespace-nowrap px-6 py-4">
+                        <Link
+                          href={`/purchased-requests/${request.id}`}
+                          className="inline-flex items-center rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-medium text-gray-700 transition hover:bg-gray-50 hover:text-gray-900"
+                        >
+                          Review PR
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
