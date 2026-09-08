@@ -19,6 +19,11 @@ export default async function DashboardPage() {
     .select("*", { count: "exact", head: true })
     .eq("status", "Completed");
 
+  const { count: cancelledPRs } = await supabase
+    .from("procurement_requests")
+    .select("*", { count: "exact", head: true })
+    .eq("status", "Cancelled");
+
   // Get total users
   const { count: totalUsers } = await supabase
     .from("profiles")
@@ -71,6 +76,13 @@ export default async function DashboardPage() {
       return counts;
     },
     {},
+  );
+
+  const maxStageCount = Math.max(
+    1,
+    ...(stageCounts ?? []).map(
+      (stage) => stage.procurement_requests?.[0]?.count ?? 0,
+    ),
   );
 
   // Get active procurement requests requiring attention
@@ -182,16 +194,23 @@ export default async function DashboardPage() {
           </p>
         </Link>
 
-        <div className="rounded-xl bg-white p-6 shadow-sm">
-          <p className="text-sm font-medium text-gray-500">Users</p>
+        <Link
+          href="/purchased-requests?status=Cancelled"
+          className="block rounded-xl bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+        >
+          <p className="text-sm font-medium text-gray-500">Cancelled PRs</p>
 
           <p className="mt-2 text-3xl font-bold text-gray-900">
-            {totalUsers ?? 0}
+            {cancelledPRs ?? 0}
           </p>
-        </div>
+
+          <p className="mt-2 text-xs text-gray-500">
+            View cancelled requests →
+          </p>
+        </Link>
       </div>
 
-      {/* Procurement stage overview */}
+      {/* Procurement Stage Overview */}
       <div className="mt-8 rounded-xl border border-gray-200 bg-white shadow-sm">
         <div className="border-b border-gray-200 px-6 py-4">
           <h2 className="font-semibold text-gray-900">
@@ -207,18 +226,28 @@ export default async function DashboardPage() {
           {(stageCounts ?? []).map((stage) => {
             const count = stage.procurement_requests?.[0]?.count ?? 0;
 
+            const percentage = (count / maxStageCount) * 100;
+
             return (
-              <div
-                key={stage.id}
-                className="flex items-center justify-between px-6 py-4"
-              >
-                <div>
-                  <p className="font-medium text-gray-900">{stage.name}</p>
+              <div key={stage.id} className="px-6 py-4">
+                <div className="flex items-center justify-between gap-4">
+                  <p className="min-w-0 truncate font-medium text-gray-900">
+                    {stage.name}
+                  </p>
+
+                  <span className="shrink-0 rounded-full bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700">
+                    {count}
+                  </span>
                 </div>
 
-                <span className="rounded-full bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700">
-                  {count}
-                </span>
+                <div className="mt-3 h-2 overflow-hidden rounded-full bg-gray-100">
+                  <div
+                    className="h-full rounded-full bg-blue-600 transition-all"
+                    style={{
+                      width: `${percentage}%`,
+                    }}
+                  />
+                </div>
               </div>
             );
           })}
