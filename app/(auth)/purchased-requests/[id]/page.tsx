@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import AdvanceStageForm from "./advance-stage/AdvanceStageForm";
 import StageHistory from "./StageHistory";
+import RestorePRForm from "./restore/RestorePRForm";
 
 type PageProps = {
   params: Promise<{
@@ -360,7 +361,26 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
             </p>
           </div>
 
-          {nextStage ? (
+          {request.status === "Cancelled" || request.status === "Canceled" ? (
+            <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-5">
+              <p className="text-xs font-semibold uppercase tracking-wide text-red-600">
+                Procurement Cancelled
+              </p>
+
+              <p className="mt-1 text-xl font-bold text-red-800">
+                This procurement request is cancelled.
+              </p>
+
+              <p className="mt-2 text-sm text-red-700">
+                The request cannot be advanced while it is cancelled. You may
+                restore it to continue processing.
+              </p>
+
+              <div className="mt-4">
+                <RestorePRForm requestId={request.id} />
+              </div>
+            </div>
+          ) : nextStage ? (
             <div className="mt-6 rounded-xl border border-blue-100 bg-blue-50 p-5">
               <p className="text-xs font-semibold uppercase tracking-wide text-blue-600">
                 Next Stage
