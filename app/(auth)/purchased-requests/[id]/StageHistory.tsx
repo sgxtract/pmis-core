@@ -124,6 +124,10 @@ export default function StageHistory({ history, currentStageId }: Props) {
                     <p className="text-sm text-gray-500">
                       Completed: {formatDateTime(item.completed_at)}
                     </p>
+                  ) : isCurrent && item.stage_name === "Completed" ? (
+                    <p className="text-sm font-medium text-green-600">
+                      Completed
+                    </p>
                   ) : isCurrent ? (
                     <p className="text-sm font-medium text-blue-600">
                       In progress
