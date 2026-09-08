@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useActionState } from "react";
-import { restoreProcurementRequest } from "./actions";
+import { cancelProcurementRequest } from "./actions";
 
-type RestorePRFormProps = {
+type CancelPRFormProps = {
   requestId: number;
 };
 
@@ -13,9 +13,9 @@ const initialState = {
   success: false,
 };
 
-export default function RestorePRForm({ requestId }: RestorePRFormProps) {
+export default function CancelPRForm({ requestId }: CancelPRFormProps) {
   const [state, formAction, isPending] = useActionState(
-    restoreProcurementRequest.bind(null, String(requestId)),
+    cancelProcurementRequest.bind(null, String(requestId)),
     initialState,
   );
 
@@ -25,7 +25,7 @@ export default function RestorePRForm({ requestId }: RestorePRFormProps) {
     setShowConfirmation(false);
 
     const form = document.getElementById(
-      "restore-pr-form",
+      "cancel-pr-form",
     ) as HTMLFormElement | null;
 
     form?.requestSubmit();
@@ -33,14 +33,14 @@ export default function RestorePRForm({ requestId }: RestorePRFormProps) {
 
   return (
     <>
-      <form id="restore-pr-form" action={formAction} className="space-y-4">
+      <form id="cancel-pr-form" action={formAction} className="space-y-4">
         <button
           type="button"
           onClick={() => setShowConfirmation(true)}
           disabled={isPending}
-          className="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-lg border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {isPending ? "Restoring..." : "Restore PR"}
+          {isPending ? "Cancelling..." : "Cancel PR"}
         </button>
 
         {state?.error && (
@@ -57,7 +57,7 @@ export default function RestorePRForm({ requestId }: RestorePRFormProps) {
 
             <div className="border-b px-6 py-4">
               <h2 className="text-lg font-semibold text-gray-900">
-                Restore Procurement Request
+                Cancel Procurement Request
               </h2>
             </div>
 
@@ -65,13 +65,12 @@ export default function RestorePRForm({ requestId }: RestorePRFormProps) {
 
             <div className="px-6 py-5">
               <p className="text-sm text-gray-700">
-                Are you sure you want to restore this cancelled procurement
-                request?
+                Are you sure you want to cancel this procurement request?
               </p>
 
               <p className="mt-3 text-sm text-gray-500">
-                The request status will be changed back to Active and processing
-                can continue from its current stage.
+                The request will no longer be allowed to advance until it is
+                restored.
               </p>
             </div>
 
@@ -83,15 +82,15 @@ export default function RestorePRForm({ requestId }: RestorePRFormProps) {
                 onClick={() => setShowConfirmation(false)}
                 className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
               >
-                Keep Cancelled
+                Keep Request
               </button>
 
               <button
                 type="button"
                 onClick={handleConfirm}
-                className="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700"
+                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
               >
-                Yes, Restore PR
+                Yes, Cancel PR
               </button>
             </div>
           </div>

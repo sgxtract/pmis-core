@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import AdvanceStageForm from "./advance-stage/AdvanceStageForm";
 import StageHistory from "./StageHistory";
 import RestorePRForm from "./restore/RestorePRForm";
+import CancelPRForm from "./cancel/CancelPRForm";
 
 type PageProps = {
   params: Promise<{
@@ -402,6 +403,21 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
                       currentStageName={currentStage?.name ?? "Unknown"}
                       nextStageName={nextStage.name}
                     />
+                  </div>
+
+                  <div className="mt-6 border-t border-blue-200 pt-6">
+                    <p className="text-sm font-semibold text-gray-800">
+                      Cancel Procurement Request
+                    </p>
+
+                    <p className="mt-1 text-sm text-gray-600">
+                      Cancelling this request will prevent it from being
+                      advanced until it is restored.
+                    </p>
+
+                    <div className="mt-4">
+                      <CancelPRForm requestId={request.id} />
+                    </div>
                   </div>
                 </>
               ) : (
