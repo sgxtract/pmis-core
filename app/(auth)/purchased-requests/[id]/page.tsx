@@ -239,7 +239,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
 
         <Link
           href={`/purchased-requests/${procurementRequest.id}/edit`}
-          className="inline-flex w-full shrink-0 items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 sm:w-auto"
+          className="inline-flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto"
         >
           Edit PR
         </Link>
