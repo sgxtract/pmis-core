@@ -225,7 +225,7 @@ export default function Sidebar({ isAdmin }: SidebarProps) {
 
   return (
     <aside
-      className={`relative hidden min-h-[calc(100vh-4rem)] shrink-0 border-r bg-white md:flex md:flex-col ${
+      className={`relative hidden min-h-full shrink-0 border-r bg-white md:flex md:flex-col ${
         collapsed ? "w-20" : "w-64"
       } transition-[width] duration-200`}
     >

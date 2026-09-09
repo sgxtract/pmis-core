@@ -36,7 +36,6 @@ export default function ReportFilters() {
   const searchParams = useSearchParams();
 
   const [from, setFrom] = useState(searchParams.get("from") ?? "");
-
   const [to, setTo] = useState(searchParams.get("to") ?? "");
 
   function applyDates(fromDate: string, toDate: string) {
@@ -119,16 +118,70 @@ export default function ReportFilters() {
     applyDates("", "");
   }
 
-  return (
-    <div className="rounded-xl border bg-white p-4 shadow-sm">
-      <div className="mb-4">
-        <p className="text-sm font-medium text-gray-700">Quick Date Range</p>
+  function getActivePreset() {
+    const today = new Date();
 
-        <div className="mt-2 flex flex-wrap gap-2">
+    const year = today.getFullYear();
+    const month = today.getMonth();
+
+    const thisMonthFrom = formatDate(getMonthStart(year, month));
+    const thisMonthTo = formatDate(getMonthEnd(year, month));
+
+    const lastMonthFrom = formatDate(getMonthStart(year, month - 1));
+    const lastMonthTo = formatDate(getMonthEnd(year, month - 1));
+
+    const thisQuarterFrom = formatDate(getQuarterStart(year, month));
+    const thisQuarterTo = formatDate(getQuarterEnd(year, month));
+
+    const thisYearFrom = `${year}-01-01`;
+    const thisYearTo = `${year}-12-31`;
+
+    if (!from && !to) {
+      return "all";
+    }
+
+    if (from === thisMonthFrom && to === thisMonthTo) {
+      return "this-month";
+    }
+
+    if (from === lastMonthFrom && to === lastMonthTo) {
+      return "last-month";
+    }
+
+    if (from === thisQuarterFrom && to === thisQuarterTo) {
+      return "this-quarter";
+    }
+
+    if (from === thisYearFrom && to === thisYearTo) {
+      return "this-year";
+    }
+
+    return null;
+  }
+
+  const activePreset = getActivePreset();
+
+  return (
+    <div>
+      {/* Quick Date Range */}
+      <div>
+        <p className="text-sm font-semibold tracking-tight text-gray-900">
+          Quick Date Range
+        </p>
+
+        <p className="mt-1 text-xs text-gray-500">
+          Select a preset reporting period.
+        </p>
+
+        <div className="mt-3 flex flex-wrap gap-2">
           <button
             type="button"
             onClick={() => handlePreset("all")}
-            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className={
+              activePreset === "all"
+                ? "rounded-lg border border-gray-900 bg-gray-900 px-3 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
+                : "rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+            }
           >
             All Time
           </button>
@@ -136,7 +189,11 @@ export default function ReportFilters() {
           <button
             type="button"
             onClick={() => handlePreset("this-month")}
-            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className={
+              activePreset === "this-month"
+                ? "rounded-lg border border-gray-900 bg-gray-900 px-3 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
+                : "rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+            }
           >
             This Month
           </button>
@@ -144,7 +201,11 @@ export default function ReportFilters() {
           <button
             type="button"
             onClick={() => handlePreset("last-month")}
-            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className={
+              activePreset === "last-month"
+                ? "rounded-lg border border-gray-900 bg-gray-900 px-3 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
+                : "rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+            }
           >
             Last Month
           </button>
@@ -152,7 +213,11 @@ export default function ReportFilters() {
           <button
             type="button"
             onClick={() => handlePreset("this-quarter")}
-            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className={
+              activePreset === "this-quarter"
+                ? "rounded-lg border border-gray-900 bg-gray-900 px-3 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
+                : "rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+            }
           >
             This Quarter
           </button>
@@ -160,26 +225,35 @@ export default function ReportFilters() {
           <button
             type="button"
             onClick={() => handlePreset("this-year")}
-            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+            className={
+              activePreset === "this-year"
+                ? "rounded-lg border border-gray-900 bg-gray-900 px-3 py-2 text-sm font-medium text-white transition hover:bg-gray-800"
+                : "rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+            }
           >
             This Year
           </button>
         </div>
       </div>
 
-      <div className="border-t pt-4">
-        <p className="mb-3 text-sm font-medium text-gray-700">
+      {/* Custom Date Range */}
+      <div className="mt-5 border-t border-gray-100 pt-5">
+        <p className="text-sm font-semibold tracking-tight text-gray-900">
           Custom Date Range
+        </p>
+
+        <p className="mt-1 text-xs text-gray-500">
+          Specify the exact reporting period.
         </p>
 
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col gap-4 sm:flex-row sm:items-end"
+          className="mt-4 grid min-w-0 gap-4 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]"
         >
-          <div className="flex-1">
+          <div className="min-w-0">
             <label
               htmlFor="from"
-              className="mb-1 block text-sm font-medium text-gray-700"
+              className="mb-1.5 block text-sm font-medium text-gray-700"
             >
               From Date
             </label>
@@ -189,14 +263,14 @@ export default function ReportFilters() {
               type="date"
               value={from}
               onChange={(event) => setFrom(event.target.value)}
-              className="text-gray-500 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="w-full min-w-0 rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-700 outline-none transition placeholder:text-gray-400 focus:border-gray-500 focus:ring-2 focus:ring-gray-200"
             />
           </div>
 
-          <div className="flex-1">
+          <div className="min-w-0">
             <label
               htmlFor="to"
-              className="mb-1 block text-sm font-medium text-gray-700"
+              className="mb-1.5 block text-sm font-medium text-gray-700"
             >
               To Date
             </label>
@@ -206,14 +280,14 @@ export default function ReportFilters() {
               type="date"
               value={to}
               onChange={(event) => setTo(event.target.value)}
-              className="text-gray-500 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="w-full min-w-0 rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-700 outline-none transition placeholder:text-gray-400 focus:border-gray-500 focus:ring-2 focus:ring-gray-200"
             />
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex min-w-0 items-end gap-2 sm:col-span-2 lg:col-span-1">
             <button
               type="submit"
-              className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+              className="rounded-lg bg-gray-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-gray-800"
             >
               Apply
             </button>
@@ -221,7 +295,7 @@ export default function ReportFilters() {
             <button
               type="button"
               onClick={handleClear}
-              className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              className="rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
             >
               Clear
             </button>

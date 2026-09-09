@@ -214,7 +214,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
 
         <Link
           href={`/purchased-requests/${procurementRequest.id}/edit`}
-          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          className="inline-flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 sm:w-auto"
         >
           Edit PR
         </Link>
@@ -452,82 +452,81 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
 
       {/* Procurement Progress */}
       {!isCompleted && !isCancelled && (
-          <div className="mt-6 rounded-xl border bg-white shadow-sm">
-            <div className="border-b px-6 py-4">
-              <h2 className="font-semibold text-gray-900">
-                Procurement Progress
-              </h2>
-            </div>
-
-            <div className="p-6">
-              {stages?.map((stage, index) => {
-                const isCurrent =
-                  stage.id === procurementRequest.current_stage_id;
-
-                const isFinalCompleted =
-                  stage.name === "Completed" && isCurrent;
-
-                const isCompleted =
-                  isFinalCompleted ||
-                  (!isCurrent && completedStageIds.has(stage.id));
-
-                const isLast = index === stages.length - 1;
-
-                return (
-                  <div key={stage.id} className="flex">
-                    {/* Timeline indicator */}
-                    <div className="flex flex-col items-center">
-                      <div
-                        className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold ${
-                          isCompleted
-                            ? "bg-green-600 text-white"
-                            : isCurrent
-                              ? "bg-blue-600 text-white"
-                              : "bg-gray-200 text-gray-500"
-                        }`}
-                      >
-                        {isCompleted ? "✓" : stage.sequence_number}
-                      </div>
-
-                      {!isLast && (
-                        <div
-                          className={`h-12 w-0.5 ${
-                            isCompleted ? "bg-green-600" : "bg-gray-200"
-                          }`}
-                        />
-                      )}
-                    </div>
-
-                    {/* Stage information */}
-                    <div className="ml-4 pb-8">
-                      <p
-                        className={`font-medium ${
-                          isCompleted
-                            ? "text-green-600"
-                            : isCurrent
-                              ? "text-blue-600"
-                              : "text-gray-400"
-                        }`}
-                      >
-                        {stage.name}
-                      </p>
-
-                      {isCompleted ? (
-                        <p className="mt-1 text-xs font-medium text-green-600">
-                          Completed
-                        </p>
-                      ) : isCurrent ? (
-                        <p className="mt-1 text-xs font-medium text-blue-600">
-                          Current Stage
-                        </p>
-                      ) : null}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+        <div className="mt-6 rounded-xl border bg-white shadow-sm">
+          <div className="border-b px-6 py-4">
+            <h2 className="font-semibold text-gray-900">
+              Procurement Progress
+            </h2>
           </div>
-        )}
+
+          <div className="p-6">
+            {stages?.map((stage, index) => {
+              const isCurrent =
+                stage.id === procurementRequest.current_stage_id;
+
+              const isFinalCompleted = stage.name === "Completed" && isCurrent;
+
+              const isCompleted =
+                isFinalCompleted ||
+                (!isCurrent && completedStageIds.has(stage.id));
+
+              const isLast = index === stages.length - 1;
+
+              return (
+                <div key={stage.id} className="flex">
+                  {/* Timeline indicator */}
+                  <div className="flex flex-col items-center">
+                    <div
+                      className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold ${
+                        isCompleted
+                          ? "bg-green-600 text-white"
+                          : isCurrent
+                            ? "bg-blue-600 text-white"
+                            : "bg-gray-200 text-gray-500"
+                      }`}
+                    >
+                      {isCompleted ? "✓" : stage.sequence_number}
+                    </div>
+
+                    {!isLast && (
+                      <div
+                        className={`h-12 w-0.5 ${
+                          isCompleted ? "bg-green-600" : "bg-gray-200"
+                        }`}
+                      />
+                    )}
+                  </div>
+
+                  {/* Stage information */}
+                  <div className="ml-4 pb-8">
+                    <p
+                      className={`font-medium ${
+                        isCompleted
+                          ? "text-green-600"
+                          : isCurrent
+                            ? "text-blue-600"
+                            : "text-gray-400"
+                      }`}
+                    >
+                      {stage.name}
+                    </p>
+
+                    {isCompleted ? (
+                      <p className="mt-1 text-xs font-medium text-green-600">
+                        Completed
+                      </p>
+                    ) : isCurrent ? (
+                      <p className="mt-1 text-xs font-medium text-blue-600">
+                        Current Stage
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {/* Stage History */}
       <StageHistory
