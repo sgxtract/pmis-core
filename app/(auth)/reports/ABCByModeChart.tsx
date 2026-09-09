@@ -42,14 +42,14 @@ export default function ABCByModeChart({ data }: ABCByModeChartProps) {
           data={data}
           margin={{
             top: 10,
-            right: 20,
+            right: 100,
             left: 20,
-            bottom: 10,
+            bottom: 20,
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
 
-          <XAxis dataKey="mode_name" interval={0} />
+          <XAxis dataKey="mode_name" interval={0} tickMargin={8} height={50} />
 
           <YAxis
             tickFormatter={(value) =>
@@ -69,7 +69,12 @@ export default function ABCByModeChart({ data }: ABCByModeChartProps) {
             }
           />
 
-          <Bar dataKey="total_abc" name="Total ABC" radius={[4, 4, 0, 0]} />
+          <Bar
+            dataKey="total_abc"
+            name="Total ABC"
+            fill="#3f73d4"
+            radius={[4, 4, 0, 0]}
+          />
         </BarChart>
       </ResponsiveContainer>
     </div>

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import ReportFilters from "./ReportFilters";
+import PrintReportButton from "./PrintReportButton";
 import StageDistributionChart from "./StageDistributionChart";
 import ModeDistributionChart from "./ModeDistributionChart";
 import StatusDistributionChart from "./StatusDistributionChart";
@@ -192,7 +193,7 @@ export default async function ReportsPage({
   return (
     <div className="min-w-0 w-full max-w-full space-y-6 print:space-y-4">
       <div className="hidden print:block">
-        <div className="mb-6 flex items-center gap-4 border-b border-gray-300 pb-4">
+        <div className="mb-5 flex items-center gap-4 border-b border-gray-300 pb-4">
           <Image
             src="/sorsogon-logo.png"
             alt="Sorsogon Province"
@@ -213,16 +214,52 @@ export default async function ReportsPage({
             <p className="mt-1 text-sm text-gray-500">Procurement Report</p>
           </div>
         </div>
+
+        <div className="mb-6 grid grid-cols-3 gap-4">
+          <div className="rounded-lg border border-gray-200 px-4 py-3">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+              Reporting Period
+            </p>
+
+            <p className="mt-1 text-sm font-semibold text-gray-900">
+              {reportingPeriod}
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-gray-200 px-4 py-3">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+              Procurement Requests
+            </p>
+
+            <p className="mt-1 text-sm font-semibold text-gray-900">
+              {totalPRs ?? 0}
+            </p>
+          </div>
+
+          <div className="rounded-lg border border-gray-200 px-4 py-3">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-gray-500">
+              Total Approved Budget (ABC)
+            </p>
+
+            <p className="mt-1 text-sm font-semibold text-gray-900">
+              {formatCurrency(totalABC)}
+            </p>
+          </div>
+        </div>
       </div>
 
-      <div className="print:hidden">
-        <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
-          Reports
-        </h1>
+      <div className="print:hidden flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+            Reports
+          </h1>
 
-        <p className="mt-1 text-sm text-gray-500 sm:text-base">
-          Procurement analytics and summary information.
-        </p>
+          <p className="mt-1 text-sm text-gray-500 sm:text-base">
+            Procurement analytics and summary information.
+          </p>
+        </div>
+
+        <PrintReportButton />
       </div>
 
       <div className="print:hidden rounded-xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
@@ -240,7 +277,7 @@ export default async function ReportsPage({
       </div>
 
       {/* Reporting Period and Total PRs */}
-      <div className="min-w-0 w-full rounded-xl border border-gray-200 bg-white px-5 py-4 shadow-sm">
+      <div className="print:hidden min-w-0 w-full rounded-xl border border-gray-200 bg-white px-5 py-4 shadow-sm">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -287,7 +324,7 @@ export default async function ReportsPage({
           Current procurement request totals by status.
         </p>
 
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 print:*:mt-0 print:grid-cols-4">
           {/* Total */}
           <div className="group rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md">
             <div className="flex items-center justify-between">
@@ -398,7 +435,7 @@ export default async function ReportsPage({
       </div>
 
       {/* ABC by Procurement Mode */}
-      <div className="mt-10 break-inside-avoid overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm print:shadow-none">
+      <div className="mt-10 print:break-inside-avoid overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm print:shadow-none">
         <div className="border-b border-gray-200 px-6 py-4">
           <h2 className="text-lg font-semibold tracking-tight text-gray-900">
             ABC by Procurement Mode
@@ -409,7 +446,7 @@ export default async function ReportsPage({
           </p>
         </div>
 
-        <div className="p-4 sm:p-6">
+        <div className="p-4 sm:p-6 print:hidden">
           <ABCByModeChart
             data={modeABC
               .filter((mode) => Number(mode.total_abc) > 0)
@@ -445,7 +482,7 @@ export default async function ReportsPage({
       </div>
 
       {/* Procurement by Status */}
-      <div className="mt-10 break-inside-avoid overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm print:shadow-none">
+      <div className="mt-8 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm print:shadow-none">
         <div className="border-b border-gray-200 px-6 py-4">
           <h2 className="text-lg font-semibold tracking-tight text-gray-900">
             Procurement by Status
@@ -464,7 +501,7 @@ export default async function ReportsPage({
       </div>
 
       {/* Procurement by Stage */}
-      <div className="mt-10 break-inside-avoid overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm print:shadow-none">
+      <div className="mt-10 print:break-inside-avoid overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm print:shadow-none">
         <div className="border-b border-gray-200 px-6 py-4">
           <h2 className="text-lg font-semibold tracking-tight text-gray-900">
             Procurement by Stage
@@ -475,7 +512,7 @@ export default async function ReportsPage({
           </p>
         </div>
 
-        <div className="p-4 sm:p-6">
+        <div className="p-4 sm:p-6 print:hidden">
           <StageDistributionChart
             data={stageCounts.map((stage) => ({
               stage_name: stage.stage_name,
@@ -513,7 +550,7 @@ export default async function ReportsPage({
       </div>
 
       {/* Procurement by Mode of Procurement */}
-      <div className="mt-10 break-inside-avoid overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm print:shadow-none">
+      <div className="mt-10 print:break-inside-avoid overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm print:shadow-none">
         <div className="border-b border-gray-200 px-6 py-4">
           <h2 className="text-lg font-semibold tracking-tight text-gray-900">
             Procurement by Mode
@@ -556,6 +593,26 @@ export default async function ReportsPage({
               </div>
             );
           })}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="hidden print:block border-t border-gray-300 pt-3 mt-8">
+        <div className="flex items-center justify-between text-[10px] text-gray-500">
+          <div>
+            <p className="font-semibold text-gray-700">Province of Sorsogon</p>
+            <p>Provincial Bids and Awards Committee</p>
+          </div>
+
+          <div className="text-right">
+            <p>
+              Report generated on{" "}
+              {new Date().toLocaleString("en-PH", {
+                dateStyle: "medium",
+                timeStyle: "short",
+              })}
+            </p>
+          </div>
         </div>
       </div>
     </div>
