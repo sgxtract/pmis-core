@@ -203,18 +203,43 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
       </Link>
 
       {/* Page heading */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">
-            {procurementRequest.pr_number}
-          </h1>
+      <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+              {procurementRequest.pr_number}
+            </h1>
 
-          <p className="mt-2 text-gray-600">Procurement Request</p>
+            <span
+              className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${getStatusClass(
+                procurementRequest.status,
+              )}`}
+            >
+              {procurementRequest.status || "Unknown"}
+            </span>
+
+            {!isCompleted && (
+              <span
+                className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${getStageClass(
+                  currentStage?.name,
+                )}`}
+              >
+                {currentStage?.name || "Unknown Stage"}
+              </span>
+            )}
+          </div>
+
+          <p className="mt-2 text-sm text-gray-500">Procurement Request</p>
+
+          <p className="mt-3 max-w-4xl text-base font-medium leading-6 text-gray-900">
+            {procurementRequest.particulars ||
+              "No project name or particulars provided."}
+          </p>
         </div>
 
         <Link
           href={`/purchased-requests/${procurementRequest.id}/edit`}
-          className="inline-flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 sm:w-auto"
+          className="inline-flex w-full shrink-0 items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700 sm:w-auto"
         >
           Edit PR
         </Link>
@@ -226,7 +251,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
           <h2 className="font-semibold text-gray-900">PR Information</h2>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-6 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-x-8 gap-y-6 p-6 sm:grid-cols-2 lg:grid-cols-3">
           {/* PR Number */}
           <div>
             <p className="text-sm text-gray-500">PR Number</p>
@@ -262,7 +287,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
           <div className="sm:col-span-2 lg:col-span-3">
             <p className="text-sm text-gray-500">Particulars</p>
 
-            <p className="mt-1 font-medium text-gray-900">
+            <p className="mt-1 text-base font-semibold leading-6 text-gray-900">
               {procurementRequest.particulars || "—"}
             </p>
           </div>
@@ -280,7 +305,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
           <div>
             <p className="text-sm text-gray-500">ABC</p>
 
-            <p className="mt-1 font-medium text-gray-900">
+            <p className="mt-1 text-lg font-semibold text-gray-900">
               {formatCurrency(procurementRequest.abc)}
             </p>
           </div>
@@ -320,55 +345,39 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
               {procurementRequest.sol_no || "—"}
             </p>
           </div>
-
-          {/* Current Stage */}
-          <div>
-            <p className="text-sm text-gray-500">Current Stage</p>
-
-            <p className="mt-1">
-              <span
-                className={`inline-flex items-center rounded-md px-2 py-1 text-sm font-medium ${getStageClass(
-                  currentStage?.name,
-                )}`}
-              >
-                {currentStage?.name || "Unknown"}
-              </span>
-            </p>
-          </div>
-
-          {/* Status */}
-          <div>
-            <p className="text-sm text-gray-500">Status</p>
-
-            <p className="mt-1">
-              <span
-                className={`inline-flex items-center rounded-md px-2 py-1 text-sm font-medium ${getStatusClass(
-                  procurementRequest.status,
-                )}`}
-              >
-                {procurementRequest.status || "Unknown"}
-              </span>
-            </p>
-          </div>
         </div>
       </div>
 
-      <div className="mt-8 rounded-xl border bg-white shadow-sm">
+      {/* Procurement Workflow */}
+      <div className="mt-8 rounded-xl border bg-white shadow-sm print:hidden">
         <div className="border-b px-6 py-4">
           <h2 className="font-semibold text-gray-900">Procurement Workflow</h2>
         </div>
 
         <div className="p-6">
           <div>
-            <p className="text-sm text-gray-500">Current Stage</p>
-
-            <p className="mt-1 text-lg font-semibold text-gray-900">
-              {currentStage?.name ?? "Unknown"}
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              Current Stage
             </p>
+
+            <div className="mt-2 flex flex-wrap items-center gap-3">
+              <span className="inline-flex items-center rounded-lg bg-blue-100 px-3 py-1.5 text-lg font-semibold text-blue-700">
+                {currentStage?.name ?? "Unknown"}
+              </span>
+
+              {nextStage && request.status === "Active" && (
+                <span className="text-sm text-gray-500">
+                  Next:{" "}
+                  <span className="font-medium text-gray-700">
+                    {nextStage.name}
+                  </span>
+                </span>
+              )}
+            </div>
           </div>
 
           {request.status === "Cancelled" || request.status === "Canceled" ? (
-            <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-5">
+            <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-5 sm:p-6">
               <p className="text-xs font-semibold uppercase tracking-wide text-red-600">
                 Procurement Cancelled
               </p>
@@ -387,19 +396,27 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
               </div>
             </div>
           ) : nextStage ? (
-            <div className="mt-6 rounded-xl border border-blue-100 bg-blue-50 p-5">
-              <p className="text-xs font-semibold uppercase tracking-wide text-blue-600">
-                Next Stage
+            <div className="mt-6 rounded-xl border border-blue-200 bg-blue-50 p-5 sm:p-6">
+              <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">
+                Ready for Next Stage
               </p>
 
-              <p className="mt-1 text-xl font-bold text-gray-900">
+              <p className="mt-1 text-xl font-bold text-gray-900 sm:text-2xl">
                 {nextStage.name}
               </p>
 
               {request.status === "Active" ? (
                 <>
-                  <p className="mt-2 text-sm text-gray-600">
-                    This procurement request is ready to move to the next stage.
+                  <p className="mt-2 text-sm leading-6 text-gray-600">
+                    This procurement request is ready to move from{" "}
+                    <span className="font-medium text-gray-800">
+                      {currentStage?.name ?? "the current stage"}
+                    </span>{" "}
+                    to{" "}
+                    <span className="font-medium text-gray-800">
+                      {nextStage.name}
+                    </span>
+                    .
                   </p>
 
                   <div className="mt-4">
@@ -410,8 +427,8 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
                     />
                   </div>
 
-                  <div className="mt-6 border-t border-blue-200 pt-6">
-                    <p className="text-sm font-semibold text-gray-800">
+                  <div className="mt-8 border-t border-gray-200 pt-6">
+                    <p className="text-sm font-semibold text-gray-900">
                       Cancel Procurement Request
                     </p>
 
@@ -432,12 +449,12 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
               )}
             </div>
           ) : (
-            <div className="mt-6 rounded-xl border border-green-200 bg-green-50 p-5">
+            <div className="mt-6 rounded-xl border border-green-200 bg-green-50 p-5 sm:p-6">
               <p className="text-xs font-semibold uppercase tracking-wide text-green-600">
                 Procurement Complete
               </p>
 
-              <p className="mt-1 text-lg font-bold text-green-800">
+              <p className="mt-1 text-xl font-bold text-green-800">
                 Final Stage Reached
               </p>
 
@@ -452,7 +469,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
 
       {/* Procurement Progress */}
       {!isCompleted && !isCancelled && (
-        <div className="mt-6 rounded-xl border bg-white shadow-sm">
+        <div className="mt-6 rounded-xl border bg-white shadow-sm print:break-inside-avoid">
           <div className="border-b px-6 py-4">
             <h2 className="font-semibold text-gray-900">
               Procurement Progress

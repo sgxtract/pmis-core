@@ -24,8 +24,8 @@ function formatDateTime(value: string) {
 export default function StageHistory({ history, currentStageId }: Props) {
   if (history.length === 0) {
     return (
-      <div className="rounded-xl border bg-white shadow-sm">
-        <div className="border-b px-6 py-4">
+      <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+        <div className="border-b border-gray-200 px-6 py-4">
           <h2 className="font-semibold text-gray-900">Stage History</h2>
         </div>
 
@@ -39,10 +39,10 @@ export default function StageHistory({ history, currentStageId }: Props) {
   }
 
   return (
-    <div className="mt-6 rounded-xl border bg-white shadow-sm">
+    <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm print:break-inside-avoid print:shadow-none">
       {/* Header */}
 
-      <div className="border-b px-6 py-4">
+      <div className="border-b border-gray-200 px-6 py-4">
         <h2 className="font-semibold text-gray-900">Stage History</h2>
 
         <p className="mt-1 text-sm text-gray-500">
@@ -53,12 +53,10 @@ export default function StageHistory({ history, currentStageId }: Props) {
       {/* Timeline */}
 
       <div className="p-6">
-        <div className="space-y-0">
+        <div>
           {history.map((item, index) => {
             const isCurrent = item.stage_id === currentStageId;
-
             const isCompleted = item.completed_at !== null;
-
             const isLast = index === history.length - 1;
 
             return (
@@ -90,61 +88,57 @@ export default function StageHistory({ history, currentStageId }: Props) {
                 {/* Content */}
 
                 <div className="min-w-0 flex-1 pb-8">
-                  {/* Stage name */}
+                  {/* Stage Header */}
 
                   <div className="flex flex-wrap items-center gap-2">
                     <h3
-                      className={`font-semibold ${
-                        isCurrent
-                          ? "text-blue-600"
-                          : isCompleted
-                            ? "text-gray-900"
+                      className={`min-w-0 wrap-break-word font-semibold ${
+                        isCompleted
+                          ? "text-gray-900"
+                          : isCurrent
+                            ? "text-blue-600"
                             : "text-gray-400"
                       }`}
                     >
                       {item.stage_name}
                     </h3>
 
-                    {isCompleted ? (
-                      <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-600">
+                    {isCompleted && (
+                      <span className="shrink-0 rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700">
                         Completed
                       </span>
-                    ) : isCurrent ? (
-                      <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-600">
+                    )}
+
+                    {isCurrent && !isCompleted && (
+                      <span className="shrink-0 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700">
                         Current Stage
                       </span>
-                    ) : null}
+                    )}
                   </div>
 
-                  {/* Started */}
+                  {/* Timeline Details */}
 
-                  <p className="mt-1 text-sm text-gray-500">
-                    Started: {formatDateTime(item.started_at)}
-                  </p>
-
-                  {/* Completed / In Progress */}
-
-                  {item.completed_at ? (
-                    <p
-                      className={`text-sm ${
-                        item.stage_name === "Completed"
-                          ? "font-medium text-green-600"
-                          : "text-gray-500"
-                      }`}
-                    >
-                      Completed: {formatDateTime(item.completed_at)}
+                  <div className="mt-2 space-y-1">
+                    <p className="text-sm text-gray-500">
+                      Started: {formatDateTime(item.started_at)}
                     </p>
-                  ) : isCurrent ? (
-                    <p className="text-sm font-medium text-blue-600">
-                      In progress
-                    </p>
-                  ) : null}
+
+                    {item.completed_at ? (
+                      <p className="text-sm text-gray-500">
+                        Completed: {formatDateTime(item.completed_at)}
+                      </p>
+                    ) : isCurrent ? (
+                      <p className="text-sm font-medium text-blue-600">
+                        In progress
+                      </p>
+                    ) : null}
+                  </div>
 
                   {/* Changed By */}
 
                   {item.changed_by_name && (
-                    <p className="mt-2 text-sm text-gray-600">
-                      Changed by:{" "}
+                    <p className="mt-3 text-sm text-gray-600">
+                      Changed by{" "}
                       <span className="font-medium text-gray-800">
                         {item.changed_by_name}
                       </span>
@@ -154,11 +148,13 @@ export default function StageHistory({ history, currentStageId }: Props) {
                   {/* Remarks */}
 
                   {item.remarks && (
-                    <div className="mt-3 rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-600">
-                      <span className="font-medium text-gray-700">
-                        Remarks:
-                      </span>{" "}
-                      {item.remarks}
+                    <div className="mt-3 max-w-3xl wrap-break-word rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 text-sm leading-5 text-gray-600">
+                      <p>
+                        <span className="font-medium text-gray-700">
+                          Remarks:
+                        </span>{" "}
+                        {item.remarks}
+                      </p>
                     </div>
                   )}
                 </div>
