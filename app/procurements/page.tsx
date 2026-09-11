@@ -177,18 +177,18 @@ export default async function PublicProcurementsPage({
     <main className="min-h-screen bg-gray-100">
       {/* Header */}
       <header className="border-b bg-white">
-        <div className="mx-auto flex max-w-7xl items-center gap-4 px-6 py-5">
+        <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-4 sm:gap-4 sm:px-6 sm:py-5">
           <Image
             src="/sorsogon-logo.png"
             alt="Sorsogon Province Logo"
             width={64}
             height={64}
-            className="h-16 w-16 object-contain"
+            className="h-14 w-14 shrink-0 object-contain sm:h-16 sm:w-16"
           />
 
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
-              Province of Sorsogon
+            <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">
+              Sorsogon Province Public Procurement
             </h1>
 
             <p className="mt-1 text-sm text-gray-500">
@@ -198,11 +198,11 @@ export default async function PublicProcurementsPage({
         </div>
       </header>
 
-      <div className="mx-auto max-w-7xl px-6 py-8">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
         {/* Search and Filters */}
-        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm sm:p-6">
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">
+            <h2 className="text-lg font-semibold tracking-tight text-gray-900">
               Search Procurement
             </h2>
 
@@ -230,7 +230,7 @@ export default async function PublicProcurementsPage({
 
               <button
                 type="submit"
-                className="rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
+                className="rounded-lg bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               >
                 Search
               </button>
@@ -238,9 +238,9 @@ export default async function PublicProcurementsPage({
               {(search || mode || stage || status) && (
                 <Link
                   href="/procurements"
-                  className="rounded-lg border border-gray-300 px-6 py-2.5 text-center text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  className="rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-center text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                 >
-                  Clear
+                  Clear Filters
                 </Link>
               )}
             </div>
@@ -324,9 +324,9 @@ export default async function PublicProcurementsPage({
 
         {/* Results */}
         <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-          <div className="flex flex-col gap-2 border-b border-gray-200 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-2 border-b border-gray-200 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">
+              <h2 className="text-lg font-semibold tracking-tight text-gray-900">
                 Procurement Requests
               </h2>
 
@@ -409,7 +409,10 @@ export default async function PublicProcurementsPage({
 
                   <tbody className="divide-y divide-gray-200">
                     {procurements.map((pr) => (
-                      <tr key={pr.id} className="hover:bg-gray-50">
+                      <tr
+                        key={pr.id}
+                        className="hover:bg-gray-50 transition-colors"
+                      >
                         <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
                           {pr.pr_number}
                         </td>
@@ -433,7 +436,7 @@ export default async function PublicProcurementsPage({
                         <td className="px-6 py-4 text-sm">
                           {pr.current_stage ? (
                             <span
-                              className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${getStageClass(
+                              className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-semibold ${getStageClass(
                                 pr.current_stage,
                               )}`}
                             >
@@ -447,7 +450,7 @@ export default async function PublicProcurementsPage({
                         <td className="whitespace-nowrap px-6 py-4 text-sm">
                           {pr.status ? (
                             <span
-                              className={`inline-flex items-center rounded-md bg-green-400/10 px-2 py-1 text-xs font-medium text-green-400 inset-ring inset-ring-green-500/20 ${getStatusClass(
+                              className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-semibold ${getStatusClass(
                                 pr.status,
                               )}`}
                             >
@@ -461,7 +464,7 @@ export default async function PublicProcurementsPage({
                         <td className="whitespace-nowrap px-6 py-4 text-sm">
                           <Link
                             href={`/procurements/${pr.id}`}
-                            className="font-medium text-blue-600 hover:text-blue-800"
+                            className="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                           >
                             View
                           </Link>

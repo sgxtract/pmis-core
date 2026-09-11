@@ -167,18 +167,18 @@ export default async function PublicProcurementDetailPage({
           <div className="border-b border-gray-200 px-6 py-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-500">
+                <p className="text-sm font-medium uppercase tracking-wide text-gray-500">
                   Procurement Request
                 </p>
 
-                <h2 className="mt-1 text-2xl font-bold text-gray-900">
+                <h2 className="mt-1 text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
                   {procurement.pr_number}
                 </h2>
               </div>
 
               {procurement.status && (
                 <span
-                  className={`inline-flex w-fit rounded-full px-3 py-1 text-sm font-medium ${getStatusClass(
+                  className={`inline-flex w-fit items-center rounded-md px-3 py-1.5 text-sm font-semibold ${getStatusClass(
                     procurement.status,
                   )}`}
                 >
@@ -259,29 +259,13 @@ export default async function PublicProcurementDetailPage({
                 {procurement.current_stage ?? "—"}
               </p>
             </div>
-
-            {/* Status */}
-            <div>
-              <p className="text-sm font-medium text-gray-500">Status</p>
-
-              {/* <p className="mt-1 text-base text-gray-900">
-                {procurement.status ?? "—"}
-              </p> */}
-              <span
-                className={`inline-flex items-center rounded-md px-2 py-1 text-sm font-medium ${getStatusClass(
-                  procurement.status,
-                )}`}
-              >
-                {procurement.status || "Unknown"}
-              </span>
-            </div>
           </div>
         </section>
 
         {/* Procurement Progress */}
         <section className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
           <div className="border-b border-gray-200 px-6 py-5">
-            <h2 className="text-lg font-semibold text-gray-900">
+            <h2 className="text-lg font-semibold tracking-tight text-gray-900">
               Procurement Progress
             </h2>
 
@@ -327,7 +311,7 @@ export default async function PublicProcurementDetailPage({
                       </div>
 
                       {/* Stage Content */}
-                      <div className="min-w-0 flex-1 pb-8">
+                      <div className="min-w-0 flex-1 pb-9">
                         <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                           <div>
                             <h3
@@ -358,19 +342,19 @@ export default async function PublicProcurementDetailPage({
                           </div>
 
                           {stage.stage_status === "Completed" && (
-                            <span className="w-fit rounded-full bg-green-100 px-2.5 py-1 text-xs font-medium text-green-700">
+                            <span className="w-fit rounded-md bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700">
                               Completed
                             </span>
                           )}
 
                           {stage.stage_status === "Current" && (
-                            <span className="w-fit rounded-full bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-700">
+                            <span className="w-fit rounded-md bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-700">
                               Current
                             </span>
                           )}
 
                           {stage.stage_status === "Upcoming" && (
-                            <span className="w-fit rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-500">
+                            <span className="w-fit rounded-md bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-500">
                               Upcoming
                             </span>
                           )}
