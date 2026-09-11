@@ -37,10 +37,12 @@ function formatDateTime(value: string | null) {
     return null;
   }
 
-  return new Date(value).toLocaleDateString("en-PH", {
+  return new Date(value).toLocaleString("en-PH", {
     year: "numeric",
     month: "short",
     day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
   });
 }
 
@@ -252,13 +254,17 @@ export default async function PublicProcurementDetailPage({
             </div>
 
             {/* Current Stage */}
-            <div>
-              <p className="text-sm font-medium text-gray-500">Current Stage</p>
+            {procurement.status?.toLowerCase() !== "completed" && (
+              <div>
+                <p className="text-sm font-medium text-gray-500">
+                  Current Stage
+                </p>
 
-              <p className="mt-1 text-base font-semibold text-blue-700">
-                {procurement.current_stage ?? "—"}
-              </p>
-            </div>
+                <p className="mt-1 text-base font-semibold text-blue-700">
+                  {procurement.current_stage ?? "—"}
+                </p>
+              </div>
+            )}
           </div>
         </section>
 
@@ -284,6 +290,15 @@ export default async function PublicProcurementDetailPage({
                 {progress.map((stage, index) => {
                   const isLast = index === progress.length - 1;
 
+                  const isOverallCompleted =
+                    procurement.status?.toLowerCase() === "completed";
+
+                  const displayStageStatus =
+                    isOverallCompleted &&
+                    stage.stage_name.toLowerCase() === "completed"
+                      ? "Completed"
+                      : stage.stage_status;
+
                   return (
                     <div key={stage.stage_id} className="relative flex gap-4">
                       {/* Connector */}
@@ -293,19 +308,19 @@ export default async function PublicProcurementDetailPage({
 
                       {/* Status Icon */}
                       <div className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 bg-white">
-                        {stage.stage_status === "Completed" && (
+                        {displayStageStatus === "Completed" && (
                           <div className="flex h-7 w-7 items-center justify-center rounded-full bg-green-600 text-sm font-bold text-white">
                             ✓
                           </div>
                         )}
 
-                        {stage.stage_status === "Current" && (
+                        {displayStageStatus === "Current" && (
                           <div className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
                             ●
                           </div>
                         )}
 
-                        {stage.stage_status === "Upcoming" && (
+                        {displayStageStatus === "Upcoming" && (
                           <div className="h-3 w-3 rounded-full bg-gray-300" />
                         )}
                       </div>
@@ -316,9 +331,9 @@ export default async function PublicProcurementDetailPage({
                           <div>
                             <h3
                               className={`text-sm font-semibold ${
-                                stage.stage_status === "Current"
+                                displayStageStatus === "Current"
                                   ? "text-blue-700"
-                                  : stage.stage_status === "Completed"
+                                  : displayStageStatus === "Completed"
                                     ? "text-gray-900"
                                     : "text-gray-500"
                               }`}
@@ -326,14 +341,25 @@ export default async function PublicProcurementDetailPage({
                               {stage.stage_name}
                             </h3>
 
-                            {stage.stage_status === "Completed" &&
-                              stage.completed_at && (
+                            {displayStageStatus === "Completed" &&
+                              (stage.completed_at ||
+                                (isOverallCompleted &&
+                                  stage.stage_name.toLowerCase() ===
+                                    "completed")) && (
                                 <p className="mt-1 text-xs text-gray-500">
-                                  Completed {formatDateTime(stage.completed_at)}
+                                  Completed{" "}
+                                  {formatDateTime(
+                                    stage.completed_at ??
+                                      (isOverallCompleted &&
+                                      stage.stage_name.toLowerCase() ===
+                                        "completed"
+                                        ? stage.started_at
+                                        : null),
+                                  )}
                                 </p>
                               )}
 
-                            {stage.stage_status === "Current" &&
+                            {displayStageStatus === "Current" &&
                               stage.started_at && (
                                 <p className="mt-1 text-xs text-gray-500">
                                   Started {formatDateTime(stage.started_at)}
@@ -341,19 +367,19 @@ export default async function PublicProcurementDetailPage({
                               )}
                           </div>
 
-                          {stage.stage_status === "Completed" && (
+                          {displayStageStatus === "Completed" && (
                             <span className="w-fit rounded-md bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700">
                               Completed
                             </span>
                           )}
 
-                          {stage.stage_status === "Current" && (
+                          {displayStageStatus === "Current" && (
                             <span className="w-fit rounded-md bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-700">
                               Current
                             </span>
                           )}
 
-                          {stage.stage_status === "Upcoming" && (
+                          {displayStageStatus === "Upcoming" && (
                             <span className="w-fit rounded-md bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-500">
                               Upcoming
                             </span>
