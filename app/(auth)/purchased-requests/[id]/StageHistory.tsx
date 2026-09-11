@@ -43,7 +43,9 @@ export default function StageHistory({ history, currentStageId }: Props) {
       {/* Header */}
 
       <div className="border-b border-gray-200 px-6 py-4">
-        <h2 className="font-semibold text-gray-900">Stage History</h2>
+        <h2 className="text-lg font-semibold tracking-tight text-gray-900">
+          Stage History
+        </h2>
 
         <p className="mt-1 text-sm text-gray-500">
           Record of procurement stage movements.
@@ -53,7 +55,7 @@ export default function StageHistory({ history, currentStageId }: Props) {
       {/* Timeline */}
 
       <div className="p-6">
-        <div>
+        <div className="space-y-1">
           {history.map((item, index) => {
             const isCurrent = item.stage_id === currentStageId;
             const isCompleted = item.completed_at !== null;
@@ -119,12 +121,12 @@ export default function StageHistory({ history, currentStageId }: Props) {
                   {/* Timeline Details */}
 
                   <div className="mt-2 space-y-1">
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm leading-5 text-gray-500">
                       Started: {formatDateTime(item.started_at)}
                     </p>
 
                     {item.completed_at ? (
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm leading-5 text-gray-500">
                         Completed: {formatDateTime(item.completed_at)}
                       </p>
                     ) : isCurrent ? (
@@ -137,7 +139,7 @@ export default function StageHistory({ history, currentStageId }: Props) {
                   {/* Changed By */}
 
                   {item.changed_by_name && (
-                    <p className="mt-3 text-sm text-gray-600">
+                    <p className="mt-3 text-sm leading-5 text-gray-600">
                       Changed by{" "}
                       <span className="font-medium text-gray-800">
                         {item.changed_by_name}

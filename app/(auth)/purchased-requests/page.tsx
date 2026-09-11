@@ -101,12 +101,12 @@ export default async function PurchasedRequestsPage({
       p_stage: stage || null,
       p_status: status || null,
       p_page: page,
-      p_page_size: 5,
+      p_page_size: 20,
     },
   );
 
   const totalCount = requests?.[0]?.total_count ?? 0;
-  const pageSize = 5;
+  const pageSize = 20;
   const totalPages = Math.ceil(totalCount / pageSize);
   const currentPageCount = requests?.length ?? 0;
 

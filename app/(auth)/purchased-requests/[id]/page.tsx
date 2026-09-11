@@ -211,7 +211,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
       {/* Back button */}
       <Link
         href="/purchased-requests"
-        className="text-sm text-gray-600 hover:text-gray-900"
+        className="inline-flex items-center text-sm font-medium text-gray-600 transition-colors hover:text-gray-900"
       >
         ← Back to Purchased Requests
       </Link>
@@ -225,7 +225,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
             </h1>
 
             <span
-              className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${getStatusClass(
+              className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-semibold ${getStatusClass(
                 procurementRequest.status,
               )}`}
             >
@@ -234,7 +234,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
 
             {!isCompleted && (
               <span
-                className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ${getStageClass(
+                className={`inline-flex items-center rounded-md px-2.5 py-1 text-xs font-semibold ${getStageClass(
                   currentStage?.name,
                 )}`}
               >
@@ -243,9 +243,11 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
             )}
           </div>
 
-          <p className="mt-2 text-sm text-gray-500">Procurement Request</p>
+          <p className="mt-2 text-sm font-medium text-gray-500">
+            Procurement Request
+          </p>
 
-          <p className="mt-3 max-w-4xl text-base font-medium leading-6 text-gray-900">
+          <p className="mt-3 max-w-4xl text-base font-semibold leading-6 text-gray-900 sm:text-lg">
             {procurementRequest.particulars ||
               "No project name or particulars provided."}
           </p>
@@ -253,7 +255,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
 
         <Link
           href={`/purchased-requests/${procurementRequest.id}/edit`}
-          className="inline-flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto"
+          className="inline-flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto"
         >
           Edit PR
         </Link>
@@ -262,13 +264,17 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
       {/* PR Information */}
       <div className="mt-8 rounded-xl border bg-white shadow-sm">
         <div className="border-b px-6 py-4">
-          <h2 className="font-semibold text-gray-900">PR Information</h2>
+          <h2 className="text-lg font-semibold tracking-tight text-gray-900">
+            PR Information
+          </h2>
         </div>
 
-        <div className="grid grid-cols-1 gap-x-8 gap-y-6 p-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-3 px-6 py-6">
           {/* PR Number */}
           <div>
-            <p className="text-sm text-gray-500">PR Number</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              PR Number
+            </p>
 
             <p className="mt-1 font-medium text-gray-900">
               {procurementRequest.pr_number}
@@ -277,7 +283,9 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
 
           {/* Reference ID */}
           <div className="min-w-0">
-            <p className="text-sm text-gray-500">Reference ID</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              Reference ID
+            </p>
 
             <p className="mt-1 wrap-break-word text-base font-semibold text-gray-900">
               {referenceId ?? "—"}
@@ -286,7 +294,9 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
 
           {/* PR Date */}
           <div>
-            <p className="text-sm text-gray-500">PR Date</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              PR Date
+            </p>
 
             <p className="mt-1 font-medium text-gray-900">
               {new Intl.DateTimeFormat("en-PH", {
@@ -297,27 +307,33 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
             </p>
           </div>
 
-          {/* Type of PR */}
-          <div>
-            <p className="text-sm text-gray-500">Type of PR</p>
-
-            <p className="mt-1 font-medium text-gray-900">
-              {procurementRequest.type_of_pr || "—"}
-            </p>
-          </div>
-
           {/* Particulars */}
           <div className="sm:col-span-2 lg:col-span-3">
-            <p className="text-sm text-gray-500">Particulars</p>
+            <p className="text-xs leading-6 font-medium uppercase tracking-wide text-gray-500">
+              Particulars
+            </p>
 
             <p className="mt-1 text-base font-semibold leading-6 text-gray-900">
               {procurementRequest.particulars || "—"}
             </p>
           </div>
 
+          {/* Type of PR */}
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              Type of PR
+            </p>
+
+            <p className="mt-1 font-medium text-gray-900">
+              {procurementRequest.type_of_pr || "—"}
+            </p>
+          </div>
+
           {/* End User */}
           <div>
-            <p className="text-sm text-gray-500">End User</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              End User
+            </p>
 
             <p className="mt-1 font-medium text-gray-900">
               {procurementRequest.end_user || "—"}
@@ -326,7 +342,9 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
 
           {/* ABC */}
           <div>
-            <p className="text-sm text-gray-500">ABC</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              ABC
+            </p>
 
             <p className="mt-1 text-lg font-semibold text-gray-900">
               {formatCurrency(procurementRequest.abc)}
@@ -335,7 +353,9 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
 
           {/* Mode */}
           <div>
-            <p className="text-sm text-gray-500">Mode of Procurement</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              Procurement Mode
+            </p>
 
             <p className="mt-1 font-medium text-gray-900">
               {procurementMode?.name || "—"}
@@ -344,7 +364,9 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
 
           {/* Account Code */}
           <div>
-            <p className="text-sm text-gray-500">Account Code</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              Account Code
+            </p>
 
             <p className="mt-1 font-medium text-gray-900">
               {procurementRequest.account_code || "—"}
@@ -353,7 +375,9 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
 
           {/* SOL No. */}
           <div>
-            <p className="text-sm text-gray-500">SOL No.</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              Sol No.
+            </p>
 
             <p className="mt-1 font-medium text-gray-900">
               {procurementRequest.sol_no || "—"}
@@ -362,37 +386,40 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
 
           {/* CD / Calendar Days */}
           <div>
-            <p className="text-sm text-gray-500">CD / Calendar Days</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              CD / Calendar Days
+            </p>
 
             <p className="mt-1 font-medium text-gray-900">
               {procurementRequest.calendar_days || "—"}
             </p>
           </div>
-
         </div>
       </div>
 
       {/* Procurement Workflow */}
       <div className="mt-8 rounded-xl border bg-white shadow-sm print:hidden">
         <div className="border-b px-6 py-4">
-          <h2 className="font-semibold text-gray-900">Procurement Workflow</h2>
+          <h2 className="text-lg font-semibold tracking-tight text-gray-900">
+            Procurement Workflow
+          </h2>
         </div>
 
         <div className="p-6">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
               Current Stage
             </p>
 
             <div className="mt-2 flex flex-wrap items-center gap-3">
-              <span className="inline-flex items-center rounded-lg bg-blue-100 px-3 py-1.5 text-lg font-semibold text-blue-700">
-                {currentStage?.name ?? "Unknown"}
+              <span className="mt-1 inline-flex items-center rounded-lg bg-blue-100 px-3 py-1.5 text-lg font-medium text-gray-900">
+                {currentStage?.name ?? "Not Started"}
               </span>
 
               {nextStage && request.status === "Active" && (
                 <span className="text-sm text-gray-500">
                   Next:{" "}
-                  <span className="font-medium text-gray-700">
+                  <span className="mt-1 text-base font-semibold text-gray-900">
                     {nextStage.name}
                   </span>
                 </span>
@@ -461,7 +488,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
                       advanced until it is restored.
                     </p>
 
-                    <div className="mt-4">
+                    <div className="mt-5 flex flex-wrap items-center gap-2">
                       <CancelPRForm requestId={request.id} />
                     </div>
                   </div>
@@ -495,7 +522,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
       {!isCompleted && !isCancelled && (
         <div className="mt-6 rounded-xl border bg-white shadow-sm print:break-inside-avoid">
           <div className="border-b px-6 py-4">
-            <h2 className="font-semibold text-gray-900">
+            <h2 className="text-lg font-semibold tracking-tight text-gray-900">
               Procurement Progress
             </h2>
           </div>
@@ -541,7 +568,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
                   {/* Stage information */}
                   <div className="ml-4 pb-8">
                     <p
-                      className={`font-medium ${
+                      className={`font-semibold ${
                         isCompleted
                           ? "text-green-600"
                           : isCurrent
