@@ -485,7 +485,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
                     />
                   </div>
 
-                  <div className="mt-8 border-t border-gray-200 pt-6">
+                  <div className="mt-5 border-t border-gray-200 pt-6">
                     <p className="text-sm font-semibold text-gray-900">
                       Cancel Procurement Request
                     </p>
