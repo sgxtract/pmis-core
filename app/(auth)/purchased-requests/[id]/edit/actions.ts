@@ -47,6 +47,8 @@ export async function updateProcurementRequest(
 
   const prDate = String(formData.get("pr_date") ?? "").trim();
 
+  const referenceIdValue = String(formData.get("reference_id") ?? "").trim();
+
   const typeOfPr = String(formData.get("type_of_pr") ?? "").trim();
 
   const endUser = String(formData.get("end_user") ?? "").trim();
@@ -115,6 +117,7 @@ export async function updateProcurementRequest(
       `
         id,
         pr_number,
+        reference_id_id,
         pr_date,
         type_of_pr,
         end_user,
@@ -135,7 +138,69 @@ export async function updateProcurementRequest(
     };
   }
 
+  // -----------------------------------------
+  // 5B. Find or create Reference ID
+  // -----------------------------------------
+
+  let newReferenceIdDbId: number | null = null;
+  let oldReferenceIdValue: string | null = null;
+
+  if (existingRequest.reference_id_id) {
+    const { data: oldReference } = await supabase
+      .from("reference_ids")
+      .select("reference_id")
+      .eq("id", existingRequest.reference_id_id)
+      .maybeSingle();
+
+    oldReferenceIdValue = oldReference?.reference_id ?? null;
+  }
+
+  if (referenceIdValue) {
+    const { data: existingReference, error: referenceLookupError } =
+      await supabase
+        .from("reference_ids")
+        .select("id")
+        .eq("reference_id", referenceIdValue)
+        .maybeSingle();
+
+    if (referenceLookupError) {
+      console.error("REFERENCE ID LOOKUP ERROR:", referenceLookupError);
+
+      return {
+        error: "Unable to verify the Reference ID.",
+      };
+    }
+
+    if (existingReference) {
+      newReferenceIdDbId = existingReference.id;
+    } else {
+      const { data: newReference, error: referenceCreateError } = await supabase
+        .from("reference_ids")
+        .insert({
+          reference_id: referenceIdValue,
+          created_by: user.id,
+        })
+        .select("id")
+        .single();
+
+      if (referenceCreateError || !newReference) {
+        console.error("REFERENCE ID CREATE ERROR:", referenceCreateError);
+
+        return {
+          error: "Unable to create the Reference ID. Please try again.",
+        };
+      }
+
+      newReferenceIdDbId = newReference.id;
+    }
+  }
+
   const auditChanges = [
+    {
+      field: "reference_id",
+      oldValue: oldReferenceIdValue,
+      newValue: referenceIdValue || null,
+    },
     {
       field: "pr_number",
       oldValue: existingRequest.pr_number,
@@ -199,6 +264,7 @@ export async function updateProcurementRequest(
     .update({
       pr_number: prNumber,
       pr_date: prDate,
+      reference_id_id: newReferenceIdDbId,
       type_of_pr: typeOfPr,
       end_user: endUser,
       particulars: particulars,
@@ -271,5 +337,4 @@ export async function updateProcurementRequest(
   // -----------------------------------------
 
   redirect(`/purchased-requests/${id}`);
-
 }

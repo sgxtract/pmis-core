@@ -65,6 +65,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
       id,
       pr_number,
       pr_date,
+      reference_id_id,
       type_of_pr,
       end_user,
       particulars,
@@ -90,6 +91,19 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
 
   // At this point TypeScript knows that request exists.
   const procurementRequest = request;
+
+  let referenceId: string | null = null;
+
+  if (procurementRequest.reference_id_id) {
+    const { data: reference } = await supabase
+      .from("reference_ids")
+      .select("reference_id")
+      .eq("id", procurementRequest.reference_id_id)
+      .maybeSingle();
+
+    referenceId = reference?.reference_id ?? null;
+  }
+
   const isCancelled =
     procurementRequest.status === "Cancelled" ||
     procurementRequest.status === "Canceled";
@@ -251,13 +265,22 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
           <h2 className="font-semibold text-gray-900">PR Information</h2>
         </div>
 
-        <div className="grid grid-cols-1 gap-x-8 gap-y-6 p-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-x-8 gap-y-6 p-6 sm:grid-cols-2 lg:grid-cols-4">
           {/* PR Number */}
           <div>
             <p className="text-sm text-gray-500">PR Number</p>
 
             <p className="mt-1 font-medium text-gray-900">
               {procurementRequest.pr_number}
+            </p>
+          </div>
+
+          {/* Reference ID */}
+          <div className="min-w-0">
+            <p className="text-sm text-gray-500">Reference ID</p>
+
+            <p className="mt-1 wrap-break-word text-base font-semibold text-gray-900">
+              {referenceId ?? "—"}
             </p>
           </div>
 
@@ -328,6 +351,15 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
             </p>
           </div>
 
+          {/* SOL No. */}
+          <div>
+            <p className="text-sm text-gray-500">SOL No.</p>
+
+            <p className="mt-1 font-medium text-gray-900">
+              {procurementRequest.sol_no || "—"}
+            </p>
+          </div>
+
           {/* CD / Calendar Days */}
           <div>
             <p className="text-sm text-gray-500">CD / Calendar Days</p>
@@ -337,14 +369,6 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
             </p>
           </div>
 
-          {/* SOL No. */}
-          <div>
-            <p className="text-sm text-gray-500">SOL No.</p>
-
-            <p className="mt-1 font-medium text-gray-900">
-              {procurementRequest.sol_no || "—"}
-            </p>
-          </div>
         </div>
       </div>
 

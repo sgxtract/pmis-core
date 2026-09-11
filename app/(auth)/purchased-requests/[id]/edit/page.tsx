@@ -21,15 +21,14 @@ export default async function EditProcurementRequestPage({
   // Get PR
   // -----------------------------------------
 
-  const {
-    data: request,
-    error,
-  } = await supabase
+  const { data: request, error } = await supabase
     .from("procurement_requests")
-    .select(`
+    .select(
+      `
       id,
       pr_number,
       pr_date,
+      reference_id_id,
       type_of_pr,
       end_user,
       particulars,
@@ -38,7 +37,8 @@ export default async function EditProcurementRequestPage({
       account_code,
       calendar_days,
       sol_no
-    `)
+    `,
+    )
     .eq("id", id)
     .single();
 
@@ -46,13 +46,23 @@ export default async function EditProcurementRequestPage({
     notFound();
   }
 
+  let referenceId: string | null = null;
+
+  if (request.reference_id_id) {
+    const { data: reference } = await supabase
+      .from("reference_ids")
+      .select("reference_id")
+      .eq("id", request.reference_id_id)
+      .maybeSingle();
+
+    referenceId = reference?.reference_id ?? null;
+  }
+
   // -----------------------------------------
   // Get procurement modes
   // -----------------------------------------
 
-  const {
-    data: procurementModes,
-  } = await supabase
+  const { data: procurementModes } = await supabase
     .from("modes_of_procurement")
     .select("id, name")
     .eq("is_active", true)
@@ -60,7 +70,6 @@ export default async function EditProcurementRequestPage({
 
   return (
     <div>
-
       {/* Back */}
 
       <Link
@@ -86,11 +95,9 @@ export default async function EditProcurementRequestPage({
 
       <EditPRForm
         request={request}
-        procurementModes={
-          procurementModes ?? []
-        }
+        referenceId={referenceId}
+        procurementModes={procurementModes ?? []}
       />
-
     </div>
   );
 }

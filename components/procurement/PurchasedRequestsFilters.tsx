@@ -79,9 +79,13 @@ export default function PurchasedRequestsFilters({
           type="text"
           value={search}
           onChange={(event) => setSearch(event.target.value)}
-          placeholder="PR Number or Particulars..."
+          placeholder="PR Number, Reference ID, or Particulars..."
           className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
         />
+
+        <p className="mt-1 text-xs text-gray-500">
+          Search by PR Number, Reference ID, or Particulars.
+        </p>
       </div>
 
       {/* Filters */}

@@ -8,6 +8,7 @@ import { updateProcurementRequest, type UpdatePRState } from "./actions";
 type ProcurementRequest = {
   id: number;
   pr_number: string;
+  reference_id_id: number | null;
   pr_date: string;
   type_of_pr: string;
   end_user: string;
@@ -26,12 +27,17 @@ type ProcurementMode = {
 
 type Props = {
   request: ProcurementRequest;
+  referenceId: string | null;
   procurementModes: ProcurementMode[];
 };
 
 const initialState: UpdatePRState = {};
 
-export default function EditPRForm({ request, procurementModes }: Props) {
+export default function EditPRForm({
+  request,
+  referenceId,
+  procurementModes,
+}: Props) {
   const [state, formAction, isPending] = useActionState(
     updateProcurementRequest.bind(null, String(request.id)),
     initialState,
@@ -110,6 +116,31 @@ export default function EditPRForm({ request, procurementModes }: Props) {
             defaultValue={request.pr_date}
             className="text-gray-500 mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
+        </div>
+
+        {/* Reference ID */}
+
+        <div>
+          <label
+            htmlFor="reference_id"
+            className="block text-sm font-medium text-gray-700"
+          >
+            Reference ID
+          </label>
+
+          <input
+            id="reference_id"
+            name="reference_id"
+            type="text"
+            defaultValue={referenceId ?? ""}
+            placeholder="Optional"
+            maxLength={100}
+            className="text-gray-500 mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          />
+
+          <p className="mt-1 text-xs text-gray-500">
+            Use the same Reference ID for related procurement requests.
+          </p>
         </div>
 
         {/* Type of PR */}

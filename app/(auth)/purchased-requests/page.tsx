@@ -16,6 +16,7 @@ type PurchasedRequest = {
   pr_date: string;
   particulars: string | null;
   abc: number | null;
+  reference_id: string | null;
   mode_of_procurement: string | null;
   current_stage: string | null;
   status: string | null;
@@ -170,6 +171,10 @@ export default async function PurchasedRequestsPage({
                     </th>
 
                     <th className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
+                      Reference ID
+                    </th>
+
+                    <th className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
                       PR Date
                     </th>
 
@@ -198,6 +203,21 @@ export default async function PurchasedRequestsPage({
                         >
                           {request.pr_number}
                         </Link>
+                      </td>
+
+                      <td className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
+                        {request.reference_id ? (
+                          <Link
+                            href={`/purchased-requests/reference/${encodeURIComponent(
+                              request.reference_id,
+                            )}`}
+                            className="inline-flex rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-100 hover:text-blue-800"
+                          >
+                            {request.reference_id}
+                          </Link>
+                        ) : (
+                          <span className="text-gray-400">—</span>
+                        )}
                       </td>
 
                       <td className="whitespace-nowrap px-4 py-3 text-gray-600 sm:px-6 sm:py-4">

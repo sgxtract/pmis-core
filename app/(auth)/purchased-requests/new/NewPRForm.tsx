@@ -16,6 +16,7 @@ export default function NewPRForm({ procurementModes }: NewPRFormProps) {
   const [prDate, setPrDate] = useState("");
   const [particulars, setParticulars] = useState("");
   const [abc, setAbc] = useState("");
+  const [referenceId, setReferenceId] = useState("");
   const [procurementMode, setProcurementMode] = useState("");
   const [typeOfPr, setTypeOfPr] = useState("");
   const [endUser, setEndUser] = useState("");
@@ -103,6 +104,31 @@ export default function NewPRForm({ procurementModes }: NewPRFormProps) {
           required
           className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
         />
+      </div>
+
+      {/* Reference ID */}
+      <div>
+        <label
+          htmlFor="referenceId"
+          className="mb-1 block text-sm font-medium text-gray-700"
+        >
+          Reference ID
+        </label>
+
+        <input
+          id="referenceId"
+          name="reference_id"
+          type="text"
+          value={referenceId}
+          onChange={(event) => setReferenceId(event.target.value)}
+          placeholder="Optional"
+          maxLength={100}
+          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+        />
+
+        <p className="mt-1 text-xs text-gray-500">
+          Use the same Reference ID for related procurement requests.
+        </p>
       </div>
 
       {/* Particulars */}
