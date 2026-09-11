@@ -43,6 +43,18 @@ function getStatusClass(status: string | null) {
   }
 }
 
+function getStageClass(stage: string | null) {
+  if (!stage) {
+    return "bg-gray-100 text-gray-700";
+  }
+
+  if (stage.toLowerCase() === "completed") {
+    return "bg-green-100 text-green-700";
+  }
+
+  return "bg-gray-100 text-gray-700";
+}
+
 export default async function PurchasedRequestsPage({
   searchParams,
 }: {
@@ -89,13 +101,19 @@ export default async function PurchasedRequestsPage({
       p_stage: stage || null,
       p_status: status || null,
       p_page: page,
-      p_page_size: 20,
+      p_page_size: 5,
     },
   );
 
   const totalCount = requests?.[0]?.total_count ?? 0;
-  const pageSize = 20;
+  const pageSize = 5;
   const totalPages = Math.ceil(totalCount / pageSize);
+  const currentPageCount = requests?.length ?? 0;
+
+  const startResult = totalCount === 0 ? 0 : (page - 1) * pageSize + 1;
+
+  const endResult =
+    totalCount === 0 ? 0 : Math.min(page * pageSize, totalCount);
 
   function buildPageUrl(targetPage: number) {
     const params = new URLSearchParams();
@@ -115,12 +133,37 @@ export default async function PurchasedRequestsPage({
 
     return (
       <div className="w-full">
-        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-          Purchased Requests
-        </h1>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+              Purchased Requests
+            </h1>
 
-        <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700 sm:mt-6">
-          Unable to load procurement requests.
+            <p className="mt-1 text-sm text-gray-600 sm:mt-2 sm:text-base">
+              Manage and monitor procurement requests.
+            </p>
+          </div>
+
+          <Link
+            href="/purchased-requests"
+            className="inline-flex w-full items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 sm:w-auto"
+          >
+            Try Again
+          </Link>
+        </div>
+
+        <div
+          role="alert"
+          className="mt-6 rounded-xl border border-red-200 bg-red-50 p-5 sm:mt-8"
+        >
+          <h2 className="text-sm font-semibold text-red-800">
+            Unable to load procurement requests
+          </h2>
+
+          <p className="mt-1 text-sm text-red-700">
+            Something went wrong while loading the procurement request list.
+            Please try again.
+          </p>
         </div>
       </div>
     );
@@ -129,7 +172,7 @@ export default async function PurchasedRequestsPage({
   return (
     <div className="w-full">
       {/* Page Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
             Purchased Requests
@@ -137,6 +180,14 @@ export default async function PurchasedRequestsPage({
 
           <p className="mt-1 text-sm text-gray-600 sm:mt-2 sm:text-base">
             Manage and monitor procurement requests.
+          </p>
+
+          <p className="mt-2 text-sm font-medium text-gray-500">
+            {totalCount === 0
+              ? "No procurement requests found"
+              : `Showing ${currentPageCount} of ${totalCount} procurement ${
+                  totalCount === 1 ? "request" : "requests"
+                }`}
           </p>
         </div>
 
@@ -162,9 +213,9 @@ export default async function PurchasedRequestsPage({
         {/* Table */}
         {requests && requests.length > 0 ? (
           <>
-            <div className="overflow-x-auto">
+            <div className="hidden overflow-x-auto md:block">
               <table className="min-w-225 w-full text-left text-sm">
-                <thead className="border-b bg-gray-50 text-xs uppercase text-gray-500">
+                <thead className="border-b bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
                   <tr>
                     <th className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
                       PR Number
@@ -180,7 +231,7 @@ export default async function PurchasedRequestsPage({
 
                     <th className="px-4 py-3 sm:px-6 sm:py-4">Particulars</th>
 
-                    <th className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
+                    <th className="whitespace-nowrap px-4 py-3 text-right sm:px-6 sm:py-4">
                       ABC
                     </th>
 
@@ -195,7 +246,10 @@ export default async function PurchasedRequestsPage({
                 </thead>
                 <tbody className="divide-y">
                   {requests.map((request: PurchasedRequest) => (
-                    <tr key={request.id} className="hover:bg-gray-50">
+                    <tr
+                      key={request.id}
+                      className="transition-colors hover:bg-gray-50"
+                    >
                       <td className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
                         <Link
                           href={`/purchased-requests/${request.id}`}
@@ -228,13 +282,16 @@ export default async function PurchasedRequestsPage({
                         }).format(new Date(request.pr_date))}
                       </td>
 
-                      <td className="max-w-87.5 px-4 py-3 text-gray-600 sm:px-6 sm:py-4">
-                        <div className="line-clamp-2">
+                      <td className="max-w-87.5 px-4 py-3 text-gray-700 sm:px-6 sm:py-4">
+                        <div
+                          className="line-clamp-2"
+                          title={request.particulars || undefined}
+                        >
                           {request.particulars || "—"}
                         </div>
                       </td>
 
-                      <td className="whitespace-nowrap px-4 py-3 text-gray-600 sm:px-6 sm:py-4">
+                      <td className="whitespace-nowrap px-4 py-3 text-right text-gray-700 sm:px-6 sm:py-4">
                         {request.abc !== null
                           ? new Intl.NumberFormat("en-PH", {
                               style: "currency",
@@ -243,8 +300,14 @@ export default async function PurchasedRequestsPage({
                           : "—"}
                       </td>
 
-                      <td className="whitespace-nowrap px-4 py-3 text-gray-600 sm:px-6 sm:py-4">
-                        {request.current_stage || "Unknown"}
+                      <td className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
+                        <span
+                          className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ${getStageClass(
+                            request.current_stage,
+                          )}`}
+                        >
+                          {request.current_stage || "Unknown"}
+                        </span>
                       </td>
 
                       <td className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
@@ -262,36 +325,164 @@ export default async function PurchasedRequestsPage({
               </table>
             </div>
 
+            <div className="divide-y md:hidden">
+              {requests.map((request: PurchasedRequest) => (
+                <div
+                  key={request.id}
+                  className="p-4 transition-colors hover:bg-gray-50"
+                >
+                  {/* PR Number + Status */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                        PR Number
+                      </p>
+
+                      <Link
+                        href={`/purchased-requests/${request.id}`}
+                        className="mt-1 block wrap-break-word text-base font-semibold text-blue-600 hover:text-blue-800 hover:underline"
+                      >
+                        {request.pr_number}
+                      </Link>
+                    </div>
+
+                    <span
+                      className={`shrink-0 inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ${getStatusClass(
+                        request.status,
+                      )}`}
+                    >
+                      {request.status || "Unknown"}
+                    </span>
+                  </div>
+
+                  {/* Reference ID */}
+                  {request.reference_id && (
+                    <div className="mt-4">
+                      <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                        Reference ID
+                      </p>
+
+                      <Link
+                        href={`/purchased-requests/reference/${encodeURIComponent(
+                          request.reference_id,
+                        )}`}
+                        className="mt-1 inline-flex max-w-full break-all rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-100 hover:text-blue-800"
+                      >
+                        {request.reference_id}
+                      </Link>
+                    </div>
+                  )}
+
+                  {/* PR Details */}
+                  <div className="mt-4 grid grid-cols-2 gap-4">
+                    {/* PR Date */}
+                    <div className="min-w-0">
+                      <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                        PR Date
+                      </p>
+
+                      <p className="mt-1 text-sm text-gray-700">
+                        {new Intl.DateTimeFormat("en-PH", {
+                          year: "numeric",
+                          month: "short",
+                          day: "2-digit",
+                        }).format(new Date(request.pr_date))}
+                      </p>
+                    </div>
+
+                    {/* ABC */}
+                    <div className="min-w-0 text-right">
+                      <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                        ABC
+                      </p>
+
+                      <p className="mt-1 truncate text-sm font-medium text-gray-700">
+                        {request.abc !== null
+                          ? new Intl.NumberFormat("en-PH", {
+                              style: "currency",
+                              currency: "PHP",
+                            }).format(request.abc)
+                          : "—"}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Particulars */}
+                  <div className="mt-4">
+                    <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                      Particulars
+                    </p>
+
+                    <p className="mt-1 text-sm leading-5 text-gray-700">
+                      {request.particulars || "—"}
+                    </p>
+                  </div>
+
+                  {/* Stage */}
+                  <div className="mt-4">
+                    <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                      Current Stage
+                    </p>
+
+                    <span
+                      className={`mt-1 inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ${getStageClass(
+                        request.current_stage,
+                      )}`}
+                    >
+                      {request.current_stage || "Unknown"}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
             {totalPages > 1 && (
-              <div className="flex flex-col gap-3 border-t px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+              <div className="flex flex-col gap-4 border-t px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+                {/* Result Information */}
                 <p className="text-sm text-gray-600">
-                  Page {page} of {totalPages}
+                  Showing{" "}
+                  <span className="font-medium text-gray-900">
+                    {startResult}–{endResult}
+                  </span>{" "}
+                  of{" "}
+                  <span className="font-medium text-gray-900">
+                    {totalCount}
+                  </span>
                 </p>
 
-                <div className="flex items-center gap-2">
+                {/* Pagination Controls */}
+                <div className="flex items-center justify-between gap-2 sm:justify-end">
                   {page > 1 ? (
                     <Link
                       href={buildPageUrl(page - 1)}
-                      className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                      className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                     >
-                      Previous
+                      ← Previous
                     </Link>
                   ) : (
-                    <span className="cursor-not-allowed rounded-lg border border-gray-200 bg-gray-100 px-4 py-2 text-sm font-medium text-gray-400">
-                      Previous
+                    <span className="cursor-not-allowed rounded-lg border border-gray-200 bg-gray-100 px-3 py-2 text-sm font-medium text-gray-400">
+                      ← Previous
                     </span>
                   )}
+
+                  <span className="px-2 text-sm text-gray-600">
+                    Page{" "}
+                    <span className="font-medium text-gray-900">{page}</span> of{" "}
+                    <span className="font-medium text-gray-900">
+                      {totalPages}
+                    </span>
+                  </span>
 
                   {page < totalPages ? (
                     <Link
                       href={buildPageUrl(page + 1)}
-                      className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                      className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                     >
-                      Next
+                      Next →
                     </Link>
                   ) : (
-                    <span className="cursor-not-allowed rounded-lg border border-gray-200 bg-gray-100 px-4 py-2 text-sm font-medium text-gray-400">
-                      Next
+                    <span className="cursor-not-allowed rounded-lg border border-gray-200 bg-gray-100 px-3 py-2 text-sm font-medium text-gray-400">
+                      Next →
                     </span>
                   )}
                 </div>
@@ -300,9 +491,27 @@ export default async function PurchasedRequestsPage({
           </>
         ) : (
           <div className="p-8 text-center sm:p-12">
-            <p className="text-sm text-gray-500 sm:text-base">
-              No procurement requests found.
+            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
+              <span className="text-xl text-gray-400">⌕</span>
+            </div>
+
+            <h2 className="mt-4 text-sm font-semibold text-gray-900 sm:text-base">
+              No procurement requests found
+            </h2>
+
+            <p className="mx-auto mt-1 max-w-md text-sm text-gray-500">
+              No procurement requests match your current search or filters. Try
+              changing your search criteria or clearing the filters.
             </p>
+
+            {(search || mode || stage || status) && (
+              <Link
+                href="/purchased-requests"
+                className="mt-4 inline-flex items-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              >
+                Clear Search & Filters
+              </Link>
+            )}
           </div>
         )}
       </div>

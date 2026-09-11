@@ -64,7 +64,19 @@ export default function PurchasedRequestsFilters({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-5">
+      {/* Filter Header */}
+      <div>
+        <h2 className="text-sm font-semibold text-gray-900">
+          Search & Filters
+        </h2>
+
+        <p className="mt-1 text-xs text-gray-500">
+          Search by PR Number, Reference ID, or Particulars, then narrow the
+          results using the filters below.
+        </p>
+      </div>
+
       {/* Search */}
       <div>
         <label
@@ -82,92 +94,93 @@ export default function PurchasedRequestsFilters({
           placeholder="PR Number, Reference ID, or Particulars..."
           className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
         />
-
-        <p className="mt-1 text-xs text-gray-500">
-          Search by PR Number, Reference ID, or Particulars.
-        </p>
       </div>
 
       {/* Filters */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {/* Mode */}
-        <div>
-          <label
-            htmlFor="mode"
-            className="mb-1 block text-sm font-medium text-gray-700"
-          >
-            Mode of Procurement
-          </label>
+      <div className="border-t pt-4">
+        <p className="mb-3 text-xs font-medium uppercase tracking-wide text-gray-500">
+          Filter Results
+        </p>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Mode */}
+          <div>
+            <label
+              htmlFor="mode"
+              className="mb-1 block text-sm font-medium text-gray-700"
+            >
+              Mode of Procurement
+            </label>
 
-          <select
-            id="mode"
-            value={mode}
-            onChange={(event) => setMode(event.target.value)}
-            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-          >
-            <option value="">All Modes</option>
+            <select
+              id="mode"
+              value={mode}
+              onChange={(event) => setMode(event.target.value)}
+              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+            >
+              <option value="">All Modes</option>
 
-            {modes.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
-        </div>
+              {modes.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* Stage */}
-        <div>
-          <label
-            htmlFor="stage"
-            className="mb-1 block text-sm font-medium text-gray-700"
-          >
-            Current Stage
-          </label>
+          {/* Stage */}
+          <div>
+            <label
+              htmlFor="stage"
+              className="mb-1 block text-sm font-medium text-gray-700"
+            >
+              Current Stage
+            </label>
 
-          <select
-            id="stage"
-            value={stage}
-            onChange={(event) => setStage(event.target.value)}
-            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-          >
-            <option value="">All Stages</option>
+            <select
+              id="stage"
+              value={stage}
+              onChange={(event) => setStage(event.target.value)}
+              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+            >
+              <option value="">All Stages</option>
 
-            {stages.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
-        </div>
+              {stages.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* Status */}
-        <div>
-          <label
-            htmlFor="status"
-            className="mb-1 block text-sm font-medium text-gray-700"
-          >
-            Status
-          </label>
+          {/* Status */}
+          <div>
+            <label
+              htmlFor="status"
+              className="mb-1 block text-sm font-medium text-gray-700"
+            >
+              Status
+            </label>
 
-          <select
-            id="status"
-            value={status}
-            onChange={(event) => setStatus(event.target.value)}
-            className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
-          >
-            <option value="">All Statuses</option>
+            <select
+              id="status"
+              value={status}
+              onChange={(event) => setStatus(event.target.value)}
+              className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+            >
+              <option value="">All Statuses</option>
 
-            {statuses.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
+              {statuses.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
       {/* Buttons */}
-      <div className="flex flex-col gap-2 sm:flex-row">
+      <div className="flex flex-col gap-2 border-t pt-4 sm:flex-row">
         <button
           type="submit"
           className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
