@@ -398,33 +398,40 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
       </div>
 
       {/* Procurement Workflow */}
+      {/* Procurement Workflow */}
       <div className="mt-8 rounded-xl border bg-white shadow-sm print:hidden">
-        <div className="border-b px-6 py-4">
+        <div className="border-b px-4 py-4 sm:px-6">
           <h2 className="text-lg font-semibold tracking-tight text-gray-900">
             Procurement Workflow
           </h2>
         </div>
 
-        <div className="p-6">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-              Current Stage
-            </p>
+        <div className="p-4 sm:p-6">
+          {/* Current and Next Stage */}
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div>
+              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                Current Stage
+              </p>
 
-            <div className="mt-2 flex flex-wrap items-center gap-3">
-              <span className="mt-1 inline-flex items-center rounded-lg bg-blue-100 px-3 py-1.5 text-lg font-medium text-gray-900">
-                {currentStage?.name ?? "Not Started"}
-              </span>
-
-              {nextStage && request.status === "Active" && (
-                <span className="text-sm text-gray-500">
-                  Next:{" "}
-                  <span className="mt-1 text-base font-semibold text-gray-900">
-                    {nextStage.name}
-                  </span>
+              <div className="mt-2">
+                <span className="inline-flex items-center rounded-lg bg-blue-100 px-3 py-1.5 text-base font-semibold text-blue-800">
+                  {currentStage?.name ?? "Not Started"}
                 </span>
-              )}
+              </div>
             </div>
+
+            {nextStage && request.status === "Active" && (
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                  Next Stage
+                </p>
+
+                <p className="mt-2 text-base font-semibold text-gray-900">
+                  {nextStage.name}
+                </p>
+              </div>
+            )}
           </div>
 
           {request.status === "Cancelled" || request.status === "Canceled" ? (
@@ -437,7 +444,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
                 This procurement request is cancelled.
               </p>
 
-              <p className="mt-2 text-sm text-red-700">
+              <p className="mt-2 text-sm leading-6 text-red-700">
                 The request cannot be advanced while it is cancelled. You may
                 restore it to continue processing.
               </p>
@@ -449,28 +456,28 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
           ) : nextStage ? (
             <div className="mt-6 rounded-xl border border-blue-200 bg-blue-50 p-5 sm:p-6">
               <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">
-                Ready for Next Stage
+                Advance Procurement
               </p>
 
               <p className="mt-1 text-xl font-bold text-gray-900 sm:text-2xl">
-                {nextStage.name}
+                Advance to Next Stage
+              </p>
+
+              <p className="mt-2 text-sm leading-6 text-gray-600">
+                The request will advance from{" "}
+                <span className="font-medium text-gray-800">
+                  {currentStage?.name ?? "the current stage"}
+                </span>{" "}
+                to{" "}
+                <span className="font-medium text-gray-800">
+                  {nextStage.name}
+                </span>
+                .
               </p>
 
               {request.status === "Active" ? (
                 <>
-                  <p className="mt-2 text-sm leading-6 text-gray-600">
-                    This procurement request is ready to move from{" "}
-                    <span className="font-medium text-gray-800">
-                      {currentStage?.name ?? "the current stage"}
-                    </span>{" "}
-                    to{" "}
-                    <span className="font-medium text-gray-800">
-                      {nextStage.name}
-                    </span>
-                    .
-                  </p>
-
-                  <div className="mt-4">
+                  <div className="mt-5">
                     <AdvanceStageForm
                       requestId={request.id}
                       currentStageName={currentStage?.name ?? "Unknown"}
@@ -483,7 +490,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
                       Cancel Procurement Request
                     </p>
 
-                    <p className="mt-1 text-sm text-gray-600">
+                    <p className="mt-1 text-sm leading-6 text-gray-600">
                       Cancelling this request will prevent it from being
                       advanced until it is restored.
                     </p>
@@ -494,7 +501,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
                   </div>
                 </>
               ) : (
-                <p className="mt-2 text-sm font-medium text-gray-600">
+                <p className="mt-3 text-sm font-medium text-gray-600">
                   This procurement request is currently {request.status}.
                 </p>
               )}
@@ -509,7 +516,7 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
                 Final Stage Reached
               </p>
 
-              <p className="mt-2 text-sm text-green-700">
+              <p className="mt-2 text-sm leading-6 text-green-700">
                 This procurement request has reached the final procurement
                 stage.
               </p>
