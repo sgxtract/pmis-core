@@ -183,7 +183,7 @@ export default function PurchasedRequestsFilters({
       <div className="flex flex-col gap-2 border-t pt-4 sm:flex-row">
         <button
           type="submit"
-          className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
+          className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           Search
         </button>
@@ -191,7 +191,7 @@ export default function PurchasedRequestsFilters({
         <button
           type="button"
           onClick={handleClear}
-          className="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          className="rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
         >
           Clear
         </button>
