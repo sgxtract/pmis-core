@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { requireAdmin } from "@/lib/auth/require-admin";
+import { requireUserManager } from "@/lib/auth/require-user-manager";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function UsersPage() {
-  await requireAdmin();
+  const { role: currentRole } = await requireUserManager();
 
   const supabase = await createClient();
 
@@ -13,10 +13,14 @@ export default async function UsersPage() {
       `
       id,
       full_name,
-      office,
+      employee_id,
       role_id,
+      user_type_id,
       is_active,
       roles (
+        name
+      ),
+      user_types (
         name
       )
     `,
@@ -61,11 +65,15 @@ export default async function UsersPage() {
                   </th>
 
                   <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
-                    Office
+                    Employee ID
                   </th>
 
                   <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
                     Role
+                  </th>
+
+                  <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                    User Type
                   </th>
 
                   <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
@@ -84,6 +92,10 @@ export default async function UsersPage() {
                     ? user.roles[0]
                     : user.roles;
 
+                  const userType = Array.isArray(user.user_types)
+                    ? user.user_types[0]
+                    : user.user_types;
+
                   return (
                     <tr key={user.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4">
@@ -93,13 +105,17 @@ export default async function UsersPage() {
                       </td>
 
                       <td className="px-6 py-4 text-sm text-gray-600">
-                        {user.office || "—"}
+                        {user.employee_id || "—"}
                       </td>
 
                       <td className="px-6 py-4">
                         <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
                           {role?.name || "Not assigned"}
                         </span>
+                      </td>
+
+                      <td className="px-6 py-4 text-sm text-gray-600">
+                        {userType?.name || "—"}
                       </td>
 
                       <td className="px-6 py-4">
@@ -115,12 +131,24 @@ export default async function UsersPage() {
                       </td>
 
                       <td className="px-6 py-4 text-right">
-                        <Link
-                          href={`/administration/users/${user.id}`}
-                          className="text-sm font-medium text-blue-600 hover:text-blue-800"
-                        >
-                          Manage
-                        </Link>
+                        {currentRole.name === "Moderator" &&
+                        role?.name === "Moderator" ? (
+                          <button
+                            type="button"
+                            disabled
+                            title="Moderators cannot manage other moderator accounts."
+                            className="cursor-not-allowed text-sm font-medium text-gray-400"
+                          >
+                            Manage
+                          </button>
+                        ) : (
+                          <Link
+                            href={`/administration/users/${user.id}`}
+                            className="text-sm font-medium text-blue-600 hover:text-blue-800"
+                          >
+                            Manage
+                          </Link>
+                        )}
                       </td>
                     </tr>
                   );

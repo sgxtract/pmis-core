@@ -31,6 +31,8 @@ export default async function AuthLayout({
     .single();
 
   const isAdmin = roleData?.name === "Admin";
+  const canManageUsers =
+    roleData?.name === "Admin" || roleData?.name === "Moderator";
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -38,7 +40,7 @@ export default async function AuthLayout({
 
       <header className="flex min-h-16 items-center justify-between border-b bg-white px-4 sm:px-6 print:hidden">
         <div className="flex min-w-0 items-center gap-3">
-          <MobileNav isAdmin={isAdmin} />
+          <MobileNav isAdmin={isAdmin} canManageUsers={canManageUsers} />
 
           <div className="min-w-0">
             <h1 className="font-bold text-gray-900">PMIS</h1>
@@ -56,7 +58,7 @@ export default async function AuthLayout({
 
       <div className="flex min-h-[calc(100vh-4rem)]">
         <div className="print:hidden">
-          <Sidebar isAdmin={isAdmin} />
+          <Sidebar isAdmin={isAdmin} canManageUsers={canManageUsers} />
         </div>
 
         <main className="min-w-0 flex-1 p-4 sm:p-6 print:bg-white print:p-0">

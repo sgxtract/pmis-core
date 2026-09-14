@@ -1,24 +1,40 @@
 import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/server";
-import { requireAdmin } from "@/lib/auth/require-admin";
+import { requireUserManager } from "@/lib/auth/require-user-manager";
 
 import CreateUserForm from "./CreateUserForm";
 
 export default async function CreateUserPage() {
-  await requireAdmin();
+  const { role } = await requireUserManager();
 
   const supabase = await createClient();
 
-  const { data: roles, error } = await supabase
+  const { data: roles, error: rolesError } = await supabase
     .from("roles")
     .select("id, name")
     .order("id", {
       ascending: true,
     });
 
-  if (error) {
-    throw new Error(error.message);
+  if (rolesError) {
+    throw new Error("Unable to load roles.");
+  }
+
+  const availableRoles =
+    role.name === "Admin"
+      ? (roles ?? [])
+      : (roles ?? []).filter((item) => item.name === "User");
+
+  const { data: userTypes, error: userTypesError } = await supabase
+    .from("user_types")
+    .select("id, name")
+    .order("id", {
+      ascending: true,
+    });
+
+  if (userTypesError) {
+    throw new Error("Unable to load user types.");
   }
 
   return (
@@ -45,7 +61,7 @@ export default async function CreateUserPage() {
 
         {/* Form */}
         <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm md:p-8">
-          <CreateUserForm roles={roles ?? []} />
+          <CreateUserForm roles={availableRoles} userTypes={userTypes ?? []} />
         </div>
       </div>
     </main>

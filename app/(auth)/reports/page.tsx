@@ -446,7 +446,7 @@ export default async function ReportsPage({
           </p>
         </div>
 
-        <div className="p-4 sm:p-6 print:hidden">
+        <div className="p-4 sm:p-6 print:hidden hidden md:block">
           <ABCByModeChart
             data={modeABC
               .filter((mode) => Number(mode.total_abc) > 0)

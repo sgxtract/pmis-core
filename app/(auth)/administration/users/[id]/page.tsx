@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/server";
-import { requireAdmin } from "@/lib/auth/require-admin";
+import { requireUserManager } from "@/lib/auth/require-user-manager";
 import EditUserForm from "./EditUserForm";
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 };
 
 export default async function ManageUserPage({ params }: Props) {
-  await requireAdmin();
+  await requireUserManager();
 
   const { id } = await params;
 
@@ -18,16 +18,19 @@ export default async function ManageUserPage({ params }: Props) {
 
   const { data: user, error } = await supabase
     .from("profiles")
-    .select(`
+    .select(
+      `
       id,
       full_name,
-      office,
+      employee_id,
       role_id,
+      user_type_id,
       is_active,
       roles (
         name
       )
-    `)
+    `,
+    )
     .eq("id", id)
     .single();
 
@@ -42,6 +45,15 @@ export default async function ManageUserPage({ params }: Props) {
 
   if (rolesError || !roles) {
     throw new Error("Unable to load roles.");
+  }
+
+  const { data: userTypes, error: userTypesError } = await supabase
+    .from("user_types")
+    .select("id, name")
+    .order("id");
+
+  if (userTypesError || !userTypes) {
+    throw new Error("Unable to load user types.");
   }
 
   return (
@@ -65,11 +77,13 @@ export default async function ManageUserPage({ params }: Props) {
         user={{
           id: user.id,
           full_name: user.full_name,
-          office: user.office,
+          employee_id: user.employee_id,
           role_id: user.role_id,
+          user_type_id: user.user_type_id,
           is_active: user.is_active,
         }}
         roles={roles}
+        userTypes={userTypes}
       />
 
       <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">

@@ -5,9 +5,10 @@ import Link from "next/link";
 
 type MobileNavProps = {
   isAdmin: boolean;
+  canManageUsers: boolean;
 };
 
-export default function MobileNav({ isAdmin }: MobileNavProps) {
+export default function MobileNav({ isAdmin, canManageUsers }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -112,21 +113,29 @@ export default function MobileNav({ isAdmin }: MobileNavProps) {
                 Reports
               </Link>
 
-              {isAdmin && (
-                <>
-                  <div className="pt-4">
-                    <p className="px-3 pb-2 text-xs font-semibold uppercase text-gray-400">
-                      Administration
-                    </p>
+              {canManageUsers && (
+                <div className="pt-4">
+                  <p className="px-3 pb-2 text-xs font-semibold uppercase text-gray-400">
+                    Administration
+                  </p>
 
-                    <Link
-                      href="/administration/audit-logs"
-                      onClick={() => setIsOpen(false)}
-                      className="block rounded-lg px-3 py-3 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Audit Logs
-                    </Link>
+                  <Link
+                    href="/administration/users"
+                    onClick={() => setIsOpen(false)}
+                    className="block rounded-lg px-3 py-3 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    User Management
+                  </Link>
 
+                  <Link
+                    href="/administration/audit-logs"
+                    onClick={() => setIsOpen(false)}
+                    className="block rounded-lg px-3 py-3 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    Audit Logs
+                  </Link>
+
+                  {isAdmin && (
                     <Link
                       href="/administration"
                       onClick={() => setIsOpen(false)}
@@ -134,8 +143,8 @@ export default function MobileNav({ isAdmin }: MobileNavProps) {
                     >
                       Settings
                     </Link>
-                  </div>
-                </>
+                  )}
+                </div>
               )}
             </nav>
           </aside>

@@ -1,7 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
-import { useEffect } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { createUser, type CreateUserState } from "./actions";
@@ -11,19 +10,31 @@ type Role = {
   name: string;
 };
 
+type UserType = {
+  id: number;
+  name: string;
+};
+
 type Props = {
   roles: Role[];
+  userTypes: UserType[];
 };
 
 const initialState: CreateUserState = {};
 
-export default function CreateUserForm({ roles }: Props) {
+export default function CreateUserForm({ roles, userTypes }: Props) {
   const router = useRouter();
 
   const [state, formAction, isPending] = useActionState(
     createUser,
     initialState,
   );
+
+  const [selectedRoleId, setSelectedRoleId] = useState("");
+
+  const userRole = roles.find((role) => role.name === "User");
+
+  const isRegularUser = userRole && Number(selectedRoleId) === userRole.id;
 
   useEffect(() => {
     if (state.success) {
@@ -77,6 +88,26 @@ export default function CreateUserForm({ roles }: Props) {
         />
       </div>
 
+      {/* Employee ID */}
+      <div>
+        <label
+          htmlFor="employee_id"
+          className="block text-sm font-medium text-gray-700"
+        >
+          Employee ID
+        </label>
+
+        <input
+          id="employee_id"
+          name="employee_id"
+          type="text"
+          placeholder="Enter employee ID"
+          className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        />
+
+        <p className="mt-1 text-xs text-gray-500">Optional.</p>
+      </div>
+
       {/* Email */}
       <div>
         <label
@@ -120,32 +151,6 @@ export default function CreateUserForm({ roles }: Props) {
         </p>
       </div>
 
-      {/* Office */}
-      <div>
-        <label
-          htmlFor="office"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Office
-        </label>
-
-        <select
-          id="office"
-          name="office"
-          required
-          defaultValue=""
-          className="mt-2 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-        >
-          <option value="" disabled>
-            Select office
-          </option>
-
-          <option value="PBAC">PBAC</option>
-
-          <option value="TWG">TWG</option>
-        </select>
-      </div>
-
       {/* Role */}
       <div>
         <label
@@ -159,7 +164,8 @@ export default function CreateUserForm({ roles }: Props) {
           id="role_id"
           name="role_id"
           required
-          defaultValue=""
+          value={selectedRoleId}
+          onChange={(event) => setSelectedRoleId(event.target.value)}
           className="mt-2 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
         >
           <option value="" disabled>
@@ -173,6 +179,36 @@ export default function CreateUserForm({ roles }: Props) {
           ))}
         </select>
       </div>
+
+      {/* User Type */}
+      {isRegularUser && (
+        <div>
+          <label
+            htmlFor="user_type_id"
+            className="block text-sm font-medium text-gray-700"
+          >
+            User Type
+          </label>
+
+          <select
+            id="user_type_id"
+            name="user_type_id"
+            required
+            defaultValue=""
+            className="mt-2 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm text-gray-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          >
+            <option value="" disabled>
+              Select User Type
+            </option>
+
+            {userTypes.map((userType) => (
+              <option key={userType.id} value={userType.id}>
+                {userType.name}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       {/* Buttons */}
       <div className="flex justify-end gap-3 border-t border-gray-200 pt-6">

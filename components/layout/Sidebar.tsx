@@ -5,6 +5,7 @@ import { useSyncExternalStore } from "react";
 
 type SidebarProps = {
   isAdmin: boolean;
+  canManageUsers: boolean;
 };
 
 type NavItem = {
@@ -154,7 +155,25 @@ function getServerSidebarState() {
   return false;
 }
 
-export default function Sidebar({ isAdmin }: SidebarProps) {
+function UsersIcon() {
+  return (
+    <svg
+      className="h-5 w-5 shrink-0"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      aria-hidden="true"
+    >
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  );
+}
+
+export default function Sidebar({ isAdmin, canManageUsers }: SidebarProps) {
   const collapsed = useSyncExternalStore(
     subscribeToSidebarState,
     getSidebarState,
@@ -188,16 +207,33 @@ export default function Sidebar({ isAdmin }: SidebarProps) {
   ];
 
   const administrationMenu: NavItem[] = [
-    {
-      label: "Audit Logs",
-      href: "/administration/audit-logs",
-      icon: <AuditIcon />,
-    },
-    {
-      label: "Settings",
-      href: "/administration",
-      icon: <SettingsIcon />,
-    },
+    ...(canManageUsers
+      ? [
+          {
+            label: "User Management",
+            href: "/administration/users",
+            icon: <UsersIcon />,
+          },
+        ]
+      : []),
+    ...(canManageUsers
+      ? [
+          {
+            label: "Audit Logs",
+            href: "/administration/audit-logs",
+            icon: <AuditIcon />,
+          },
+        ]
+      : []),
+    ...(isAdmin
+      ? [
+          {
+            label: "Settings",
+            href: "/administration",
+            icon: <SettingsIcon />,
+          },
+        ]
+      : []),
   ];
 
   function renderMenuItem(item: NavItem) {
@@ -250,7 +286,7 @@ export default function Sidebar({ isAdmin }: SidebarProps) {
 
         <nav className="space-y-1">{mainMenu.map(renderMenuItem)}</nav>
 
-        {isAdmin && (
+        {canManageUsers && (
           <div className="mt-8">
             <p
               className={`mb-3 px-3 text-xs font-semibold tracking-wide text-gray-400 transition-opacity ${

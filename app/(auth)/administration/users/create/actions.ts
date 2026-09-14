@@ -1,7 +1,7 @@
 "use server";
 
 import { createAdminClient } from "@/lib/supabase/admin";
-import { requireAdmin } from "@/lib/auth/require-admin";
+import { requireUserManager } from "@/lib/auth/require-user-manager";
 
 export type CreateUserState = {
   error?: string;
@@ -9,14 +9,23 @@ export type CreateUserState = {
 };
 
 export async function createUser(
-  previousState: CreateUserState,
+  _previousState: CreateUserState,
   formData: FormData,
 ): Promise<CreateUserState> {
   try {
-    // Make sure the current user is an Administrator
-    await requireAdmin();
+    // ---------------------------------------------
+    // 1. Verify current user can manage users
+    // ---------------------------------------------
+
+    const { role: currentRole } = await requireUserManager();
+
+    // ---------------------------------------------
+    // 2. Read submitted values
+    // ---------------------------------------------
 
     const fullName = String(formData.get("full_name") || "").trim();
+
+    const employeeId = String(formData.get("employee_id") || "").trim();
 
     const email = String(formData.get("email") || "")
       .trim()
@@ -24,11 +33,16 @@ export async function createUser(
 
     const password = String(formData.get("password") || "");
 
-    const office = String(formData.get("office") || "").trim();
-
     const roleId = Number(formData.get("role_id"));
 
-    // Basic validation
+    const userTypeValue = String(formData.get("user_type_id") || "").trim();
+
+    const userTypeId = userTypeValue ? Number(userTypeValue) : null;
+
+    // ---------------------------------------------
+    // 3. Basic validation
+    // ---------------------------------------------
+
     if (!fullName) {
       return {
         error: "Full name is required.",
@@ -53,21 +67,110 @@ export async function createUser(
       };
     }
 
-    if (!office) {
+    if (!Number.isInteger(roleId) || roleId <= 0) {
       return {
-        error: "Office is required.",
+        error: "Please select a valid role.",
       };
     }
 
-    if (!roleId) {
-      return {
-        error: "Role is required.",
-      };
-    }
+    // ---------------------------------------------
+    // 4. Get actual role IDs
+    // ---------------------------------------------
 
     const supabaseAdmin = createAdminClient();
 
-    // Create the Authentication account
+    const { data: roleRows, error: roleError } = await supabaseAdmin
+      .from("roles")
+      .select("id, name")
+      .in("name", ["Admin", "Moderator", "User"]);
+
+    if (roleError || !roleRows) {
+      console.error("CREATE USER ROLE LOOKUP ERROR:", roleError);
+
+      return {
+        error: "Unable to validate the selected role. Please try again.",
+      };
+    }
+
+    const adminRole = roleRows.find((role) => role.name === "Admin");
+
+    const moderatorRole = roleRows.find((role) => role.name === "Moderator");
+
+    const userRole = roleRows.find((role) => role.name === "User");
+
+    if (!adminRole || !moderatorRole || !userRole) {
+      console.error("CREATE USER ROLE CONFIGURATION ERROR");
+
+      return {
+        error:
+          "User role configuration is incomplete. Please contact a system administrator.",
+      };
+    }
+
+    // ---------------------------------------------
+    // 5. Validate requested role
+    // ---------------------------------------------
+
+    const validRoleIds = [adminRole.id, moderatorRole.id, userRole.id];
+
+    if (!validRoleIds.includes(roleId)) {
+      return {
+        error: "Invalid role selected.",
+      };
+    }
+
+    // ---------------------------------------------
+    // 6. Moderator restriction
+    //
+    // Moderator may create regular Users only.
+    // ---------------------------------------------
+
+    if (currentRole.name === "Moderator" && roleId !== userRole.id) {
+      return {
+        error: "Moderators can only create regular User accounts.",
+      };
+    }
+
+    // ---------------------------------------------
+    // 7. Validate User Type
+    // ---------------------------------------------
+
+    if (roleId === userRole.id) {
+      if (
+        userTypeId === null ||
+        !Number.isInteger(userTypeId) ||
+        userTypeId <= 0
+      ) {
+        return {
+          error: "Please select a valid User Type.",
+        };
+      }
+
+      const { data: userType, error: userTypeError } = await supabaseAdmin
+        .from("user_types")
+        .select("id")
+        .eq("id", userTypeId)
+        .maybeSingle();
+
+      if (userTypeError || !userType) {
+        return {
+          error: "Please select a valid User Type.",
+        };
+      }
+    } else {
+      // Admin and Moderator accounts must not
+      // have a User Type.
+      if (userTypeId !== null) {
+        return {
+          error: "Admin and Moderator accounts cannot have a User Type.",
+        };
+      }
+    }
+
+    // ---------------------------------------------
+    // 8. Create Authentication account
+    // ---------------------------------------------
+
     const { data: authData, error: authError } =
       await supabaseAdmin.auth.admin.createUser({
         email,
@@ -79,7 +182,8 @@ export async function createUser(
       console.error("CREATE AUTH USER ERROR:", authError);
 
       return {
-        error: authError.message,
+        error:
+          "Unable to create the user account. Please check the information and try again.",
       };
     }
 
@@ -91,23 +195,30 @@ export async function createUser(
 
     const userId = authData.user.id;
 
-    // Create/update the user's profile
+    // ---------------------------------------------
+    // 9. Create profile
+    // ---------------------------------------------
+
     const { error: profileError } = await supabaseAdmin.from("profiles").upsert(
       {
         id: userId,
         full_name: fullName,
-        office,
+        employee_id: employeeId || null,
         role_id: roleId,
+        user_type_id: userTypeId,
       },
       {
         onConflict: "id",
       },
     );
 
+    // ---------------------------------------------
+    // 10. Roll back Auth account if profile fails
+    // ---------------------------------------------
+
     if (profileError) {
       console.error("CREATE PROFILE ERROR:", profileError);
 
-      // Roll back the Auth account if profile creation fails
       await supabaseAdmin.auth.admin.deleteUser(userId);
 
       return {
@@ -116,6 +227,10 @@ export async function createUser(
       };
     }
 
+    // ---------------------------------------------
+    // 11. Success
+    // ---------------------------------------------
+
     return {
       success: `User ${fullName} was created successfully.`,
     };
@@ -123,7 +238,7 @@ export async function createUser(
     console.error("CREATE USER ERROR:", error);
 
     return {
-      error: error instanceof Error ? error.message : "Unable to create user.",
+      error: "Unable to create user. Please try again.",
     };
   }
 }

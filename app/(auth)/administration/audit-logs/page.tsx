@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/lib/auth/require-admin";
+import { requireUserManager } from "@/lib/auth/require-user-manager";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 
@@ -32,7 +32,7 @@ export default async function AuditLogsPage({
 }: {
   searchParams: Promise<SearchParams>;
 }) {
-  await requireAdmin();
+  await requireUserManager();
 
   const params = await searchParams;
 
