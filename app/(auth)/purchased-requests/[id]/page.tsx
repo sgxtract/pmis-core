@@ -318,6 +318,17 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
             </p>
           </div>
 
+          {/* ABC */}
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
+              ABC
+            </p>
+
+            <p className="mt-1 text-lg font-semibold text-gray-900">
+              {formatCurrency(procurementRequest.abc)}
+            </p>
+          </div>
+
           {/* Type of PR */}
           <div>
             <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
@@ -337,17 +348,6 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
 
             <p className="mt-1 font-medium text-gray-900">
               {procurementRequest.end_user || "—"}
-            </p>
-          </div>
-
-          {/* ABC */}
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-              ABC
-            </p>
-
-            <p className="mt-1 text-lg font-semibold text-gray-900">
-              {formatCurrency(procurementRequest.abc)}
             </p>
           </div>
 
@@ -397,7 +397,6 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* Procurement Workflow */}
       {/* Procurement Workflow */}
       <div className="mt-8 rounded-xl border bg-white shadow-sm print:hidden">
         <div className="border-b px-4 py-4 sm:px-6">

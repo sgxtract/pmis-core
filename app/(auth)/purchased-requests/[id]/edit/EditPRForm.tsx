@@ -163,26 +163,6 @@ export default function EditPRForm({
           />
         </div>
 
-        {/* End User */}
-
-        <div>
-          <label
-            htmlFor="end_user"
-            className="block text-sm font-medium text-gray-700"
-          >
-            End User
-          </label>
-
-          <input
-            id="end_user"
-            name="end_user"
-            type="text"
-            required
-            defaultValue={request.end_user}
-            className="text-gray-500 mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-          />
-        </div>
-
         {/* Particulars */}
 
         <div className="md:col-span-2">
@@ -221,6 +201,26 @@ export default function EditPRForm({
             step="0.01"
             required
             defaultValue={request.abc ?? ""}
+            className="text-gray-500 mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+          />
+        </div>
+
+        {/* End User */}
+
+        <div>
+          <label
+            htmlFor="end_user"
+            className="block text-sm font-medium text-gray-700"
+          >
+            End User
+          </label>
+
+          <input
+            id="end_user"
+            name="end_user"
+            type="text"
+            required
+            defaultValue={request.end_user}
             className="text-gray-500 mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
         </div>
