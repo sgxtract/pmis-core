@@ -25,21 +25,16 @@ export async function cancelProcurementRequest(
 
   const remarks = String(formData.get("remarks") ?? "").trim();
 
-  const { data, error } = await supabase.rpc(
-    "cancel_procurement_request",
-    {
-      p_request_id: Number(id),
-      p_remarks: remarks || null,
-    },
-  );
+  const { data, error } = await supabase.rpc("cancel_procurement_request", {
+    p_request_id: Number(id),
+    p_remarks: remarks || null,
+  });
 
   if (error) {
     console.error("CANCEL PR ERROR:", error);
 
     return {
-      error:
-        error.message ||
-        "Unable to cancel procurement request. Please try again.",
+      error: "Unable to cancel procurement request. Please try again.",
     };
   }
 

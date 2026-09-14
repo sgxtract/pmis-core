@@ -42,7 +42,10 @@ export async function createProcurementRequest(formData: FormData) {
   const modeId = modeValue ? Number(modeValue) : null;
 
   if (modeId !== null && (!Number.isInteger(modeId) || modeId <= 0)) {
-    throw new Error("Procurement Mode is invalid.");
+    return {
+      success: false,
+      error: "Procurement Mode is invalid.",
+    };
   }
 
   const accountCode = String(formData.get("account_code") ?? "").trim();
@@ -57,7 +60,10 @@ export async function createProcurementRequest(formData: FormData) {
     calendarDays !== null &&
     (!Number.isInteger(calendarDays) || calendarDays < 0)
   ) {
-    throw new Error("CD / Calendar Days must be a valid whole number.");
+    return {
+      success: false,
+      error: "CD / Calendar Days must be a valid whole number.",
+    };
   }
 
   // -----------------------------------------
@@ -72,26 +78,28 @@ export async function createProcurementRequest(formData: FormData) {
     !particulars ||
     !abcValue
   ) {
-    throw new Error("Please complete all required fields.");
+    return {
+      success: false,
+      error: "Please complete all required fields.",
+    };
   }
 
   const abc = Number(abcValue);
 
   if (!Number.isFinite(abc) || abc < 0) {
-    throw new Error("ABC must be a valid amount.");
+    return {
+      success: false,
+      error: "ABC must be a valid amount.",
+    };
   }
 
   const parsedDate = new Date(prDate);
 
   if (Number.isNaN(parsedDate.getTime())) {
-    throw new Error("PR Date must be a valid date.");
-  }
-
-  if (
-    calendarDays !== null &&
-    (!Number.isInteger(calendarDays) || calendarDays < 0)
-  ) {
-    throw new Error("CD / Calendar Days must be a valid whole number.");
+    return {
+      success: false,
+      error: "PR Date must be a valid date.",
+    };
   }
 
   // -----------------------------------------
@@ -111,7 +119,10 @@ export async function createProcurementRequest(formData: FormData) {
     if (referenceLookupError) {
       console.error("REFERENCE ID LOOKUP ERROR:", referenceLookupError);
 
-      throw new Error("Unable to verify the Reference ID.");
+      return {
+        success: false,
+        error: "Unable to verify the Reference ID.",
+      };
     }
 
     if (existingReference) {
@@ -150,7 +161,12 @@ export async function createProcurementRequest(formData: FormData) {
     .single();
 
   if (stageError || !receivedStage) {
-    throw new Error("The Received procurement stage was not found.");
+    console.error("RECEIVED STAGE ERROR:", stageError);
+
+    return {
+      success: false,
+      error: "The Received procurement stage could not be found.",
+    };
   }
 
   // -----------------------------------------
@@ -196,7 +212,7 @@ export async function createProcurementRequest(formData: FormData) {
 
     return {
       success: false,
-      error: requestError?.message || "Unable to create procurement request.",
+      error: "Unable to create procurement request. Please try again.",
     };
   }
 
@@ -216,9 +232,11 @@ export async function createProcurementRequest(formData: FormData) {
   if (historyError) {
     console.error("CREATE STAGE HISTORY ERROR:", historyError);
 
-    throw new Error(
-      "The PR was created, but its stage history could not be created.",
-    );
+    return {
+      success: false,
+      error:
+        "The PR was created, but its stage history could not be recorded. Please contact an administrator.",
+    };
   }
 
   // -----------------------------------------
@@ -229,108 +247,4 @@ export async function createProcurementRequest(formData: FormData) {
     success: true,
     id: request.id,
   };
-
-  // redirect(`/purchased-requests/${request.id}`);
 }
-
-// "use server";
-
-// import { createClient } from "@/lib/supabase/server";
-
-// export async function createProcurementRequest(formData: FormData) {
-//   const supabase = await createClient();
-
-//   const prNumber = String(formData.get("prNumber") ?? "").trim();
-//   const prDate = String(formData.get("prDate") ?? "").trim();
-//   const particulars = String(formData.get("particulars") ?? "").trim();
-//   const abcValue = String(formData.get("abc") ?? "").trim();
-//   const procurementModeValue = String(
-//     formData.get("procurementMode") ?? "",
-//   ).trim();
-//   const typeOfPr = String(formData.get("typeOfPr") ?? "").trim();
-//   const endUser = String(formData.get("endUser") ?? "").trim();
-//   const accountCode = String(formData.get("accountCode") ?? "").trim();
-//   const calendarDaysValue = String(
-//     formData.get("calendarDays") ?? "",
-//   ).trim();
-//   const solNo = String(formData.get("solNo") ?? "").trim();
-
-//   if (
-//     !prNumber ||
-//     !prDate ||
-//     !particulars ||
-//     !abcValue ||
-//     !typeOfPr ||
-//     !endUser
-//   ) {
-//     return {
-//       success: false,
-//       error: "Please complete all required fields.",
-//     };
-//   }
-
-//   const abc = Number(abcValue);
-
-//   if (Number.isNaN(abc) || abc < 0) {
-//     return {
-//       success: false,
-//       error: "ABC must be a valid amount.",
-//     };
-//   }
-
-//   const modeOfProcurementId = procurementModeValue
-//     ? Number(procurementModeValue)
-//     : null;
-
-//   const calendarDays = calendarDaysValue
-//     ? Number(calendarDaysValue)
-//     : null;
-
-//   if (
-//     modeOfProcurementId !== null &&
-//     Number.isNaN(modeOfProcurementId)
-//   ) {
-//     return {
-//       success: false,
-//       error: "Invalid procurement mode.",
-//     };
-//   }
-
-//   if (calendarDays !== null && Number.isNaN(calendarDays)) {
-//     return {
-//       success: false,
-//       error: "CD / Calendar Days must be a valid number.",
-//     };
-//   }
-
-//   const { data, error } = await supabase
-//     .from("procurement_requests")
-//     .insert({
-//       pr_number: prNumber,
-//       pr_date: prDate,
-//       particulars,
-//       abc,
-//       mode_of_procurement_id: modeOfProcurementId,
-//       type_of_pr: typeOfPr,
-//       end_user: endUser,
-//       account_code: accountCode || null,
-//       calendar_days: calendarDays,
-//       sol_no: solNo || null,
-//     })
-//     .select("id")
-//     .single();
-
-//   if (error) {
-//     console.error("CREATE PR ERROR:", error);
-
-//     return {
-//       success: false,
-//       error: error.message,
-//     };
-//   }
-
-//   return {
-//     success: true,
-//     id: data.id,
-//   };
-// }

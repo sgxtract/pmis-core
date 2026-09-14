@@ -301,9 +301,7 @@ export async function updateProcurementRequest(
     }
 
     return {
-      error:
-        error?.message ||
-        "Unable to update procurement request. Please try again.",
+      error: "Unable to update procurement request. Please try again.",
     };
   }
 

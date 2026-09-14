@@ -50,6 +50,7 @@ function formatCurrency(value: number | null) {
 }
 
 export default async function ProcurementRequestPage({ params }: PageProps) {
+  // throw new Error("TEST PROCUREMENT REQUEST ERROR");
   const { id } = await params;
 
   const supabase = await createClient();

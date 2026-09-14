@@ -25,21 +25,16 @@ export async function restoreProcurementRequest(
 
   const remarks = String(formData.get("remarks") ?? "").trim();
 
-  const { data, error } = await supabase.rpc(
-    "restore_procurement_request",
-    {
-      p_request_id: Number(id),
-      p_remarks: remarks || null,
-    },
-  );
+  const { data, error } = await supabase.rpc("restore_procurement_request", {
+    p_request_id: Number(id),
+    p_remarks: remarks || null,
+  });
 
   if (error) {
     console.error("RESTORE PR ERROR:", error);
 
     return {
-      error:
-        error.message ||
-        "Unable to restore procurement request. Please try again.",
+      error: "Unable to restore procurement request. Please try again.",
     };
   }
 
