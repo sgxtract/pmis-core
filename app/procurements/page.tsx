@@ -176,25 +176,56 @@ export default async function PublicProcurementsPage({
   return (
     <main className="min-h-screen bg-gray-100">
       {/* Header */}
-      <header className="border-b bg-white">
-        <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-4 sm:gap-4 sm:px-6 sm:py-5">
-          <Image
-            src="/sorsogon-logo.png"
-            alt="Sorsogon Province Logo"
-            width={64}
-            height={64}
-            className="h-14 w-14 shrink-0 object-contain sm:h-16 sm:w-16"
-          />
+      <header className="border-b border-slate-200 bg-white">
+        <div className="mx-auto flex min-h-[88px] max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
+          {/* Branding */}
+          <Link href="/" className="flex min-w-0 items-center gap-3 sm:gap-4">
+            <Image
+              src="/sorsogon-logo.png"
+              alt="Province of Sorsogon Official Seal"
+              width={70}
+              height={70}
+              priority
+              className="h-12 w-12 shrink-0 object-contain sm:h-14 sm:w-14"
+            />
 
-          <div>
-            <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">
-              Sorsogon Province Public Procurement
-            </h1>
+            <div className="min-w-0 border-l border-slate-300 pl-3 sm:pl-4">
+              <p className="truncate text-sm font-bold tracking-tight text-blue-950 sm:text-xl">
+                Sorsogon Province Procurement
+              </p>
 
-            <p className="mt-1 text-sm text-gray-500">
-              Public Procurement Information
-            </p>
-          </div>
+              <p className="text-[10px] leading-4 text-slate-500 sm:text-sm">
+                Official Procurement Information Website
+              </p>
+            </div>
+          </Link>
+
+          {/* Navigation */}
+          <nav className="ml-4 flex shrink-0 items-center gap-1 sm:gap-2">
+            {/* Home */}
+            <Link
+              href="/"
+              className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              Home
+            </Link>
+
+            {/* Current page */}
+            <Link
+              href="/procurements"
+              className="rounded-lg bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-900"
+            >
+              Procurements
+            </Link>
+
+            {/* Internal user login */}
+            <Link
+              href="/login"
+              className="rounded-lg bg-blue-800 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:px-5"
+            >
+              Login
+            </Link>
+          </nav>
         </div>
       </header>
 

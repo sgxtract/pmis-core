@@ -23,10 +23,10 @@ export default function NotFound() {
         {/* Back Button */}
         <div className="mt-6">
           <Link
-            href="/dashboard"
+            href="/"
             className="inline-flex rounded-lg bg-blue-800 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
           >
-            Back to Dashboard
+            Back to Home
           </Link>
         </div>
       </div>

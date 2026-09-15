@@ -340,9 +340,7 @@ export async function updateProcurementRequest(
   // -----------------------------------------
 
   for (const change of auditChanges) {
-    const { error: auditError } = await supabase.rpc("create_audit_log", {
-      p_user_id: user.id,
-      p_username: profile.full_name,
+    const { error: auditError } = await supabase.rpc("write_audit_log", {
       p_pr_id: existingRequest.id,
       p_pr_number: prNumber,
       p_module: "Procurement Requests",

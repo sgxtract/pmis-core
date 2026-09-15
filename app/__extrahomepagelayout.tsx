@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const officialWebsiteUrl = process.env.NEXT_PUBLIC_SORSOGON_WEBSITE_URL ?? "";
+const OFFICIAL_WEBSITE_URL = process.env.NEXT_PUBLIC_SORSOGON_WEBSITE_URL ?? "";
 
 function DocumentIcon() {
   return (
@@ -16,13 +16,13 @@ function DocumentIcon() {
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M6.5 3.5h7L18 8v12.5H6.5A1.5 1.5 0 0 1 5 19V5a1.5 1.5 0 0 1 1.5-1.5Z"
+        d="M6 3.75h8.25L18 7.5v12.75A1.5 1.5 0 0 1 16.5 21h-10A1.5 1.5 0 0 1 5 19.5v-14A1.75 1.75 0 0 1 6.75 3.75Z"
       />
-      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 3.5V8H18" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M14 3.75V8h4" />
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M8.5 12h6.5M8.5 15.5h6.5M8.5 19h4"
+        d="M8 12h8M8 15.5h8M8 19h5"
       />
     </svg>
   );
@@ -103,25 +103,6 @@ function BuildingIcon() {
   );
 }
 
-function ArrowIcon() {
-  return (
-    <svg
-      viewBox="0 0 20 20"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      className="h-5 w-5"
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M4 10h12M11 5l5 5-5 5"
-      />
-    </svg>
-  );
-}
-
 function ExternalLinkIcon() {
   return (
     <svg
@@ -153,16 +134,16 @@ export default function Home() {
           HEADER
       ====================================================== */}
       <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex min-h-[88px] max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
+        <div className="mx-auto flex min-h-[92px] max-w-7xl items-center justify-between px-6 lg:px-8">
           {/* Branding */}
           <Link href="/" className="flex min-w-0 items-center gap-3 sm:gap-4">
             <Image
               src="/sorsogon-logo.png"
               alt="Province of Sorsogon Official Seal"
-              width={70}
-              height={70}
+              width={72}
+              height={72}
               priority
-              className="h-12 w-12 shrink-0 object-contain sm:h-14 sm:w-14"
+              className="h-14 w-14 shrink-0 object-contain sm:h-16 sm:w-16"
             />
 
             <div className="min-w-0 border-l border-slate-300 pl-3 sm:pl-4">
@@ -177,7 +158,7 @@ export default function Home() {
           </Link>
 
           {/* Navigation */}
-          <nav className="ml-4 flex shrink-0 items-center gap-1 sm:gap-4">
+          <nav className="ml-4 flex shrink-0 items-center gap-2 sm:gap-5">
             <Link
               href="/procurements"
               className="hidden rounded-lg px-3 py-2 text-sm font-semibold text-blue-950 transition hover:bg-slate-100 sm:inline-flex"
@@ -199,7 +180,7 @@ export default function Home() {
           HERO
       ====================================================== */}
       <section className="relative overflow-hidden">
-        {/* Capitol background */}
+        {/* Capitol photograph */}
         <Image
           src="/capitol.png"
           alt="Provincial Capitol of Sorsogon"
@@ -209,42 +190,39 @@ export default function Home() {
           className="object-cover object-center"
         />
 
-        {/* Main overlay */}
+        {/* Overlay */}
         <div className="absolute inset-0 bg-blue-950/55" />
 
-        {/* Subtle bottom gradient */}
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-blue-950/35 to-transparent" />
+        {/* Subtle lower gradient */}
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-blue-950/30 to-transparent" />
 
-        <div className="relative mx-auto flex min-h-[560px] max-w-7xl items-center justify-center px-5 py-20 sm:min-h-[600px] sm:px-6 lg:px-8">
-          <div className="w-full max-w-5xl text-center text-white">
+        {/* Hero content */}
+        <div className="relative mx-auto flex min-h-[540px] max-w-7xl items-center justify-center px-6 py-20 sm:min-h-[570px] lg:px-8">
+          <div className="max-w-5xl text-center text-white">
             {/* Province label */}
             <div className="flex items-center justify-center gap-4">
-              <span className="hidden h-px w-16 bg-white/70 sm:block" />
+              <span className="hidden h-px w-20 bg-white/70 sm:block" />
 
               <p className="text-xs font-bold uppercase tracking-[0.28em] text-white sm:text-sm">
                 Province of Sorsogon
               </p>
 
-              <span className="hidden h-px w-16 bg-white/70 sm:block" />
+              <span className="hidden h-px w-20 bg-white/70 sm:block" />
             </div>
 
-            {/* Main title */}
-            <h1 className="mt-5 text-4xl font-bold tracking-tight drop-shadow-lg sm:text-5xl lg:text-6xl">
+            <h1 className="mt-5 text-4xl font-bold tracking-tight drop-shadow-md sm:text-5xl lg:text-6xl">
               Sorsogon Province Procurement
             </h1>
 
-            {/* Subtitle */}
             <p className="mt-5 text-xl font-medium text-white drop-shadow sm:text-2xl">
               Official Procurement Information Website
             </p>
 
-            {/* Description */}
-            <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/90 drop-shadow sm:text-base sm:leading-8">
-              Transparent and accessible procurement information for the people
-              of Sorsogon.
+            <p className="mx-auto mt-5 max-w-3xl text-sm leading-7 text-white/90 drop-shadow sm:text-base sm:leading-8">
+              Access procurement information of the Province of Sorsogon through
+              a centralized and accessible public procurement portal.
             </p>
 
-            {/* Main CTA */}
             <div className="mt-8">
               <Link
                 href="/procurements"
@@ -252,7 +230,20 @@ export default function Home() {
               >
                 <span>View Public Procurements</span>
 
-                <ArrowIcon />
+                <svg
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  className="h-5 w-5"
+                  aria-hidden="true"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 10h12M11 5l5 5-5 5"
+                  />
+                </svg>
               </Link>
             </div>
           </div>
@@ -263,9 +254,9 @@ export default function Home() {
           INFORMATION STRIP
       ====================================================== */}
       <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-7xl divide-y divide-slate-200 px-5 sm:grid-cols-2 sm:divide-x sm:divide-y-0 sm:px-6 lg:grid-cols-4 lg:px-8">
+        <div className="mx-auto grid max-w-7xl divide-y divide-slate-200 px-6 sm:grid-cols-2 sm:divide-x sm:divide-y-0 lg:grid-cols-4 lg:px-8">
           {/* Transparency */}
-          <div className="flex items-center gap-4 px-2 py-6 sm:px-5 lg:py-7">
+          <div className="flex items-center gap-4 px-2 py-7 sm:px-6 lg:py-6">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-800">
               <DocumentIcon />
             </div>
@@ -280,7 +271,7 @@ export default function Home() {
           </div>
 
           {/* Accountability */}
-          <div className="flex items-center gap-4 px-2 py-6 sm:px-5 lg:py-7">
+          <div className="flex items-center gap-4 px-2 py-7 sm:px-6 lg:py-6">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-800">
               <ShieldIcon />
             </div>
@@ -297,7 +288,7 @@ export default function Home() {
           </div>
 
           {/* Public Service */}
-          <div className="flex items-center gap-4 px-2 py-6 sm:px-5 lg:py-7">
+          <div className="flex items-center gap-4 px-2 py-7 sm:px-6 lg:py-6">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-800">
               <PeopleIcon />
             </div>
@@ -314,7 +305,7 @@ export default function Home() {
           </div>
 
           {/* Sorsogon Province */}
-          <div className="flex items-center gap-4 px-2 py-6 sm:px-5 lg:py-7">
+          <div className="flex items-center gap-4 px-2 py-7 sm:px-6 lg:py-6">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-800">
               <BuildingIcon />
             </div>
@@ -336,33 +327,29 @@ export default function Home() {
           PUBLIC PROCUREMENT SECTION
       ====================================================== */}
       <section className="bg-slate-50">
-        <div className="mx-auto max-w-4xl px-5 py-16 text-center sm:px-6 lg:py-20">
-          <p className="text-xs font-bold uppercase tracking-[0.22em] text-blue-800">
-            Public Procurement Portal
-          </p>
+        <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8 lg:py-20">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-blue-800">
+              Public Procurement Portal
+            </p>
 
-          <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-            Explore Procurement Information
-          </h2>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+              Explore Procurement Information
+            </h2>
 
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600">
-            Browse available procurement requests and view publicly accessible
-            information about their progress.
-          </p>
+            <p className="mt-4 text-base leading-7 text-slate-600">
+              Browse available procurement requests and view publicly accessible
+              information about their progress.
+            </p>
 
-          <div className="mt-7">
-            <Link
-              href="/procurements"
-              className="group inline-flex items-center gap-2 text-sm font-semibold text-blue-800 transition hover:text-blue-950 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-4"
-            >
-              <span className="border-b border-blue-300 pb-1 transition group-hover:border-blue-800">
+            <div className="mt-7">
+              <Link
+                href="/procurements"
+                className="inline-flex items-center rounded-lg bg-blue-800 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              >
                 Browse Procurements
-              </span>
-
-              <span className="transition-transform duration-200 group-hover:translate-x-1">
-                <ArrowIcon />
-              </span>
-            </Link>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -371,7 +358,7 @@ export default function Home() {
           FOOTER
       ====================================================== */}
       <footer className="bg-blue-950 text-white">
-        <div className="mx-auto max-w-7xl px-5 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-6 py-8 lg:px-8">
           <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
             {/* Official website */}
             <div className="flex items-start gap-3">
@@ -380,22 +367,22 @@ export default function Home() {
               </div>
 
               <div>
-                <p className="text-sm font-medium leading-6 text-blue-100">
+                <p className="text-sm font-medium text-blue-100">
                   For more information about the Province of Sorsogon, please
                   visit the official website.
                 </p>
 
-                {officialWebsiteUrl && (
+                {OFFICIAL_WEBSITE_URL ? (
                   <a
-                    href={officialWebsiteUrl}
+                    href={OFFICIAL_WEBSITE_URL}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-1 inline-flex items-center gap-1.5 text-sm font-bold text-white underline decoration-white/50 underline-offset-4 transition hover:text-blue-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-blue-950"
+                    className="mt-1 inline-flex items-center gap-1.5 text-sm font-bold text-white underline decoration-white/50 underline-offset-4 transition hover:text-blue-200"
                   >
                     Official Sorsogon Province Website
                     <ExternalLinkIcon />
                   </a>
-                )}
+                ) : null}
               </div>
             </div>
 
@@ -404,8 +391,8 @@ export default function Home() {
               <Image
                 src="/sorsogon-logo.png"
                 alt="Province of Sorsogon Official Seal"
-                width={44}
-                height={44}
+                width={42}
+                height={42}
                 className="h-10 w-10 object-contain"
               />
 

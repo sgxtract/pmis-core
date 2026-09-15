@@ -13,8 +13,37 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PMIS",
-  description: "Procurement Management Information System",
+  title: "Sorsogon Province Procurement",
+  description:
+    "Official Procurement Information Website of the Province of Sorsogon",
+  applicationName: "Sorsogon Province Procurement",
+  generator: "Next.js",
+  keywords: [
+    "Sorsogon Province",
+    "procurement",
+    "public procurement",
+    "procurement information",
+    "PMIS",
+  ],
+  authors: [
+    {
+      name: "Province of Sorsogon",
+    },
+  ],
+  openGraph: {
+    title: "Sorsogon Province Procurement",
+    description:
+      "Official Procurement Information Website of the Province of Sorsogon",
+    type: "website",
+    locale: "en_PH",
+    siteName: "Sorsogon Province Procurement",
+  },
+  twitter: {
+    card: "summary",
+    title: "Sorsogon Province Procurement",
+    description:
+      "Official Procurement Information Website of the Province of Sorsogon",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
