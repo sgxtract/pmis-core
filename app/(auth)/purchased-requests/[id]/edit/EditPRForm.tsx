@@ -139,7 +139,8 @@ export default function EditPRForm({
           />
 
           <p className="mt-1 text-xs text-gray-500">
-            Use the same Reference ID for related procurement requests.
+            Optional. Use the same Reference ID for related procurement
+            requests.
           </p>
         </div>
 
@@ -249,6 +250,9 @@ export default function EditPRForm({
               </option>
             ))}
           </select>
+          <p className="mt-1 text-xs text-gray-500">
+            Optional. The procurement mode may be assigned later.
+          </p>
         </div>
 
         {/* Account Code */}

@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { requireActiveUser } from "@/lib/auth/require-active-user";
 
 export type UpdatePRState = {
   error?: string;
@@ -13,6 +14,8 @@ export async function updateProcurementRequest(
   _previousState: UpdatePRState,
   formData: FormData,
 ): Promise<UpdatePRState> {
+  await requireActiveUser();
+
   const supabase = await createClient();
 
   // -----------------------------------------
@@ -195,6 +198,33 @@ export async function updateProcurementRequest(
     }
   }
 
+  // -----------------------------------------
+  // 5C. Get procurement mode names for audit
+  // -----------------------------------------
+
+  let oldModeName: string | null = null;
+  let newModeName: string | null = null;
+
+  if (existingRequest.mode_of_procurement_id) {
+    const { data: oldMode } = await supabase
+      .from("modes_of_procurement")
+      .select("name")
+      .eq("id", existingRequest.mode_of_procurement_id)
+      .maybeSingle();
+
+    oldModeName = oldMode?.name ?? null;
+  }
+
+  if (modeId) {
+    const { data: newMode } = await supabase
+      .from("modes_of_procurement")
+      .select("name")
+      .eq("id", modeId)
+      .maybeSingle();
+
+    newModeName = newMode?.name ?? null;
+  }
+
   const auditChanges = [
     {
       field: "reference_id",
@@ -232,9 +262,9 @@ export async function updateProcurementRequest(
       newValue: abc,
     },
     {
-      field: "mode_of_procurement_id",
-      oldValue: existingRequest.mode_of_procurement_id,
-      newValue: modeId,
+      field: "mode_of_procurement",
+      oldValue: oldModeName,
+      newValue: newModeName,
     },
     {
       field: "account_code",

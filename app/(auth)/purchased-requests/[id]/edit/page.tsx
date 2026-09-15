@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { requireActiveUser } from "@/lib/auth/require-active-user";
 
 import EditPRForm from "./EditPRForm";
 
@@ -13,6 +14,7 @@ type PageProps = {
 export default async function EditProcurementRequestPage({
   params,
 }: PageProps) {
+  await requireActiveUser();
   const { id } = await params;
 
   const supabase = await createClient();
