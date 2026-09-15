@@ -177,7 +177,7 @@ export default async function PublicProcurementsPage({
     <main className="min-h-screen bg-gray-100">
       {/* Header */}
       <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex min-h-[88px] max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
+        <div className="mx-auto flex min-h-22 max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
           {/* Branding */}
           <Link href="/" className="flex min-w-0 items-center gap-3 sm:gap-4">
             <Image

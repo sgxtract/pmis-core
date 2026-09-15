@@ -153,7 +153,7 @@ export default function Home() {
           HEADER
       ====================================================== */}
       <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex min-h-[88px] max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
+        <div className="mx-auto flex min-h-22 max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
           {/* Branding */}
           <Link href="/" className="flex min-w-0 items-center gap-3 sm:gap-4">
             <Image
@@ -213,9 +213,9 @@ export default function Home() {
         <div className="absolute inset-0 bg-blue-950/55" />
 
         {/* Subtle bottom gradient */}
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-blue-950/35 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-40 bg-linear-to-t from-blue-950/35 to-transparent" />
 
-        <div className="relative mx-auto flex min-h-[560px] max-w-7xl items-center justify-center px-5 py-20 sm:min-h-[600px] sm:px-6 lg:px-8">
+        <div className="relative mx-auto flex min-h-140 max-w-7xl items-center justify-center px-5 py-20 sm:min-h-150 sm:px-6 lg:px-8">
           <div className="w-full max-w-5xl text-center text-white">
             {/* Province label */}
             <div className="flex items-center justify-center gap-4">
