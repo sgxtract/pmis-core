@@ -67,6 +67,30 @@ export async function createUser(
       };
     }
 
+    if (!/[a-z]/.test(password)) {
+      return {
+        error: "Password must contain at least one lowercase letter.",
+      };
+    }
+
+    if (!/[A-Z]/.test(password)) {
+      return {
+        error: "Password must contain at least one uppercase letter.",
+      };
+    }
+
+    if (!/[0-9]/.test(password)) {
+      return {
+        error: "Password must contain at least one number.",
+      };
+    }
+
+    if (!/[!@#$%^&*()_+\-=[\]{};':"\\|<>?,./`~]/.test(password)) {
+      return {
+        error: "Password must contain at least one special character.",
+      };
+    }
+
     if (!Number.isInteger(roleId) || roleId <= 0) {
       return {
         error: "Please select a valid role.",
