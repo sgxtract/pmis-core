@@ -234,54 +234,91 @@ export default async function DashboardPage() {
           </h2>
 
           <p className="mt-1 text-sm text-gray-500">
-            Number of procurement requests currently at each stage.
+            Current procurement requests across the procurement workflow.
           </p>
         </div>
 
-        <div className="divide-y divide-gray-100">
-          {(stageCounts ?? []).map((stage) => {
-            const count = stage.procurement_requests?.[0]?.count ?? 0;
+        <div className="overflow-x-auto px-6 py-8">
+          <div className="min-w-225">
+            <div className="relative">
+              {/* Connecting workflow line */}
+              <div className="absolute left-0 right-0 top-5 h-1 rounded-full bg-gray-200" />
 
-            const percentage =
-              totalPRs && totalPRs > 0 ? (count / totalPRs) * 100 : 0;
+              <div className="relative grid grid-flow-col auto-cols-fr">
+                {(stageCounts ?? []).map((stage, index) => {
+                  const count = stage.procurement_requests?.[0]?.count ?? 0;
+                  const isCompleted = stage.name === "Completed";
+                  const hasRequests = count > 0;
 
-            return (
-              <div key={stage.id} className="px-6 py-4">
-                <div className="flex items-center justify-between gap-4">
-                  <p className="min-w-0 truncate font-medium text-gray-900">
-                    {stage.name}
-                  </p>
+                  return (
+                    <Link
+                      key={stage.id}
+                      href={`/purchased-requests?stage=${encodeURIComponent(stage.name ?? "")}`}
+                      className="group relative flex flex-col items-center"
+                    >
+                      {/* Stage node */}
+                      <div
+                        className={`z-10 flex h-10 w-10 items-center justify-center rounded-full border-4 border-white shadow-sm transition ${
+                          isCompleted
+                            ? "bg-green-600"
+                            : hasRequests
+                              ? "bg-blue-600"
+                              : "bg-gray-300"
+                        }`}
+                      >
+                        <span className="text-xs font-bold text-white">
+                          {index + 1}
+                        </span>
+                      </div>
 
-                  <span className="shrink-0 rounded-full bg-gray-100 px-3 py-1 text-sm font-semibold text-gray-700">
-                    {count}{" "}
-                    <span className="font-normal text-gray-500">
-                      (
-                      {percentage % 1 === 0
-                        ? percentage.toFixed(0)
-                        : percentage.toFixed(1)}
-                      %)
-                    </span>
-                  </span>
-                </div>
+                      {/* Stage information */}
+                      <div className="mt-4 text-center">
+                        <div className="flex h-12 items-start justify-center">
+                          <p className="max-w-32.5 text-sm font-semibold leading-5 text-gray-900 group-hover:text-blue-600">
+                            {stage.name}
+                          </p>
+                        </div>
 
-                <div className="mt-3 h-2 overflow-hidden rounded-full bg-gray-100">
-                  <div
-                    className="h-full rounded-full bg-blue-600 transition-all"
-                    style={{
-                      width: `${percentage}%`,
-                    }}
-                  />
-                </div>
+                        <p
+                          className={`mt-1 text-2xl font-bold ${
+                            isCompleted
+                              ? "text-green-600"
+                              : hasRequests
+                                ? "text-blue-600"
+                                : "text-gray-400"
+                          }`}
+                        >
+                          {count}
+                        </p>
+
+                        <p className="text-xs text-gray-500">
+                          {count === 1 ? "PR" : "PRs"}
+                        </p>
+                      </div>
+                    </Link>
+                  );
+                })}
               </div>
-            );
-          })}
+            </div>
+          </div>
         </div>
 
-        <div className="border-t border-gray-200 px-6 py-4 text-right">
-          <p className="text-sm text-gray-500">
-            Total Procurement Requests:{" "}
-            <span className="font-semibold text-gray-900">{totalPRs ?? 0}</span>
-          </p>
+        <div className="border-t border-gray-200 px-6 py-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-sm text-gray-500">
+              Total Procurement Requests:{" "}
+              <span className="font-semibold text-gray-900">
+                {totalPRs ?? 0}
+              </span>
+            </p>
+
+            <Link
+              href="/purchased-requests"
+              className="text-sm font-medium text-blue-600 hover:text-blue-800"
+            >
+              View All →
+            </Link>
+          </div>
         </div>
       </div>
 
