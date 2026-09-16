@@ -10,6 +10,9 @@ type PageProps = {
   params: Promise<{
     id: string;
   }>;
+  searchParams: Promise<{
+    updated?: string;
+  }>;
 };
 
 function getStatusClass(status: string | null) {
@@ -49,9 +52,15 @@ function formatCurrency(value: number | null) {
   }).format(value);
 }
 
-export default async function ProcurementRequestPage({ params }: PageProps) {
+export default async function ProcurementRequestPage({
+  params,
+  searchParams,
+}: PageProps) {
   // throw new Error("TEST PROCUREMENT REQUEST ERROR");
   const { id } = await params;
+  const { updated } = await searchParams;
+
+  const showUpdatedMessage = updated === "1";
 
   const supabase = await createClient();
 
@@ -216,6 +225,19 @@ export default async function ProcurementRequestPage({ params }: PageProps) {
       >
         ← Back to Purchased Requests
       </Link>
+
+      {/* Success Message */}
+      {showUpdatedMessage && (
+        <div
+          role="status"
+          className="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800"
+        >
+          <div className="flex items-center gap-2">
+            <span className="font-semibold">✓</span>
+            <span>Procurement request updated successfully.</span>
+          </div>
+        </div>
+      )}
 
       {/* Page heading */}
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">

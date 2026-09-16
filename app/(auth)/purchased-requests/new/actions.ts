@@ -220,14 +220,14 @@ export async function createProcurementRequest(formData: FormData) {
   // 6. Create initial stage history
   // -----------------------------------------
 
-  const { error: historyError } = await supabase
-    .from("procurement_stage_history")
-    .insert({
-      request_id: request.id,
-      stage_id: receivedStage.id,
-      changed_by: user.id,
-      remarks: "Initial procurement request created.",
-    });
+  const { error: historyError } = await supabase.rpc(
+    "create_initial_stage_history",
+    {
+      p_request_id: request.id,
+      p_stage_id: receivedStage.id,
+      p_remarks: "Initial procurement request created.",
+    },
+  );
 
   if (historyError) {
     console.error("CREATE STAGE HISTORY ERROR:", historyError);

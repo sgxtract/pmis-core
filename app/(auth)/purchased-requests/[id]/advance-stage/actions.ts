@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { requireActiveUser } from "@/lib/auth/require-active-user";
 
 export type AdvanceStageState = {
   error?: string;
@@ -15,16 +16,10 @@ export async function advanceProcurementStage(
   const supabase = await createClient();
 
   // -----------------------------------------
-  // Check authenticated user
+  // Check authenticated and active user
   // -----------------------------------------
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    redirect("/login");
-  }
+  await requireActiveUser();
 
   // -----------------------------------------
   // Get remarks

@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
 import { requireActiveUser } from "@/lib/auth/require-active-user";
 
@@ -339,21 +340,32 @@ export async function updateProcurementRequest(
   // 8. Audit log changes
   // -----------------------------------------
 
+  const adminSupabase = createAdminClient();
+
   for (const change of auditChanges) {
-    const { error: auditError } = await supabase.rpc("write_audit_log", {
-      p_pr_id: existingRequest.id,
-      p_pr_number: prNumber,
-      p_module: "Procurement Requests",
-      p_field_name: change.field,
-      p_old_value: String(change.oldValue ?? ""),
-      p_new_value: String(change.newValue ?? ""),
-    });
+    const { error: auditError } = await adminSupabase
+      .from("audit_logs")
+      .insert({
+        user_id: user.id,
+        username: profile.full_name,
+        pr_id: existingRequest.id,
+        pr_number: prNumber,
+        module: "Procurement Requests",
+        field_name: change.field,
+        old_value: String(change.oldValue ?? ""),
+        new_value: String(change.newValue ?? ""),
+      });
 
     if (auditError) {
-      console.error("AUDIT LOG ERROR:", auditError);
+      console.error("AUDIT LOG ERROR:", {
+        message: auditError.message,
+        details: auditError.details,
+        hint: auditError.hint,
+        code: auditError.code,
+      });
 
       return {
-        error: "The PR was updated, but the audit log could not be recorded.",
+        error: `The PR was updated, but the audit log could not be recorded. [${auditError.code ?? "NO_CODE"}] ${auditError.message}`,
       };
     }
   }
@@ -362,5 +374,5 @@ export async function updateProcurementRequest(
   // 9. Success
   // -----------------------------------------
 
-  redirect(`/purchased-requests/${id}`);
+  redirect(`/purchased-requests/${id}?updated=1`);
 }
