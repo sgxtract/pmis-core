@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
 
 const officialWebsiteUrl = process.env.NEXT_PUBLIC_SORSOGON_WEBSITE_URL ?? "";
 
@@ -146,7 +147,13 @@ function ExternalLinkIcon() {
   );
 }
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900">
       {/* =====================================================
@@ -185,12 +192,21 @@ export default function Home() {
               Procurements
             </Link>
 
-            <Link
-              href="/login"
-              className="rounded-lg bg-blue-800 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:px-5"
-            >
-              Login
-            </Link>
+            {user ? (
+              <Link
+                href="/dashboard"
+                className="rounded-lg bg-blue-800 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:px-5"
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="rounded-lg bg-blue-800 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:px-5"
+              >
+                Login
+              </Link>
+            )}
           </nav>
         </div>
       </header>

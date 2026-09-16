@@ -5,6 +5,7 @@ import { requireActiveUser } from "@/lib/auth/require-active-user";
 import MobileNav from "@/components/layout/MobileNav";
 import UserMenu from "@/components/layout/UserMenu";
 import Sidebar from "@/components/layout/Sidebar";
+import Link from "next/link";
 
 export default async function AuthLayout({
   children,
@@ -51,7 +52,14 @@ export default async function AuthLayout({
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center">
+        <div className="flex shrink-0 items-center gap-3">
+          <Link
+            href="/"
+            className="hidden rounded-lg px-3 py-2 text-sm font-semibold text-gray-600 transition hover:bg-gray-100 hover:text-blue-800 sm:inline-flex"
+          >
+            View Public Site
+          </Link>
+
           <UserMenu fullName={profile?.full_name} email={user.email} />
         </div>
       </header>
