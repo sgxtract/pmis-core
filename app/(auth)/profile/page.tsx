@@ -2,6 +2,9 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
 import ChangePassword from "./ChangePassword";
+import EditProfile from "./EditProfile";
+
+import SessionSecurity from "./SessionSecurity";
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -117,9 +120,13 @@ export default async function ProfilePage() {
           <div>
             <p className="text-sm font-medium text-gray-500">Full Name</p>
 
-            <p className="mt-1 text-sm font-semibold text-gray-900">
-              {profile.full_name || "Not assigned"}
-            </p>
+            <div className="mt-1 flex flex-wrap items-center gap-3">
+              <p className="text-sm font-semibold text-gray-900">
+                {profile.full_name || "Not assigned"}
+              </p>
+
+              <EditProfile currentFullName={profile.full_name || ""} />
+            </div>
           </div>
 
           <div>
@@ -166,24 +173,13 @@ export default async function ProfilePage() {
           </h2>
 
           <p className="mt-1 text-sm text-gray-500">
-            Account settings that will be available for your profile.
+            Manage settings for your PMIS account.
           </p>
         </div>
 
         <div className="px-6 py-5">
-          <div className="rounded-lg border border-blue-100 bg-blue-50 px-4 py-4">
-            <p className="text-sm font-medium text-blue-900">
-              Profile settings
-            </p>
-
-            <p className="mt-1 text-sm text-blue-800">
-              Additional personal account settings will be available here.
-            </p>
-          </div>
-
-          <div className="px-6 py-5">
-            <ChangePassword />
-          </div>
+          <ChangePassword />
+          <SessionSecurity />
         </div>
       </section>
     </div>
