@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import LogoutButton from "@/components/auth/LogoutButton";
 
 type UserMenuProps = {
@@ -25,9 +26,7 @@ export default function UserMenu({ fullName, email }: UserMenuProps) {
           </p>
 
           {email && fullName && (
-            <p className="max-w-45 truncate text-xs text-gray-500">
-              {email}
-            </p>
+            <p className="max-w-45 truncate text-xs text-gray-500">{email}</p>
           )}
         </div>
 
@@ -55,9 +54,12 @@ export default function UserMenu({ fullName, email }: UserMenuProps) {
         </div>
 
         <div className="p-2">
-          <div className="rounded-lg px-3 py-2 text-sm text-gray-600">
-            Account
-          </div>
+          <Link
+            href="/profile"
+            className="block rounded-lg px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+          >
+            Profile & Settings
+          </Link>
 
           <div className="px-3 py-2">
             <LogoutButton />

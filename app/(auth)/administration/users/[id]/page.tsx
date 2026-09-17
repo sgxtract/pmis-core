@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireUserManager } from "@/lib/auth/require-user-manager";
 import EditUserForm from "./EditUserForm";
 
@@ -10,11 +11,21 @@ type Props = {
 };
 
 export default async function ManageUserPage({ params }: Props) {
-  await requireUserManager();
+  const { role: currentUserRole } = await requireUserManager();
 
   const { id } = await params;
 
   const supabase = await createClient();
+  const supabaseAdmin = createAdminClient();
+
+  const {
+    data: { user: authUser },
+    error: authUserError,
+  } = await supabaseAdmin.auth.admin.getUserById(id);
+
+  if (authUserError || !authUser) {
+    notFound();
+  }
 
   const { data: user, error } = await supabase
     .from("profiles")
@@ -77,6 +88,7 @@ export default async function ManageUserPage({ params }: Props) {
         user={{
           id: user.id,
           full_name: user.full_name,
+          email: authUser.email ?? "",
           employee_id: user.employee_id,
           role_id: user.role_id,
           user_type_id: user.user_type_id,
@@ -84,6 +96,7 @@ export default async function ManageUserPage({ params }: Props) {
         }}
         roles={roles}
         userTypes={userTypes}
+        currentUserRole={currentUserRole.name}
       />
 
       <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-4">
