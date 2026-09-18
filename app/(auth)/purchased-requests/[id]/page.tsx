@@ -5,6 +5,8 @@ import AdvanceStageForm from "./advance-stage/AdvanceStageForm";
 import StageHistory from "./StageHistory";
 import RestorePRForm from "./restore/RestorePRForm";
 import CancelPRForm from "./cancel/CancelPRForm";
+import AttachmentUploadForm from "./attachments/AttachmentUploadForm";
+import AttachmentList from "./attachments/AttachmentList";
 
 type PageProps = {
   params: Promise<{
@@ -216,7 +218,57 @@ export default async function ProcurementRequestPage({
   }));
 
   // --------------------------------------------------
-  // 7. Determine which stages have been reached
+  // 7. Get Procurement Attachments
+  // --------------------------------------------------
+
+  const { data: attachments, error: attachmentsError } = await supabase
+    .from("procurement_attachments")
+    .select("id, file_name, content_type, file_size, uploaded_at, uploaded_by")
+    .eq("request_id", procurementRequest.id)
+    .order("uploaded_at", { ascending: false });
+
+  if (attachmentsError) {
+    throw new Error("Unable to load procurement attachments.");
+  }
+
+  const uploadedByIds = [
+    ...new Set(
+      (attachments ?? [])
+        .map((attachment) => attachment.uploaded_by)
+        .filter(Boolean),
+    ),
+  ];
+
+  const { data: attachmentProfiles, error: attachmentProfilesError } =
+    uploadedByIds.length > 0
+      ? await supabase
+          .from("profiles")
+          .select("id, full_name")
+          .in("id", uploadedByIds)
+      : { data: [], error: null };
+
+  if (attachmentProfilesError) {
+    throw new Error("Unable to load attachment uploader information.");
+  }
+
+  const attachmentProfileMap = new Map(
+    (attachmentProfiles ?? []).map((profile) => [
+      profile.id,
+      profile.full_name,
+    ]),
+  );
+
+  const formattedAttachments = (attachments ?? []).map((attachment) => ({
+    id: attachment.id,
+    file_name: attachment.file_name,
+    content_type: attachment.content_type,
+    file_size: attachment.file_size,
+    uploaded_at: attachment.uploaded_at,
+    uploaded_by_name: attachmentProfileMap.get(attachment.uploaded_by) ?? null,
+  }));
+
+  // --------------------------------------------------
+  // 7B. Determine which stages have been reached
   // --------------------------------------------------
 
   const completedStageIds = new Set(historyRows.map((item) => item.stage_id));
@@ -639,6 +691,13 @@ export default async function ProcurementRequestPage({
         history={formattedHistory}
         currentStageId={procurementRequest.current_stage_id}
       />
+
+      {/* Attachments */}
+      <div className="mt-8">
+        <AttachmentUploadForm requestId={request.id} />
+
+        <AttachmentList attachments={formattedAttachments} />
+      </div>
     </div>
   );
 }
