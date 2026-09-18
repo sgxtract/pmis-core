@@ -171,8 +171,16 @@ export default async function ProcurementRequestPage({
     stage_id: number;
     stage_name: string | null;
     sequence_number: number | null;
+
     changed_by: string | null;
     changed_by_name: string | null;
+
+    started_by: string | null;
+    started_by_name: string | null;
+
+    completed_by: string | null;
+    completed_by_name: string | null;
+
     started_at: string;
     completed_at: string | null;
     remarks: string | null;
@@ -203,7 +211,8 @@ export default async function ProcurementRequestPage({
     started_at: item.started_at,
     completed_at: item.completed_at,
     remarks: item.remarks,
-    changed_by_name: item.changed_by_name ?? null,
+    started_by_name: item.started_by_name ?? null,
+    completed_by_name: item.completed_by_name ?? null,
   }));
 
   // --------------------------------------------------

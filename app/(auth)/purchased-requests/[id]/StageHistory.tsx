@@ -6,7 +6,9 @@ type StageHistoryItem = {
   started_at: string;
   completed_at: string | null;
   remarks: string | null;
-  changed_by_name: string | null;
+
+  started_by_name: string | null;
+  completed_by_name: string | null;
 };
 
 type Props = {
@@ -136,13 +138,22 @@ export default function StageHistory({ history, currentStageId }: Props) {
                     ) : null}
                   </div>
 
-                  {/* Changed By */}
+                  {/* Accountability */}
 
-                  {item.changed_by_name && (
+                  {item.started_by_name && (
                     <p className="mt-3 text-sm leading-5 text-gray-600">
-                      Changed by{" "}
+                      Processed by{" "}
                       <span className="font-medium text-gray-800">
-                        {item.changed_by_name}
+                        {item.started_by_name}
+                      </span>
+                    </p>
+                  )}
+
+                  {item.completed_by_name && (
+                    <p className="mt-1 text-sm leading-5 text-gray-600">
+                      Moved by{" "}
+                      <span className="font-medium text-gray-800">
+                        {item.completed_by_name}
                       </span>
                     </p>
                   )}
