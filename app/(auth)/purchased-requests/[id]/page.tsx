@@ -483,123 +483,95 @@ export default async function ProcurementRequestPage({
 
       {/* Procurement Workflow */}
       <div className="mt-8 rounded-xl border bg-white shadow-sm print:hidden">
-        <div className="border-b px-4 py-4 sm:px-6">
-          <h2 className="text-lg font-semibold tracking-tight text-gray-900">
-            Procurement Workflow
-          </h2>
-        </div>
+        {/* Header */}
+        <div className="flex flex-col gap-3 border-b px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <h2 className="text-base font-semibold text-slate-900">
+              Procurement Workflow
+            </h2>
 
-        <div className="p-4 sm:p-6">
-          {/* Current and Next Stage */}
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-                Current Stage
-              </p>
-
-              <div className="mt-2">
-                <span className="inline-flex items-center rounded-lg bg-blue-100 px-3 py-1.5 text-base font-semibold text-blue-800">
-                  {currentStage?.name ?? "Not Started"}
-                </span>
-              </div>
-            </div>
-
-            {nextStage && request.status === "Active" && (
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-                  Next Stage
-                </p>
-
-                <p className="mt-2 text-base font-semibold text-gray-900">
-                  {nextStage.name}
-                </p>
-              </div>
-            )}
+            <p className="mt-1 text-sm text-slate-500">
+              Manage the current procurement stage.
+            </p>
           </div>
 
+          {request.status === "Active" && nextStage && (
+            <div className="flex items-center gap-3">
+              <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700">
+                {currentStage?.name ?? "Not Started"}
+              </span>
+
+              <span className="text-slate-400">→</span>
+
+              <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700">
+                {nextStage.name}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Workflow Content */}
+        <div className="px-4 py-5 sm:px-6">
           {request.status === "Cancelled" || request.status === "Canceled" ? (
-            <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-5 sm:p-6">
-              <p className="text-xs font-semibold uppercase tracking-wide text-red-600">
-                Procurement Cancelled
-              </p>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm font-medium text-red-700">
+                  Procurement Cancelled
+                </p>
 
-              <p className="mt-1 text-xl font-bold text-red-800">
-                This procurement request is cancelled.
-              </p>
-
-              <p className="mt-2 text-sm leading-6 text-red-700">
-                The request cannot be advanced while it is cancelled. You may
-                restore it to continue processing.
-              </p>
-
-              <div className="mt-4">
-                <RestorePRForm requestId={request.id} />
+                <p className="mt-1 text-sm text-slate-500">
+                  This procurement request is currently cancelled.
+                </p>
               </div>
+
+              <RestorePRForm requestId={request.id} />
             </div>
           ) : nextStage ? (
-            <div className="mt-6 rounded-xl border border-blue-200 bg-blue-50 p-5 sm:p-6">
-              <p className="text-xs font-semibold uppercase tracking-wide text-blue-700">
-                Advance Procurement
-              </p>
+            <>
+              {request.status === "Active" && (
+                <div className="grid gap-6 lg:grid-cols-[minmax(220px,0.9fr)_minmax(360px,1.5fr)_auto] lg:items-end">
+                  {/* Advance Procurement */}
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">
+                      Advance Procurement
+                    </p>
 
-              <p className="mt-1 text-xl font-bold text-gray-900 sm:text-2xl">
-                Advance to Next Stage
-              </p>
+                    <p className="mt-1 text-sm text-slate-500">
+                      Move this request from{" "}
+                      <span className="font-medium text-slate-700">
+                        {currentStage?.name ?? "Not Started"}
+                      </span>{" "}
+                      to{" "}
+                      <span className="font-medium text-slate-700">
+                        {nextStage.name}
+                      </span>
+                      .
+                    </p>
+                  </div>
 
-              <p className="mt-2 text-sm leading-6 text-gray-600">
-                The request will advance from{" "}
-                <span className="font-medium text-gray-800">
-                  {currentStage?.name ?? "the current stage"}
-                </span>{" "}
-                to{" "}
-                <span className="font-medium text-gray-800">
-                  {nextStage.name}
-                </span>
-                .
-              </p>
-
-              {request.status === "Active" ? (
-                <>
-                  <div className="mt-5">
+                  {/* Remarks + Advance Stage */}
+                  <div>
                     <AdvanceStageForm
                       requestId={request.id}
-                      currentStageName={currentStage?.name ?? "Unknown"}
+                      currentStageName={currentStage?.name ?? "Not Started"}
                       nextStageName={nextStage.name}
                     />
                   </div>
 
-                  <div className="mt-5 border-t border-gray-200 pt-6">
-                    <p className="text-sm font-semibold text-gray-900">
-                      Cancel Procurement Request
-                    </p>
-
-                    <p className="mt-1 text-sm leading-6 text-gray-600">
-                      Cancelling this request will prevent it from being
-                      advanced until it is restored.
-                    </p>
-
-                    <div className="mt-5 flex flex-wrap items-center gap-2">
-                      <CancelPRForm requestId={request.id} />
-                    </div>
+                  {/* Cancel PR */}
+                  <div className="lg:pb-0">
+                    <CancelPRForm requestId={request.id} />
                   </div>
-                </>
-              ) : (
-                <p className="mt-3 text-sm font-medium text-gray-600">
-                  This procurement request is currently {request.status}.
-                </p>
+                </div>
               )}
-            </div>
+            </>
           ) : (
-            <div className="mt-6 rounded-xl border border-green-200 bg-green-50 p-5 sm:p-6">
-              <p className="text-xs font-semibold uppercase tracking-wide text-green-600">
+            <div>
+              <p className="text-sm font-medium text-green-700">
                 Procurement Complete
               </p>
 
-              <p className="mt-1 text-xl font-bold text-green-800">
-                Final Stage Reached
-              </p>
-
-              <p className="mt-2 text-sm leading-6 text-green-700">
+              <p className="mt-1 text-sm text-slate-500">
                 This procurement request has reached the final procurement
                 stage.
               </p>
