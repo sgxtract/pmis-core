@@ -3,7 +3,7 @@
 import { startTransition, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useActionState } from "react";
-
+import { useProfileActivity } from "./ProfileActivityProvider";
 import { updateOwnProfile, type EditProfileState } from "./actions";
 
 type EditProfileProps = {
@@ -18,12 +18,15 @@ export default function EditProfile({ currentFullName }: EditProfileProps) {
 
   const router = useRouter();
 
+  const { refreshActivity } = useProfileActivity();
+
   const [state, formAction, pending] = useActionState(
     async (previousState: EditProfileState, formData: FormData) => {
       const result = await updateOwnProfile(previousState, formData);
 
       if (result.success) {
         setIsModalOpen(false);
+        refreshActivity();
         router.refresh();
       }
 
