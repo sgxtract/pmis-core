@@ -139,9 +139,18 @@ export default async function ProfilePage() {
 
           <div>
             <p className="text-sm font-medium text-gray-500">Email</p>
-
             <p className="mt-1 break-all text-sm font-semibold text-gray-900">
               {user.email || "Not assigned"}
+            </p>
+          </div>
+
+          <div>
+            <p className="text-sm font-medium text-gray-500">
+              Email Verification
+            </p>
+
+            <p className="mt-1 text-sm font-semibold text-gray-900">
+              {user.email_confirmed_at ? "Verified" : "Not verified"}
             </p>
           </div>
 
@@ -162,6 +171,18 @@ export default async function ProfilePage() {
               </p>
             </div>
           )}
+
+          <div>
+            <p className="text-sm font-medium text-gray-500">Last Sign-In</p>
+            <p className="mt-1 text-sm font-semibold text-gray-900">
+              {user.last_sign_in_at
+                ? new Date(user.last_sign_in_at).toLocaleString("en-PH", {
+                    dateStyle: "medium",
+                    timeStyle: "short",
+                  })
+                : "Not available"}
+            </p>
+          </div>
         </div>
       </section>
 
