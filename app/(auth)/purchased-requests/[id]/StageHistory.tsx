@@ -26,12 +26,14 @@ function formatDateTime(value: string) {
 export default function StageHistory({ history, currentStageId }: Props) {
   if (history.length === 0) {
     return (
-      <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-gray-200 px-6 py-4">
-          <h2 className="font-semibold text-gray-900">Stage History</h2>
+      <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+        <div className="border-b border-gray-200 px-5 py-3">
+          <h2 className="font-heading text-base font-semibold tracking-tight text-gray-900">
+            Stage History
+          </h2>
         </div>
 
-        <div className="p-6">
+        <div className="px-5 py-4">
           <p className="text-sm text-gray-500">
             No stage history is available.
           </p>
@@ -41,30 +43,30 @@ export default function StageHistory({ history, currentStageId }: Props) {
   }
 
   return (
-    <div className="mt-6 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm print:break-inside-avoid print:shadow-none">
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm print:break-inside-avoid print:shadow-none">
       {/* Header */}
 
-      <div className="border-b border-gray-200 px-6 py-4">
-        <h2 className="text-lg font-semibold tracking-tight text-gray-900">
+      <div className="border-b border-gray-200 px-5 py-3">
+        <h2 className="font-heading text-base font-semibold tracking-tight text-gray-900">
           Stage History
         </h2>
 
-        <p className="mt-1 text-sm text-gray-500">
+        <p className="mt-0.5 text-sm text-gray-500">
           Record of procurement stage movements.
         </p>
       </div>
 
       {/* Timeline */}
 
-      <div className="p-6">
-        <div className="space-y-1">
+      <div className="px-5 py-4">
+        <div className="space-y-0">
           {history.map((item, index) => {
             const isCurrent = item.stage_id === currentStageId;
             const isCompleted = item.completed_at !== null;
             const isLast = index === history.length - 1;
 
             return (
-              <div key={item.id} className="relative flex gap-4">
+              <div key={item.id} className="relative flex gap-3">
                 {/* Connector */}
 
                 {!isLast && (
@@ -91,12 +93,12 @@ export default function StageHistory({ history, currentStageId }: Props) {
 
                 {/* Content */}
 
-                <div className="min-w-0 flex-1 pb-8">
+                <div className="min-w-0 flex-1 pb-5">
                   {/* Stage Header */}
 
-                  <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-1.5">
                     <h3
-                      className={`min-w-0 wrap-break-word font-semibold ${
+                      className={`min-w-0 wrap-break-word text-sm font-semibold ${
                         isCompleted
                           ? "text-gray-900"
                           : isCurrent
@@ -122,17 +124,17 @@ export default function StageHistory({ history, currentStageId }: Props) {
 
                   {/* Timeline Details */}
 
-                  <div className="mt-2 space-y-1">
-                    <p className="text-sm leading-5 text-gray-500">
+                  <div className="mt-1 space-y-0.5">
+                    <p className="text-xs leading-5 text-gray-500">
                       Started: {formatDateTime(item.started_at)}
                     </p>
 
                     {item.completed_at ? (
-                      <p className="text-sm leading-5 text-gray-500">
+                      <p className="text-xs leading-5 text-gray-500">
                         Completed: {formatDateTime(item.completed_at)}
                       </p>
                     ) : isCurrent ? (
-                      <p className="text-sm font-medium text-blue-600">
+                      <p className="text-xs font-medium leading-5 text-blue-600">
                         In progress
                       </p>
                     ) : null}
@@ -141,7 +143,7 @@ export default function StageHistory({ history, currentStageId }: Props) {
                   {/* Accountability */}
 
                   {item.started_by_name && (
-                    <p className="mt-3 text-sm leading-5 text-gray-600">
+                    <p className="mt-2 text-xs leading-5 text-gray-600">
                       Processed by{" "}
                       <span className="font-medium text-gray-800">
                         {item.started_by_name}
@@ -150,7 +152,7 @@ export default function StageHistory({ history, currentStageId }: Props) {
                   )}
 
                   {item.completed_by_name && (
-                    <p className="mt-1 text-sm leading-5 text-gray-600">
+                    <p className="text-xs leading-5 text-gray-600">
                       Moved by{" "}
                       <span className="font-medium text-gray-800">
                         {item.completed_by_name}
@@ -161,7 +163,7 @@ export default function StageHistory({ history, currentStageId }: Props) {
                   {/* Remarks */}
 
                   {item.remarks && (
-                    <div className="mt-3 max-w-3xl wrap-break-word rounded-lg border border-gray-100 bg-gray-50 px-4 py-3 text-sm leading-5 text-gray-600">
+                    <div className="mt-2 max-w-3xl wrap-break-word rounded-lg border border-gray-100 bg-gray-50 px-3 py-2 text-xs leading-5 text-gray-600">
                       <p>
                         <span className="font-medium text-gray-700">
                           Remarks:

@@ -49,20 +49,19 @@ export default function AdvanceStageForm({
           <textarea
             id="remarks"
             name="remarks"
-            rows={2}
+            rows={3}
             placeholder="Add remarks..."
             className="min-w-0 flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-600 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
-
-          <button
-            type="button"
-            onClick={() => setShowConfirmation(true)}
-            disabled={isPending}
-            className="shrink-0 rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Advance Stage →
-          </button>
         </div>
+        <button
+          type="button"
+          onClick={() => setShowConfirmation(true)}
+          disabled={isPending}
+          className="mt-3 shrink-0 rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          Advance Stage →
+        </button>
       </form>
 
       {showConfirmation && (

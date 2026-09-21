@@ -286,7 +286,6 @@ export default async function ProcurementRequestPage({
       >
         ← Back to Purchased Requests
       </Link>
-
       {/* Success Message */}
       {showUpdatedMessage && (
         <div
@@ -299,12 +298,11 @@ export default async function ProcurementRequestPage({
           </div>
         </div>
       )}
-
       {/* Page heading */}
       <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900 font-heading sm:text-2xl">
               {procurementRequest.pr_number}
             </h1>
 
@@ -327,11 +325,9 @@ export default async function ProcurementRequestPage({
             )}
           </div>
 
-          <p className="mt-2 text-sm font-medium text-gray-500">
-            Procurement Request
-          </p>
+          <p className="mt-1 text-sm text-gray-500">Procurement Request</p>
 
-          <p className="mt-3 max-w-4xl text-base font-semibold leading-6 text-gray-900 sm:text-lg">
+          <p className="mt-1 text-base font-semibold tracking-tight font-heading text-gray-900">
             {procurementRequest.particulars ||
               "No project name or particulars provided."}
           </p>
@@ -344,326 +340,296 @@ export default async function ProcurementRequestPage({
           Edit PR
         </Link>
       </div>
-
-      {/* PR Information */}
-      <div className="mt-8 rounded-xl border bg-white shadow-sm">
-        <div className="border-b px-6 py-4">
-          <h2 className="text-lg font-semibold tracking-tight text-gray-900">
-            PR Information
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-2 lg:grid-cols-3 px-6 py-6">
-          {/* PR Number */}
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-              PR Number
-            </p>
-
-            <p className="mt-1 font-medium text-gray-900">
-              {procurementRequest.pr_number}
-            </p>
-          </div>
-
-          {/* Reference ID */}
-          <div className="min-w-0">
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-              Reference ID
-            </p>
-
-            <p className="mt-1 wrap-break-word text-base font-semibold text-gray-900">
-              {referenceId ?? "—"}
-            </p>
-          </div>
-
-          {/* PR Date */}
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-              PR Date
-            </p>
-
-            <p className="mt-1 font-medium text-gray-900">
-              {new Intl.DateTimeFormat("en-PH", {
-                year: "numeric",
-                month: "short",
-                day: "2-digit",
-              }).format(new Date(procurementRequest.pr_date))}
-            </p>
-          </div>
-
-          {/* Particulars */}
-          <div className="sm:col-span-2 lg:col-span-3">
-            <p className="text-xs leading-6 font-medium uppercase tracking-wide text-gray-500">
-              Particulars
-            </p>
-
-            <p className="mt-1 text-base font-semibold leading-6 text-gray-900">
-              {procurementRequest.particulars || "—"}
-            </p>
-          </div>
-
-          {/* ABC */}
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-              ABC
-            </p>
-
-            <p className="mt-1 text-lg font-semibold text-gray-900">
-              {formatCurrency(procurementRequest.abc)}
-            </p>
-          </div>
-
-          {/* Type of PR */}
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-              Type of PR
-            </p>
-
-            <p className="mt-1 font-medium text-gray-900">
-              {procurementRequest.type_of_pr || "—"}
-            </p>
-          </div>
-
-          {/* End User */}
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-              End User
-            </p>
-
-            <p className="mt-1 font-medium text-gray-900">
-              {procurementRequest.end_user || "—"}
-            </p>
-          </div>
-
-          {/* Mode */}
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-              Procurement Mode
-            </p>
-
-            <p className="mt-1 font-medium text-gray-900">
-              {procurementMode?.name || "—"}
-            </p>
-          </div>
-
-          {/* Account Code */}
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-              Account Code
-            </p>
-
-            <p className="mt-1 font-medium text-gray-900">
-              {procurementRequest.account_code || "—"}
-            </p>
-          </div>
-
-          {/* SOL No. */}
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-              Sol No.
-            </p>
-
-            <p className="mt-1 font-medium text-gray-900">
-              {procurementRequest.sol_no || "—"}
-            </p>
-          </div>
-
-          {/* CD / Calendar Days */}
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-500">
-              CD / Calendar Days
-            </p>
-
-            <p className="mt-1 font-medium text-gray-900">
-              {procurementRequest.calendar_days || "—"}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Procurement Workflow */}
-      <div className="mt-8 rounded-xl border bg-white shadow-sm print:hidden">
-        {/* Header */}
-        <div className="flex flex-col gap-3 border-b px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <h2 className="text-base font-semibold text-slate-900">
-              Procurement Workflow
-            </h2>
-
-            <p className="mt-1 text-sm text-slate-500">
-              Manage the current procurement stage.
-            </p>
-          </div>
-
-          {request.status === "Active" && nextStage && (
-            <div className="flex items-center gap-3">
-              <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700">
-                {currentStage?.name ?? "Not Started"}
-              </span>
-
-              <span className="text-slate-400">→</span>
-
-              <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700">
-                {nextStage.name}
-              </span>
+      {/* Main PR Content */}
+      <div className="mt-3 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(280px,0.9fr)]">
+        {/* Left Column */}
+        <div className="min-w-0 space-y-6">
+          {/* PR Information */}
+          <div className="rounded-xl border bg-white shadow-sm print:break-inside-avoid">
+            <div className="border-b px-4 py-3 sm:px-5">
+              <h2 className="text-base font-semibold upper tracking-tight font-heading text-gray-900">
+                PR Information
+              </h2>
             </div>
-          )}
-        </div>
 
-        {/* Workflow Content */}
-        <div className="px-4 py-5 sm:px-6">
-          {request.status === "Cancelled" || request.status === "Canceled" ? (
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="grid grid-cols-1 gap-x-6 gap-y-3 px-4 py-3 sm:grid-cols-2 sm:px-5 lg:grid-cols-3">
+              {/* PR Number */}
               <div>
-                <p className="text-sm font-medium text-red-700">
-                  Procurement Cancelled
+                <p className="text-[10px] font-medium uppercase tracking-wider text-gray-500">
+                  PR Number
                 </p>
 
-                <p className="mt-1 text-sm text-slate-500">
-                  This procurement request is currently cancelled.
+                <p className="mt-0.5 font-mono text-sm font-medium text-gray-900">
+                  {procurementRequest.pr_number}
                 </p>
               </div>
 
-              <RestorePRForm requestId={request.id} />
+              {/* Reference ID */}
+              <div className="min-w-0">
+                <p className="text-[10px] font-medium uppercase tracking-wider text-gray-500">
+                  Reference ID
+                </p>
+
+                <p className="mt-0.5 font-mono text-sm font-medium text-gray-900">
+                  {referenceId ?? "—"}
+                </p>
+              </div>
+
+              {/* PR Date */}
+              <div>
+                <p className="text-[10px] font-medium uppercase tracking-wider text-gray-500">
+                  PR Date
+                </p>
+
+                <p className="mt-0.5 text-sm font-medium text-gray-900">
+                  {new Intl.DateTimeFormat("en-PH", {
+                    year: "numeric",
+                    month: "long",
+                    day: "2-digit",
+                  }).format(new Date(procurementRequest.pr_date))}
+                </p>
+              </div>
+
+              {/* Particulars */}
+              <div className="sm:col-span-2 lg:col-span-3">
+                <p className="text-[10px] font-medium uppercase tracking-wider text-gray-500">
+                  Particulars
+                </p>
+
+                <p className="mt-0.5 text-sm font-medium leading-5 text-gray-900">
+                  {procurementRequest.particulars || "—"}
+                </p>
+              </div>
+
+              {/* ABC */}
+              <div>
+                <p className="text-[10px] font-medium uppercase tracking-wider text-gray-500">
+                  ABC
+                </p>
+
+                <p className="mt-0.5 text-sm font-semibold text-gray-900">
+                  {formatCurrency(procurementRequest.abc)}
+                </p>
+              </div>
+
+              {/* Type of PR */}
+              <div>
+                <p className="text-[10px] font-medium uppercase tracking-wider text-gray-500">
+                  Type of PR
+                </p>
+
+                <p className="mt-0.5 text-sm font-medium text-gray-900">
+                  {procurementRequest.type_of_pr || "—"}
+                </p>
+              </div>
+
+              {/* End User */}
+              <div>
+                <p className="text-[10px] font-medium uppercase tracking-wider text-gray-500">
+                  End User
+                </p>
+
+                <p className="mt-0.5 text-sm font-medium text-gray-900">
+                  {procurementRequest.end_user || "—"}
+                </p>
+              </div>
+
+              {/* Procurement Mode */}
+              <div>
+                <p className="text-[10px] font-medium uppercase tracking-wider text-gray-500">
+                  Procurement Mode
+                </p>
+
+                <p className="mt-0.5 text-sm font-medium text-gray-900">
+                  {procurementMode?.name || "—"}
+                </p>
+              </div>
+
+              {/* Account Code */}
+              <div>
+                <p className="text-[10px] font-medium uppercase tracking-wider text-gray-500">
+                  Account Code
+                </p>
+
+                <p className="mt-0.5 font-mono text-sm font-medium text-gray-900">
+                  {procurementRequest.account_code || "—"}
+                </p>
+              </div>
+
+              {/* SOL No. */}
+              <div>
+                <p className="text-[10px] font-medium uppercase tracking-wider text-gray-500">
+                  SOL No.
+                </p>
+
+                <p className="mt-0.5 font-mono text-sm font-medium text-gray-900">
+                  {procurementRequest.sol_no || "—"}
+                </p>
+              </div>
+
+              {/* CD / Calendar Days */}
+              <div>
+                <p className="text-[10px] font-medium uppercase tracking-wider text-gray-500">
+                  CD / Calendar Days
+                </p>
+
+                <p className="mt-0.5 text-sm font-medium text-gray-900">
+                  {procurementRequest.calendar_days || "—"}
+                </p>
+              </div>
             </div>
-          ) : nextStage ? (
-            <>
-              {request.status === "Active" && (
-                <div className="grid gap-6 lg:grid-cols-[minmax(220px,0.9fr)_minmax(360px,1.5fr)_auto] lg:items-end">
-                  {/* Advance Procurement */}
-                  <div>
-                    <p className="text-sm font-semibold text-slate-900">
-                      Advance Procurement
-                    </p>
+          </div>
 
-                    <p className="mt-1 text-sm text-slate-500">
-                      Move this request from{" "}
-                      <span className="font-medium text-slate-700">
-                        {currentStage?.name ?? "Not Started"}
-                      </span>{" "}
-                      to{" "}
-                      <span className="font-medium text-slate-700">
-                        {nextStage.name}
-                      </span>
-                      .
-                    </p>
-                  </div>
+          {/* Stage History */}
+          <StageHistory
+            history={formattedHistory}
+            currentStageId={procurementRequest.current_stage_id}
+          />
+        </div>
 
-                  {/* Remarks + Advance Stage */}
+        {/* Right Column */}
+        <div className="min-w-0 space-y-6">
+          {/* Procurement Workflow */}
+          <div className="rounded-xl border bg-white shadow-sm print:hidden">
+            <div className="px-4 py-3 sm:px-5">
+              <h2 className="text-base font-semibold tracking-tight font-heading text-gray-900">
+                Procurement Workflow
+              </h2>
+            </div>
+
+            <div className="border-b border-slate-200"></div>
+
+            {request.status === "Active" && nextStage && (
+              <div className="pb-0 px-4 py-4 flex items-center gap-3 justify-center">
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700">
+                  {currentStage?.name ?? "Not Started"}
+                </span>
+                <span className="text-slate-400">→</span>
+                <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700">
+                  {nextStage.name}
+                </span>
+              </div>
+            )}
+
+            <div className="px-4 py-4 sm:px-5">
+              {request.status === "Cancelled" ||
+              request.status === "Canceled" ? (
+                <div className="flex items-center justify-between gap-4">
+                  <p className="text-sm font-medium text-red-700">
+                    Procurement Cancelled
+                  </p>
+
+                  <RestorePRForm requestId={request.id} />
+                </div>
+              ) : nextStage ? (
+                request.status === "Active" ? (
                   <div>
                     <AdvanceStageForm
                       requestId={request.id}
                       currentStageName={currentStage?.name ?? "Not Started"}
                       nextStageName={nextStage.name}
                     />
-                  </div>
 
-                  {/* Cancel PR */}
-                  <div className="lg:pb-0">
-                    <CancelPRForm requestId={request.id} />
+                    <div className="border-b border-slate-200 my-3"></div>
+
+                    <div className="mt-3 shrink-0">
+                      <CancelPRForm requestId={request.id} />
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <p className="text-sm text-gray-500">
+                    This procurement request is currently{" "}
+                    {request.status?.toLowerCase()}.
+                  </p>
+                )
+              ) : (
+                <p className="text-sm font-medium text-green-700">
+                  Procurement Complete
+                </p>
               )}
-            </>
-          ) : (
-            <div>
-              <p className="text-sm font-medium text-green-700">
-                Procurement Complete
-              </p>
+            </div>
+          </div>
 
-              <p className="mt-1 text-sm text-slate-500">
-                This procurement request has reached the final procurement
-                stage.
-              </p>
+          {/* Procurement Progress */}
+          {!isCompleted && !isCancelled && (
+            <div className="rounded-xl border bg-white shadow-sm print:break-inside-avoid">
+              <div className="border-b px-5 py-3">
+                <h2 className="text-base font-semibold tracking-tight font-heading text-gray-900">
+                  Procurement Progress
+                </h2>
+              </div>
+
+              <div className="px-5 py-4">
+                {stages?.map((stage, index) => {
+                  const isCurrent =
+                    stage.id === procurementRequest.current_stage_id;
+
+                  const isFinalCompleted =
+                    stage.name === "Completed" && isCurrent;
+
+                  const isCompleted =
+                    isFinalCompleted ||
+                    (!isCurrent && completedStageIds.has(stage.id));
+
+                  const isLast = index === stages.length - 1;
+
+                  return (
+                    <div key={stage.id} className="flex">
+                      {/* Timeline indicator */}
+                      <div className="flex flex-col items-center">
+                        <div
+                          className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold ${
+                            isCompleted
+                              ? "bg-green-600 text-white"
+                              : isCurrent
+                                ? "bg-blue-600 text-white"
+                                : "bg-gray-200 text-gray-500"
+                          }`}
+                        >
+                          {isCompleted ? "✓" : stage.sequence_number}
+                        </div>
+
+                        {!isLast && (
+                          <div
+                            className={`h-12 w-0.5 ${
+                              isCompleted ? "bg-green-600" : "bg-gray-200"
+                            }`}
+                          />
+                        )}
+                      </div>
+
+                      {/* Stage information */}
+                      <div className="ml-4 pb-8">
+                        <p
+                          className={`text-sm font-semibold ${
+                            isCompleted
+                              ? "text-green-600"
+                              : isCurrent
+                                ? "text-blue-600"
+                                : "text-gray-400"
+                          }`}
+                        >
+                          {stage.name}
+                        </p>
+
+                        {isCompleted ? (
+                          <p className="mt-1 text-xs font-medium text-green-600">
+                            Completed
+                          </p>
+                        ) : isCurrent ? (
+                          <p className="mt-1 text-xs font-medium text-blue-600">
+                            Current Stage
+                          </p>
+                        ) : null}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>
       </div>
-
-      {/* Procurement Progress */}
-      {!isCompleted && !isCancelled && (
-        <div className="mt-6 rounded-xl border bg-white shadow-sm print:break-inside-avoid">
-          <div className="border-b px-6 py-4">
-            <h2 className="text-lg font-semibold tracking-tight text-gray-900">
-              Procurement Progress
-            </h2>
-          </div>
-
-          <div className="p-6">
-            {stages?.map((stage, index) => {
-              const isCurrent =
-                stage.id === procurementRequest.current_stage_id;
-
-              const isFinalCompleted = stage.name === "Completed" && isCurrent;
-
-              const isCompleted =
-                isFinalCompleted ||
-                (!isCurrent && completedStageIds.has(stage.id));
-
-              const isLast = index === stages.length - 1;
-
-              return (
-                <div key={stage.id} className="flex">
-                  {/* Timeline indicator */}
-                  <div className="flex flex-col items-center">
-                    <div
-                      className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold ${
-                        isCompleted
-                          ? "bg-green-600 text-white"
-                          : isCurrent
-                            ? "bg-blue-600 text-white"
-                            : "bg-gray-200 text-gray-500"
-                      }`}
-                    >
-                      {isCompleted ? "✓" : stage.sequence_number}
-                    </div>
-
-                    {!isLast && (
-                      <div
-                        className={`h-12 w-0.5 ${
-                          isCompleted ? "bg-green-600" : "bg-gray-200"
-                        }`}
-                      />
-                    )}
-                  </div>
-
-                  {/* Stage information */}
-                  <div className="ml-4 pb-8">
-                    <p
-                      className={`font-semibold ${
-                        isCompleted
-                          ? "text-green-600"
-                          : isCurrent
-                            ? "text-blue-600"
-                            : "text-gray-400"
-                      }`}
-                    >
-                      {stage.name}
-                    </p>
-
-                    {isCompleted ? (
-                      <p className="mt-1 text-xs font-medium text-green-600">
-                        Completed
-                      </p>
-                    ) : isCurrent ? (
-                      <p className="mt-1 text-xs font-medium text-blue-600">
-                        Current Stage
-                      </p>
-                    ) : null}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Stage History */}
-      <StageHistory
-        history={formattedHistory}
-        currentStageId={procurementRequest.current_stage_id}
-      />
-
       {/* Attachments */}
       <div className="mt-8">
         <AttachmentUploadForm requestId={request.id} />
