@@ -15,9 +15,9 @@ type ProcurementRequest = {
   particulars: string;
   abc: number | null;
   mode_of_procurement_id: number | null;
+  source_of_funds: string;
   account_code: string | null;
   calendar_days: number | null;
-  sol_no: string | null;
 };
 
 type ProcurementMode = {
@@ -295,22 +295,22 @@ export default function EditPRForm({
           />
         </div>
 
-        {/* SOL Number */}
+        {/* Source of Funds */}
         <div>
           <label
-            htmlFor="sol_no"
-            className="block text-sm font-medium text-gray-700"
+            htmlFor="source_of_funds"
+            className="mb-1.5 block text-sm font-medium text-gray-700"
           >
-            SOL No.
+            Source of Funds <span className="text-red-600">*</span>
           </label>
 
           <input
-            id="sol_no"
-            name="sol_no"
+            id="source_of_funds"
+            name="source_of_funds"
             type="text"
-            defaultValue={request.sol_no ?? ""}
-            placeholder="Optional"
-            className="text-gray-500 mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            required
+            defaultValue={request.source_of_funds ?? ""}
+            className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
           />
         </div>
       </div>

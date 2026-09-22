@@ -69,7 +69,7 @@ export async function updateProcurementRequest(
 
   const calendarDaysValue = String(formData.get("calendar_days") ?? "").trim();
 
-  const solNo = String(formData.get("sol_no") ?? "").trim();
+  const sourceOfFunds = String(formData.get("source_of_funds") ?? "").trim();
 
   const calendarDays = calendarDaysValue ? Number(calendarDaysValue) : null;
 
@@ -83,7 +83,8 @@ export async function updateProcurementRequest(
     !typeOfPr ||
     !endUser ||
     !particulars ||
-    !abcValue
+    !abcValue ||
+    !sourceOfFunds
   ) {
     return {
       error: "Please complete all required fields.",
@@ -130,7 +131,7 @@ export async function updateProcurementRequest(
         mode_of_procurement_id,
         account_code,
         calendar_days,
-        sol_no
+        source_of_funds
       `,
     )
     .eq("id", id)
@@ -278,9 +279,9 @@ export async function updateProcurementRequest(
       newValue: calendarDays,
     },
     {
-      field: "sol_no",
-      oldValue: existingRequest.sol_no,
-      newValue: solNo || null,
+      field: "source_of_funds",
+      oldValue: existingRequest.source_of_funds,
+      newValue: sourceOfFunds || null,
     },
   ].filter(
     (change) => String(change.oldValue ?? "") !== String(change.newValue ?? ""),
@@ -301,10 +302,9 @@ export async function updateProcurementRequest(
       particulars: particulars,
       abc: abc,
       mode_of_procurement_id: modeId,
-
+      source_of_funds: sourceOfFunds,
       account_code: accountCode || null,
       calendar_days: calendarDays,
-      sol_no: solNo || null,
 
       updated_by: user.id,
       updated_at: new Date().toISOString(),

@@ -52,7 +52,7 @@ export async function createProcurementRequest(formData: FormData) {
 
   const calendarDaysValue = String(formData.get("calendar_days") ?? "").trim();
 
-  const solNo = String(formData.get("sol_no") ?? "").trim();
+  const sourceOfFunds = String(formData.get("source_of_funds") ?? "").trim();
 
   const calendarDays = calendarDaysValue ? Number(calendarDaysValue) : null;
 
@@ -76,7 +76,8 @@ export async function createProcurementRequest(formData: FormData) {
     !typeOfPr ||
     !endUser ||
     !particulars ||
-    !abcValue
+    !abcValue ||
+    !sourceOfFunds
   ) {
     return {
       success: false,
@@ -184,10 +185,10 @@ export async function createProcurementRequest(formData: FormData) {
       particulars: particulars,
       abc: abc,
       mode_of_procurement_id: modeId,
+      source_of_funds: sourceOfFunds,
 
       account_code: accountCode || null,
       calendar_days: calendarDays,
-      sol_no: solNo || null,
 
       current_stage_id: receivedStage.id,
       status: "Active",

@@ -243,6 +243,25 @@ export default function NewPRForm({ procurementModes }: NewPRFormProps) {
         />
       </div>
 
+      {/* Source of Funds */}
+      <div>
+        <label
+          htmlFor="source_of_funds"
+          className="mb-1.5 block text-sm font-medium text-gray-700"
+        >
+          Source of Funds <span className="text-red-600">*</span>
+        </label>
+
+        <input
+          id="source_of_funds"
+          name="source_of_funds"
+          type="text"
+          placeholder="Enter Source of Fund"
+          required
+          className="w-full rounded-lg border border-gray-300 px-3 py-2.5 text-sm text-gray-900 shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+        />
+      </div>
+
       {/* Account Code */}
       <div>
         <label
@@ -276,24 +295,6 @@ export default function NewPRForm({ procurementModes }: NewPRFormProps) {
           type="number"
           min="0"
           step="1"
-          placeholder="Optional"
-          className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-500 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-        />
-      </div>
-
-      {/* SOL No. */}
-      <div>
-        <label
-          htmlFor="sol_no"
-          className="block text-sm font-medium text-gray-700"
-        >
-          SOL No.
-        </label>
-
-        <input
-          id="sol_no"
-          name="sol_no"
-          type="text"
           placeholder="Optional"
           className="mt-2 w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-500 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
         />

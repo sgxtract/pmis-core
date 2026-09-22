@@ -82,9 +82,9 @@ export default async function ProcurementRequestPage({
       particulars,
       abc,
       mode_of_procurement_id,
+      source_of_funds,
       account_code,
       calendar_days,
-      sol_no,
       current_stage_id,
       status
     `,
@@ -462,14 +462,14 @@ export default async function ProcurementRequestPage({
                 </p>
               </div>
 
-              {/* SOL No. */}
+              {/* Source of Funds */}
               <div>
                 <p className="text-[10px] font-medium uppercase tracking-wider text-gray-500">
-                  SOL No.
+                  Source of Funds
                 </p>
 
                 <p className="mt-0.5 font-mono text-sm font-medium text-gray-900">
-                  {procurementRequest.sol_no || "—"}
+                  {procurementRequest.source_of_funds || "—"}
                 </p>
               </div>
 

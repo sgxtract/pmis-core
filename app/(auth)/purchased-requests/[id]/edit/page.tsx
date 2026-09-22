@@ -36,9 +36,9 @@ export default async function EditProcurementRequestPage({
       particulars,
       abc,
       mode_of_procurement_id,
+      source_of_funds,
       account_code,
-      calendar_days,
-      sol_no
+      calendar_days
     `,
     )
     .eq("id", id)
