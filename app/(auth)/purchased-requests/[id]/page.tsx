@@ -5,8 +5,7 @@ import AdvanceStageForm from "./advance-stage/AdvanceStageForm";
 import StageHistory from "./StageHistory";
 import RestorePRForm from "./restore/RestorePRForm";
 import CancelPRForm from "./cancel/CancelPRForm";
-import AttachmentUploadForm from "./attachments/AttachmentUploadForm";
-import AttachmentList from "./attachments/AttachmentList";
+import AttachmentModal from "./attachments/AttachmentModal";
 
 type PageProps = {
   params: Promise<{
@@ -333,12 +332,19 @@ export default async function ProcurementRequestPage({
           </p>
         </div>
 
-        <Link
-          href={`/purchased-requests/${procurementRequest.id}/edit`}
-          className="inline-flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto"
-        >
-          Edit PR
-        </Link>
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+          <AttachmentModal
+            requestId={request.id}
+            attachments={formattedAttachments}
+          />
+
+          <Link
+            href={`/purchased-requests/${procurementRequest.id}/edit`}
+            className="inline-flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto"
+          >
+            Edit PR
+          </Link>
+        </div>
       </div>
       {/* Main PR Content */}
       <div className="mt-3 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(280px,0.9fr)]">
@@ -629,12 +635,6 @@ export default async function ProcurementRequestPage({
             </div>
           )}
         </div>
-      </div>
-      {/* Attachments */}
-      <div className="mt-8">
-        <AttachmentUploadForm requestId={request.id} />
-
-        <AttachmentList attachments={formattedAttachments} />
       </div>
     </div>
   );
