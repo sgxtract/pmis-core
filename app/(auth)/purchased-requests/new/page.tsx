@@ -27,7 +27,7 @@ export default async function NewPurchasedRequestPage() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-3xl">
+    <div className="w-full">
       <div className="mb-6">
         <Link
           href="/purchased-requests"
@@ -37,19 +37,17 @@ export default async function NewPurchasedRequestPage() {
         </Link>
       </div>
 
-      <div className="rounded-xl border bg-white p-5 shadow-sm sm:p-8">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-            New Procurement Request
-          </h1>
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+          New Procurement Request
+        </h1>
 
-          <p className="mt-1 text-sm text-gray-600">
-            Enter the basic information for the new procurement request.
-          </p>
-        </div>
-
-        <NewPRForm procurementModes={procurementModes ?? []} />
+        <p className="mt-1 text-sm text-gray-600">
+          Enter the basic information for the new procurement request.
+        </p>
       </div>
+
+      <NewPRForm procurementModes={procurementModes ?? []} />
     </div>
   );
 }
