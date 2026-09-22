@@ -38,7 +38,7 @@ export default function CancelPRForm({ requestId }: CancelPRFormProps) {
           type="button"
           onClick={() => setShowConfirmation(true)}
           disabled={isPending}
-          className="rounded-lg border border-red-300 bg-white px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-lg border border-red-300 bg-white px-4 py-2 text-xs font-medium text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isPending ? "Cancelling..." : "Cancel PR"}
         </button>

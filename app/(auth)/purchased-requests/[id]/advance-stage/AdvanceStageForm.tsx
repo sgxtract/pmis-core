@@ -58,7 +58,7 @@ export default function AdvanceStageForm({
           type="button"
           onClick={() => setShowConfirmation(true)}
           disabled={isPending}
-          className="mt-3 shrink-0 rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="mt-3 shrink-0 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
         >
           Advance Stage →
         </button>

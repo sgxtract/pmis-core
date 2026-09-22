@@ -340,7 +340,7 @@ export default async function ProcurementRequestPage({
 
           <Link
             href={`/purchased-requests/${procurementRequest.id}/edit`}
-            className="inline-flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto"
+            className="inline-flex w-full items-center justify-center rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto"
           >
             Edit PR
           </Link>
@@ -507,11 +507,11 @@ export default async function ProcurementRequestPage({
 
             {request.status === "Active" && nextStage && (
               <div className="pb-0 px-4 py-4 flex items-center gap-3 justify-center">
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-700">
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
                   {currentStage?.name ?? "Not Started"}
                 </span>
                 <span className="text-slate-400">→</span>
-                <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-medium text-blue-700">
+                <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">
                   {nextStage.name}
                 </span>
               </div>
