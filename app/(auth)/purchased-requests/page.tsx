@@ -7,6 +7,9 @@ type SearchParams = {
   mode?: string;
   stage?: string;
   status?: string;
+  type_of_pr?: string;
+  date_from?: string;
+  date_to?: string;
   page?: string;
 };
 
@@ -66,6 +69,9 @@ export default async function PurchasedRequestsPage({
   const mode = params.mode ?? "";
   const stage = params.stage ?? "";
   const status = params.status ?? "";
+  const typeOfPr = params.type_of_pr ?? "";
+  const dateFrom = params.date_from ?? "";
+  const dateTo = params.date_to ?? "";
   const page = Number(params.page ?? "1");
 
   const supabase = await createClient();
@@ -85,6 +91,20 @@ export default async function PurchasedRequestsPage({
     .select("status")
     .not("status", "is", null);
 
+  const { data: typeOfPrRows } = await supabase
+    .from("procurement_requests")
+    .select("type_of_pr")
+    .not("type_of_pr", "is", null)
+    .order("type_of_pr");
+
+  const typeOfPrOptions = Array.from(
+    new Set(
+      (typeOfPrRows ?? [])
+        .map((row) => row.type_of_pr)
+        .filter((value): value is string => Boolean(value)),
+    ),
+  );
+
   const modeOptions = [...new Set((modes ?? []).map((item) => item.name))];
 
   const stageOptions = [...new Set((stages ?? []).map((item) => item.name))];
@@ -100,6 +120,9 @@ export default async function PurchasedRequestsPage({
       p_mode: mode || null,
       p_stage: stage || null,
       p_status: status || null,
+      p_type_of_pr: typeOfPr || null,
+      p_date_from: dateFrom || null,
+      p_date_to: dateTo || null,
       p_page: page,
       p_page_size: 20,
     },
@@ -135,11 +158,11 @@ export default async function PurchasedRequestsPage({
       <div className="w-full">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+            <h1 className="text-xl font-bold text-gray-900 sm:text-2xl">
               Purchased Requests
             </h1>
 
-            <p className="mt-1 text-sm text-gray-600 sm:mt-2 sm:text-base">
+            <p className="mt-0.5 text-xs text-gray-600 sm:text-sm">
               Manage and monitor procurement requests.
             </p>
           </div>
@@ -182,7 +205,7 @@ export default async function PurchasedRequestsPage({
             Manage and monitor procurement requests.
           </p>
 
-          <p className="mt-2 text-sm font-medium text-gray-500">
+          <p className="mt-1 text-xs font-medium text-gray-500">
             {totalCount === 0
               ? "No procurement requests found"
               : `Showing ${currentPageCount} of ${totalCount} procurement ${
@@ -193,7 +216,7 @@ export default async function PurchasedRequestsPage({
 
         <Link
           href="/purchased-requests/new"
-          className="inline-flex w-full items-center justify-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto"
+          className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-3.5 py-2 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto"
         >
           + New PR
         </Link>
@@ -202,11 +225,12 @@ export default async function PurchasedRequestsPage({
       {/* Procurement Requests Card */}
       <div className="mt-6 overflow-hidden rounded-xl border bg-white shadow-sm sm:mt-8">
         {/* Search Area */}
-        <div className="border-b p-4 sm:p-5">
+        <div className="border-b px-4 py-3 sm:px-5">
           <PurchasedRequestsFilters
             modes={modeOptions}
             stages={stageOptions}
             statuses={statusOptions}
+            typeOfPrs={typeOfPrOptions}
           />
         </div>
 
@@ -214,7 +238,7 @@ export default async function PurchasedRequestsPage({
         {requests && requests.length > 0 ? (
           <>
             <div className="hidden overflow-x-auto md:block">
-              <table className="min-w-225 w-full text-left text-sm">
+              <table className="min-w-225 w-full text-left text-xs">
                 <thead className="border-b bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
                   <tr>
                     <th className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
@@ -253,7 +277,7 @@ export default async function PurchasedRequestsPage({
                       <td className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
                         <Link
                           href={`/purchased-requests/${request.id}`}
-                          className="font-medium text-blue-600 hover:text-blue-800 hover:underline"
+                          className="font-semibold text-blue-600 hover:text-blue-800 hover:underline"
                         >
                           {request.pr_number}
                         </Link>
