@@ -17,6 +17,7 @@ type PublicProcurement = {
   particulars: string | null;
   abc: number | null;
   mode_of_procurement: string | null;
+  end_user: string;
   current_stage: string | null;
   status: string | null;
   total_count: number;
@@ -102,13 +103,13 @@ function getStatusClass(status: string | null) {
   }
 }
 
-function getStageClass(stage: string | null) {
-  if (!stage) {
-    return "bg-gray-100 text-gray-700";
-  }
+// function getStageClass(stage: string | null) {
+//   if (!stage) {
+//     return "bg-gray-100 text-gray-700";
+//   }
 
-  return "bg-blue-50 text-blue-700";
-}
+//   return "bg-blue-50 text-blue-700";
+// }
 
 export default async function PublicProcurementsPage({
   searchParams,
@@ -412,35 +413,39 @@ export default async function PublicProcurementsPage({
             </div>
           ) : (
             <>
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+              <div className="hidden overflow-x-auto md:block">
+                <table className="min-w-225 w-full text-left text-xs">
+                  <thead className="border-b bg-gray-50 text-xs font-semibold uppercase tracking-wide text-gray-500">
                     <tr>
-                      <th className="whitespace-nowrap px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      <th className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
                         PR Number
                       </th>
 
-                      <th className="whitespace-nowrap px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      <th className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
                         PR Date
                       </th>
 
-                      <th className="min-w-45 px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      <th className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
                         Particulars / Project Name
                       </th>
 
-                      <th className="whitespace-nowrap px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      <th className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
                         ABC
                       </th>
 
-                      <th className="min-w-45 px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      <th className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
                         Mode of Procurement
                       </th>
 
-                      <th className="min-w-45 px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                        Current Stage
+                      <th className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
+                        End User
                       </th>
 
-                      <th className="whitespace-nowrap px-6 py-3 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      {/* <th className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
+                        Current Stage
+                      </th> */}
+
+                      <th className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
                         Status
                       </th>
 
@@ -449,34 +454,37 @@ export default async function PublicProcurementsPage({
                       </th>
                     </tr>
                   </thead>
-
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody className="divide-y">
                     {procurements.map((pr) => (
                       <tr
                         key={pr.id}
                         className="hover:bg-gray-50 transition-colors"
                       >
-                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-900">
+                        <td className="whitespace-nowrap text-gray-700 font-semibold px-4 py-3 sm:px-6 sm:py-4">
                           {pr.pr_number}
                         </td>
 
-                        <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-600">
+                        <td className="whitespace-nowrap text-gray-700 px-4 py-3 sm:px-6 sm:py-4">
                           {formatDate(pr.pr_date)}
                         </td>
 
-                        <td className="max-w-md px-6 py-4 text-sm text-gray-700">
+                        <td className="max-w-87.5 px-4 py-3 text-gray-700 sm:px-6 sm:py-4">
                           {pr.particulars ?? "—"}
                         </td>
 
-                        <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-700">
+                        <td className="whitespace-nowrap px-4 py-3 text-right text-gray-700 font-semibold sm:px-6 sm:py-4">
                           {formatCurrency(pr.abc)}
                         </td>
 
-                        <td className="px-6 py-4 text-sm text-gray-700">
+                        <td className="whitespace-nowrap text-gray-700 px-4 py-3 sm:px-6 sm:py-4">
                           {pr.mode_of_procurement ?? "—"}
                         </td>
 
-                        <td className="px-6 py-4 text-sm">
+                        <td className="whitespace-nowrap text-gray-700 px-4 py-3 sm:px-6 sm:py-4">
+                          {pr.end_user ?? "—"}
+                        </td>
+
+                        {/* <td className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
                           {pr.current_stage ? (
                             <span
                               className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-semibold ${getStageClass(
@@ -488,9 +496,9 @@ export default async function PublicProcurementsPage({
                           ) : (
                             <span className="text-gray-500">—</span>
                           )}
-                        </td>
+                        </td> */}
 
-                        <td className="whitespace-nowrap px-6 py-4 text-sm">
+                        <td className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
                           {pr.status ? (
                             <span
                               className={`inline-flex items-center rounded-md px-2 py-1 text-xs font-semibold ${getStatusClass(
@@ -504,10 +512,10 @@ export default async function PublicProcurementsPage({
                           )}
                         </td>
 
-                        <td className="whitespace-nowrap px-6 py-4 text-sm">
+                        <td className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
                           <Link
                             href={`/procurements/${pr.id}`}
-                            className="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                            className="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-3 py-1.5 text-[12px] font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto"
                           >
                             View
                           </Link>
