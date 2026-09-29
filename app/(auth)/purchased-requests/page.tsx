@@ -24,6 +24,7 @@ type PurchasedRequest = {
   current_stage: string | null;
   status: string | null;
   total_count: number;
+  end_user: string;
 };
 
 function getStatusClass(status: string | null) {
@@ -264,6 +265,10 @@ export default async function PurchasedRequestsPage({
                     </th>
 
                     <th className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
+                      End-User
+                    </th>
+
+                    <th className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
                       Status
                     </th>
                   </tr>
@@ -332,6 +337,15 @@ export default async function PurchasedRequestsPage({
                         >
                           {request.current_stage || "Unknown"}
                         </span>
+                      </td>
+
+                      <td className="max-w-87.5 px-4 py-3 text-gray-700 sm:px-6 sm:py-4">
+                        <div
+                          className="line-clamp-2"
+                          title={request.end_user || undefined}
+                        >
+                          {request.end_user || "—"}
+                        </div>
                       </td>
 
                       <td className="whitespace-nowrap px-4 py-3 sm:px-6 sm:py-4">
