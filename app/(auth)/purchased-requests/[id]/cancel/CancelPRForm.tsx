@@ -62,7 +62,6 @@ export default function CancelPRForm({ requestId }: CancelPRFormProps) {
             </div>
 
             {/* Content */}
-
             <div className="px-6 py-5">
               <p className="text-sm text-gray-700">
                 Are you sure you want to cancel this procurement request?
@@ -72,6 +71,26 @@ export default function CancelPRForm({ requestId }: CancelPRFormProps) {
                 The request will no longer be allowed to advance until it is
                 restored.
               </p>
+
+              <div className="mt-4">
+                <label
+                  htmlFor="cancel-remarks"
+                  className="mb-1.5 block text-sm font-medium text-gray-700"
+                >
+                  Remarks{" "}
+                  <span className="font-normal text-gray-400">(Optional)</span>
+                </label>
+
+                <textarea
+                  id="cancel-remarks"
+                  name="remarks"
+                  form="cancel-pr-form"
+                  rows={3}
+                  maxLength={2000}
+                  placeholder="Explain why this procurement request is being cancelled..."
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-red-500 focus:ring-2 focus:ring-red-500/20"
+                />
+              </div>
             </div>
 
             {/* Actions */}
